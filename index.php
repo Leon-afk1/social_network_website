@@ -35,6 +35,28 @@
                             <a href="#" class="btn btn-primary">Go somewhere</a>
                         </div>
                     </div>
+                    <div class="card text-bg-dark" style="width: 18rem; height: 30rem;" >
+                        <svg class="img" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="100%" height="100%" version="1.1" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 784.37 1277.39" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <g id="Layer_x0020_1">
+                                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                <g id="_1421394342400">
+                                    <g>
+                                        <polygon fill="#343434" fill-rule="nonzero" points="392.07,0 383.5,29.11 383.5,873.74 392.07,882.29 784.13,650.54"></polygon>
+                                        <polygon fill="#8C8C8C" fill-rule="nonzero" points="392.07,0 -0,650.54 392.07,882.29 392.07,472.33"></polygon>
+                                        <polygon fill="#3C3C3B" fill-rule="nonzero" points="392.07,956.52 387.24,962.41 387.24,1263.28 392.07,1277.38 784.37,724.89"></polygon>
+                                        <polygon fill="#8C8C8C" fill-rule="nonzero" points="392.07,1277.38 392.07,956.52 -0,724.89"></polygon>
+                                        <polygon fill="#141414" fill-rule="nonzero" points="392.07,882.29 784.13,650.54 392.07,472.33"></polygon>
+                                        <polygon fill="#393939" fill-rule="nonzero" points="0,650.54 392.07,882.29 392.07,472.33"></polygon>
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                        <div class="textBox">
+                            <p class="text head">Carte très style</p>
+                                <span>j'aime bien</span>
+                            <p class="text price">pas compliqué</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="col">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam pulvinar ac metus at suscipit. Nunc sit amet tortor eleifend, malesuada ex eu, facilisis justo. Nulla facilisi. Aenean rhoncus dapibus risus, vel fermentum felis. Duis massa lorem, interdum et dui vel, sodales condimentum nibh. Vivamus vestibulum id justo quis dictum. Donec et sem ipsum. Suspendisse sed elit finibus erat consequat pretium a quis nibh. Curabitur et odio nec magna iaculis interdum at in dolor. Nullam quis nisi quis diam finibus convallis. Integer accumsan pulvinar erat ac pretium. Praesent ultricies leo eget turpis placerat elementum. Nullam et consectetur risus, quis feugiat urna.
@@ -64,34 +86,37 @@
             <label for="floatingTextarea2">Comments</label>
         </div>
         <img src="test_card.jpeg" class="img-fluid" alt="...">
-
-
-        <div class="card">
-            <svg class="img" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="100%" height="100%" version="1.1" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 784.37 1277.39" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <g id="Layer_x0020_1">
-                    <metadata id="CorelCorpID_0Corel-Layer"></metadata>
-                    <g id="_1421394342400">
-                        <g>
-                            <polygon fill="#343434" fill-rule="nonzero" points="392.07,0 383.5,29.11 383.5,873.74 392.07,882.29 784.13,650.54"></polygon>
-                            <polygon fill="#8C8C8C" fill-rule="nonzero" points="392.07,0 -0,650.54 392.07,882.29 392.07,472.33"></polygon>
-                            <polygon fill="#3C3C3B" fill-rule="nonzero" points="392.07,956.52 387.24,962.41 387.24,1263.28 392.07,1277.38 784.37,724.89"></polygon>
-                            <polygon fill="#8C8C8C" fill-rule="nonzero" points="392.07,1277.38 392.07,956.52 -0,724.89"></polygon>
-                            <polygon fill="#141414" fill-rule="nonzero" points="392.07,882.29 784.13,650.54 392.07,472.33"></polygon>
-                            <polygon fill="#393939" fill-rule="nonzero" points="0,650.54 392.07,882.29 392.07,472.33"></polygon>
-                        </g>
-                    </g>
-                </g>
-            </svg>
-            <div class="textBox">
-                <p class="text head">Carte très style</p>
-                    <span>j'aime bien</span>
-                <p class="text price">pas compliqué</p>
-            </div>
-        </div>
-
     </div>
 
+    
+    <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
+  Link with href
+</a>
+<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+  Button with data-bs-target
+</button>
 
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Offcanvas</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div>
+      Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.
+    </div>
+    <div class="dropdown mt-3">
+      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+        Dropdown button
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">Action</a></li>
+        <li><a class="dropdown-item" href="#">Another action</a></li>
+        <li><a class="dropdown-item" href="#">Something else here</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
   </body>
 
 

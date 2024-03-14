@@ -31,9 +31,9 @@ button {
   }
 
   .card {
-    width: 400px;
-    height: 600px;
-    background: #535151;
+    width: 195px;
+    height: 285px;
+    background: #313131;
     border-radius: 20px;
     display: flex;
     flex-direction: column;
