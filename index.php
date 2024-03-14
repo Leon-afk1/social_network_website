@@ -85,7 +85,10 @@
             <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
             <label for="floatingTextarea2">Comments</label>
         </div>
-        <img src="test_card.jpeg" class="img-fluid" alt="...">
+        <div class="box">
+            <img src="test_card.jpeg" class="img-fluid" alt="...">
+        </div>
+        
     </div>
 
     
