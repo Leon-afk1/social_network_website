@@ -1,0 +1,32 @@
+Notes:
+- Citer TOUTES les sources (templates, bouts de code, méthode, …)
+- Avoir des exemples déjà inscrits dans la DB
+- Pb de réponses à un poste infinies à afficher : afficher dans plusieurs pages comme un forum
+
+
+Liste features :
+
+POST
+- ecrire et afficher
+- post avec image, avec video (api youtube)
+- like
+- affichage dans le fil
+- réponses
+
+USER
+- créer compte, se connecter
+- voir le profil
+- follow qqun
+- fil perso
+- gérer les follow
+- modifier son compte (pfp, infos,...)
+- page de notifs
+
+ADMIN 
+- Créé par défaut dans la DB
+- Mettre les login dans le rapport
+- Avoir un petit cachet visible pour les différencier des user
+- Envoyer avertissement à user contenant un message (par défaut à modifier)
+- Marquer post sensible (justifier par un texte)
+- Supprimer post 
+- Ban user (temp ou pas)
