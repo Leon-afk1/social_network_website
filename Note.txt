@@ -6,6 +6,11 @@ Notes:
 
 Liste features :
 
+BARRE DE RECHERCHE
+- recherche d'utilisateurs
+- recherche de #
+- barre de recherche global et non global
+
 POST
 - ecrire et afficher
 - post avec image, avec video (api youtube)
