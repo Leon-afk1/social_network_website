@@ -44,7 +44,8 @@ const trendingPostsList = document.getElementById('trending-posts');
 const followingPostsList = document.getElementById('following-posts');
 
 trendingPosts.forEach((post) => {
-  const li = document.createElement('li');
+  const li = document.createElement('div');
+  const li1 = document.createElement('li');
   const img = document.createElement('img');
   const title = document.createElement('h3');
   const author = document.createElement('p');
@@ -55,35 +56,33 @@ trendingPosts.forEach((post) => {
   author.textContent = post.author;
   comments.textContent = post.Comments;
 
-  li.appendChild(img);
-  li.appendChild(title);
-  li.appendChild(author);
+  li1.appendChild(img);
+  li1.appendChild(title);
+  li1.appendChild(author);
+  li.appendChild(li1);
   li.appendChild(comments);
 
 trendingPostsList.appendChild(li);
 });
 
 followingPosts.forEach((post) => {
-  const li = document.createElement('li');
+  const li = document.createElement('div');
+  const li1 = document.createElement('li');
   const img = document.createElement('img');
   const title = document.createElement('h3');
   const author = document.createElement('p');
+  const comments = document.createElement('p');
 
   img.src = post.image;
   title.textContent = post.title;
   author.textContent = post.author;
+  comments.textContent = post.Comments;
 
-  li.appendChild(img);
-  li.appendChild(title);
-  li.appendChild(author);
+  li1.appendChild(img);
+  li1.appendChild(title);
+  li1.appendChild(author);
+  li.appendChild(li1);
+  li.appendChild(comments);
 
   followingPostsList.appendChild(li);
-});
-
-const switchPageButton = document.getElementById('switch-page-button');
-
-switchPageButton.addEventListener('click', () => {
-  const currentPage = '<?php echo $page; ?>';
-  const nextPage = currentPage === 'for-you' ? 'following' : 'for-you';
-  window.location.href = `index.php?page=${nextPage}`;
 });

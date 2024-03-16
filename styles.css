@@ -3,52 +3,9 @@ body {
     margin: 0;
     padding: 0;
   }
-  
-  header {
-    background-color: #333;
-    color: #fff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 100;
-  }
-  
-  header img {
-    height: 3rem;
-  }
-  
-  nav ul {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  
-  nav li {
-    margin-right: 1rem;
-  }
-  
-  nav a {
-    color: #fff;
-    text-decoration: none;
-  }
-  
-  #search-box {
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    padding: 0.5rem;
-    width: 50%;
-    margin-left: 1rem;
-  }
-  
+
   main {
     padding: 1rem;
-    margin-top: 5rem;
   }
   
   section {
@@ -99,6 +56,15 @@ body {
 #trending-posts li p {
     display: flex;
     align-items: center;
+    background-color: #F5F8FA;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+}
+
+#following-posts div,
+#trending-posts div {
     background-color: #F5F8FA;
     border: 1px solid #ddd;
     border-radius: 5px;
