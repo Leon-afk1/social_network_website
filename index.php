@@ -27,6 +27,7 @@
                 Maecenas pulvinar risus vitae congue lacinia. Integer justo urna, posuere et porttitor at, condimentum et turpis. Maecenas at egestas lectus. In vitae ante sodales, fringilla lorem et, euismod lorem. Aenean augue nulla, semper at urna in, malesuada gravida est. Nam velit nisi, auctor non eleifend vitae, dictum ac purus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam non odio tortor. Quisque a ultricies lectus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla lectus risus, elementum nec justo sed, pulvinar ultrices dui.
                 </div>
                 <div class="col mx-auto d-block">
+                  <?php require("navbar.php"); ?>
                     <div class="card" style="width: 18rem;">
                         <img src="test_card.jpeg" class="card-img-top" alt="...">
                         <div class="card-body">
