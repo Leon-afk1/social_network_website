@@ -1,45 +1,17 @@
 <?php
-// Vérifie si le formulaire de connexion a été soumis
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Récupère les données soumises par le formulaire
-    $username = $_POST["username"];
-    $password = $_POST["password"];
+include ("BoutDePages/dataBaseFunctions.php");
+ConnectToDataBase();
+$AccountStatus = CheckLogin();
 
-    // Connexion à la base de données (à remplacer avec vos informations de connexion)
-    require_once 'config.php';
-    $mysqli = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-    
-    // Vérifie la connexion
-    if ($mysqli->connect_error) {
-        die("Erreur de connexion à la base de données: " . $mysqli->connect_error);
-    }
-
-    // Prépare et exécute la requête pour vérifier les informations de connexion
-    $stmt = $mysqli->prepare("SELECT * FROM utilisateur WHERE username = ? AND mdp = ?");
-    $stmt->bind_param("ss", $username, $password);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Vérifie s'il y a un utilisateur correspondant dans la base de données
-    if ($result->num_rows == 1) {
-        // Redirection vers la page d'accueil si la connexion réussit
-
-        session_start();
-        $_SESSION['user_id'] = $result;
-
-        header("Location: index.php");
-        exit(); // Arrête l'exécution du script après la redirection
-    } else {
-        // Affiche un message d'erreur si la connexion échoue
-        $erreur = "Nom d'utilisateur ou mot de passe incorrect";
-    }
-
-    // Ferme la connexion et la déclaration préparée
-    $stmt->close();
-    $mysqli->close();
+if ($AccountStatus["loginSuccessful"]){
+    echo "connected";
+	header("Location:http://".$rootpath."/index.php");
+    exit();
 }
-?>
 
+include ("BoutDePages/header.php");
+
+?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -49,7 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </head>
   <body>
     <main>
-        <?php require("navbar.php"); ?>
         <div class="container mt-5" id="sign_in">
             <div class="row justify-content-center">
                 <div class="col-md-6 col-lg-4">

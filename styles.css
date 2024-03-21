@@ -1,81 +1,20 @@
-html {
+body, html{
+    height:100%;
     background-color: #66696a;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-main {
-    padding: 1rem;
+body{ 
+    text-align:center; 
     background-color: #66696a;
-}
+}   
 
-section {
-    margin-bottom: 1rem;
-}
-
-section h2 {
-    margin-top: 0;
-}
-
-#following-posts,
-#trending-posts {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-#following-posts li,
-#trending-posts li {
-    display: flex;
-    align-items: center;
-    background-color: #F5F8FA;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 1rem;
-    padding: 1rem;
-}
-
-#following-posts li img,
-#trending-posts li img {
-    height: 5rem;
-    width: 5rem;
-    object-fit: cover;
-    border-radius: 50%;
-    margin-right: 1rem;
-}
-
-#following-posts li h3,
-#trending-posts li h3 {
-    display: flex;
-    align-items: center;
-    background-color: #F5F8FA;
-    margin-bottom: 1rem;
-    padding: 1rem;
-}
-
-#following-posts li p,
-#trending-posts li p {
-    display: flex;
-    align-items: center;
-    background-color: #F5F8FA;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 1rem;
-    padding: 1rem;
-}
-
-#following-posts div,
-#trending-posts div {
-    background-color: #F5F8FA;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 1rem;
-    padding: 1rem;
-}
+#main{ 
+    max-width:1280px; 
+    height:100%;
+    margin:0 auto; 
+    position:relative; 
+    background-color: #66696a;
+}   
 
 footer {
     background-color: #333;
@@ -106,14 +45,17 @@ footer a {
     text-decoration: none;
 }
 
-#sign_in {
-    background-color: #333;
+footer a {
     color: #fff;
-    padding: 1rem;
-    margin-top: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    text-decoration: none;
+}
+
+section {
     margin-bottom: 1rem;
+}
+
+section h2 {
+    margin-top: 0;
 }
 
 .form-field {
@@ -124,4 +66,15 @@ footer a {
 
 .form-field label {
     margin-bottom: 5px;
+}
+
+#sign_in {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    margin-top: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    width: auto;
 }
