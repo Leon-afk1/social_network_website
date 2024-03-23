@@ -4,7 +4,6 @@ ConnectToDataBase();
 $newAccountStatus = register();
 
 if ($newAccountStatus["Successful"]){
-    echo "connected";
 	  header("Location:http://".$rootpath."/login.php");
     exit();
 }

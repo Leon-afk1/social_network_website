@@ -39,9 +39,19 @@
   
   <div class="navbar right">
     <ul>
-      <li class='nav-item'><a class='nav-link active' aria-current='page' href='./logout.php'>Logout</a></li>
+      <?php
+        if(isset($_COOKIE['user_id'])){
+          echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./logout.php'>Logout</a></li>";
+        } else {
+          // echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./logout.php'>Logout</a></li>";
+
+          echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./login.php'>Login</a></li>";
+          echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./sign_in.php'>Sign In</a></li>";
+        }
+      ?>
+      <!-- <li class='nav-item'><a class='nav-link active' aria-current='page' href='./logout.php'>Logout</a></li>
       <li class='nav-item'><a class='nav-link active' aria-current='page' href='./login.php'>Login</a></li>
-      <li class='nav-item'><a class='nav-link active' aria-current='page' href='./sign_in.php'>Sign In</a></li>
+      <li class='nav-item'><a class='nav-link active' aria-current='page' href='./sign_in.php'>Sign In</a></li> -->
     </ul>
 
     <form role="search">

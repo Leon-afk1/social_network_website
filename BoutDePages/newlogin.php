@@ -2,7 +2,13 @@
     <div class="form-group text-center mb-4">
         <h1>Créer un compte</h1>
     </div>
+    <?php if (!$newAccountStatus["Successful"]) { ?>
+            <div class="alert alert-danger" role="alert">
+                <?php echo $newAccountStatus["ErrorMessage"]; ?>
+            </div>
+    <?php } ?>
     <div class=new-login>
+        
         <div class="form-group form-field">
             <label for="nom">Nom:</label>
             <input type="text" name="nom" id="nom" class="form-control" required>

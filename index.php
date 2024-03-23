@@ -3,9 +3,7 @@ include ("BoutDePages/dataBaseFunctions.php");
 ConnectToDataBase();
 
 $AccountStatus = CheckLogin();
-if (!$AccountStatus["loginSuccessful"]){
-    // echo "connected";
-}
+
 
 include ("BoutDePages/header.php");
 ?>

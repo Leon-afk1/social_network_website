@@ -1,6 +1,6 @@
 <?php
 
-$rootpath = "localhost/WE4A/test2";
+$rootpath = "localhost/WE4A/social_network_website";
 
 function ConnectToDataBase() {
     $serveur = 'localhost';
@@ -42,8 +42,6 @@ function register(){
     $creationSuccessful = false;
     $error = NULL;
     if ($_SERVER["REQUEST_METHOD"] == "POST"){
-        echo "register2";
-        echo "register";
         $creationAttempted = true;
 
         if (strlen($_POST["nom"]) < 2){
@@ -64,21 +62,34 @@ function register(){
         else if (strlen($_POST["password"]) < 2){
             $error = "Mot de passe trop court";
         }
+        // else if (!checkAge($_POST["date_naissance"])){
+        //     $error = "Vous devez avoir au moins 18 ans pour vous inscrire";
+        // }       
         else {
-            $nom = SecurizeString_ForSQL($_POST["nom"]);
-            $prenom = SecurizeString_ForSQL($_POST["prenom"]);
-            $username = SecurizeString_ForSQL($_POST["username"]);
-            $dateNaissance = $_POST["date_naissance"];
-            $email = $_POST["email"];
-		    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
-            // $password = SecurizeString_ForSQL($_POST["password"]);
+            $query1 = "SELECT * FROM utilisateur WHERE username = '" . SecurizeString_ForSQL($_POST["username"]) . "'";
+            $result1 = executeRequete($query1);
+            $query2 = "SELECT * FROM utilisateur WHERE email = '" . SecurizeString_ForSQL($_POST["email"]) . "'";
+            $result2 = executeRequete($query2);
+            if ($result1->num_rows > 0) {
+                $error = "Nom d'utilisateur déjà utilisé";
+            }
+            else if ($result2->num_rows > 0) {
+                $error = "Email déjà utilisé";
+            }else {
+                $nom = SecurizeString_ForSQL($_POST["nom"]);
+                $prenom = SecurizeString_ForSQL($_POST["prenom"]);
+                $username = SecurizeString_ForSQL($_POST["username"]);
+                $dateNaissance = $_POST["date_naissance"];
+                $email = $_POST["email"];
+                $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
-            $query = "INSERT INTO utilisateur (nom, prenom, username, dateNaissance, email, mdp) VALUES ('$nom', '$prenom', '$username', '$dateNaissance', '$email', '$password')";
-            $result = executeRequete($query);
-            if ($result === TRUE) {
-                $creationSuccessful = true;
-            } else {
-                $error = "Erreur lors de l'insertion SQL: " . $conn->error;
+                $query = "INSERT INTO utilisateur (nom, prenom, username, dateNaissance, email, mdp) VALUES ('$nom', '$prenom', '$username', '$dateNaissance', '$email', '$password')";
+                $result = executeRequete($query);
+                if ($result === TRUE) {
+                    $creationSuccessful = true;
+                } else {
+                    $error = "Erreur lors de l'insertion SQL: " . $conn->error;
+                }
             }
         }
 
@@ -89,6 +100,16 @@ function register(){
 					'ErrorMessage' => $error];
 
     return $resultArray;
+}
+
+function  checkAge($date_naissance){
+    $date_naissance = new DateTime($date_naissance);
+    $date_actuelle = new DateTime();
+    $age = $date_naissance->diff($date_actuelle)->y;
+    if ($age < 18){
+        return false;
+    }
+    return true;
 }
 
 function CheckLogin() {
@@ -124,7 +145,7 @@ function CheckLogin() {
             if (password_verify($password, $passwordHash)) {
                 $loginSuccessful = true;
                 $userId = $row['id_utilisateur'];
-                CreateLoginCookie($username, $password);
+                CreateLoginCookie($username, $password,$userId);
             }
             else {
                 $error = "Nom d'utilisateur ou mot de passe incorrect.";
@@ -145,13 +166,15 @@ function CheckLogin() {
 }
 
 
-function CreateLoginCookie($username, $password) {
+function CreateLoginCookie($username, $password, $userId) {
     setcookie('username', $username, time() + 3600 * 24 );
     setcookie('password', $password, time() + 3600 * 24 );
+    setcookie('user_id', $userId, time() + 3600 * 24 );
 }
 
 function DeleteLoginCookie() {
     setcookie('username', '', -1);
     setcookie('password', '', -1);
+    setcookie('user_id', '', -1);
 }
 
