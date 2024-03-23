@@ -1,46 +1,38 @@
-<!DOCTYPE html>
+<?php
+include ("BoutDePages/dataBaseFunctions.php");
+ConnectToDataBase();
 
+$AccountStatus = CheckLogin();
+
+
+include ("BoutDePages/header.php");
+?>
+<!DOCTYPE html>
 <html>
   <head>
     <title>My Page</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <?php
-        require_once 'config.php';
-    ?>
-    <?php
-        $conn = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-        if (!$conn) {
-            die("La connexion à la base de données a échoué : " . mysqli_connect_error());
-        }
-    ?>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> -->
   </head>
   <body>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
 
     <main>
-        <?php require("navbar.php"); ?>
-        <div class="container text-center center">
-            <div class="row align-items-start">
-                <div class="col-md-6">
-                    <h2>For you</h2>
-                    <ul id="trending-posts"></ul>
-                </div>
-                <div class="col-md-6">
-                    <h2>Following</h2>
-                    <ul id="following-posts"></ul>
-                </div>
-            </div>
-        </div>
+        <div>
+          <?php
+            if (isset($_COOKIE['user_id'])) {
+              echo "<h1>Welcome back, " . $_COOKIE['username'] . "!</h1>";
+            } else {
+              echo "<h1>Welcome to My Page</h1>";
+            }
+          ?>
+          <h2>For you</h2>
+          <ul id="trending-posts"></ul>
+      
+          <h2>Following</h2>
+          <ul id="following-posts"></ul>
     </main>
-    <footer>
-      <p>© 2024 My Page</p>
-      <ul>
-        <li><a href="#">Terms of Service</a></li>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Contact Us</a></li>
-      </ul>
-    </footer>
+    <?php include ("BoutDePages/footer.php"); ?>
     <script src="script.js"></script>
   </body>
 </html>
