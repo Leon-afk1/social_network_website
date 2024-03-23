@@ -178,3 +178,13 @@ function DeleteLoginCookie() {
     setcookie('user_id', '', -1);
 }
 
+function GetInfoProfile($userId) {
+    global $conn;
+
+    $query = "SELECT * FROM utilisateur WHERE id_utilisateur = $userId";
+    $result = executeRequete($query);
+    $row = $result->fetch_assoc();
+
+    return $row;
+}
+

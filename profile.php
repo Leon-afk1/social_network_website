@@ -9,7 +9,11 @@ if (!$AccountStatus["loginSuccessful"]){
     exit();
 }
 
+$Infos = GetInfoProfile($_COOKIE['user_id']);
+
 include ("BoutDePages/header.php");
+
+
 
 ?>
 
@@ -28,7 +32,7 @@ include ("BoutDePages/header.php");
         <div class="container mt-5" id="sign_in">
             <div class="row justify-content-center">
                 <div class="col-md-6 col-lg-4">
-                  <?php include ("BoutDePages/checkProfile.php"); ?>
+                  <?php include ("BoutDePages/modifierProfile.php"); ?>
                 </div>
             </div>
         </div>
