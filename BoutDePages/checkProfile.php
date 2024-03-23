@@ -4,11 +4,6 @@
             <h1 class="card-title">Créer un compte</h1>
         </div>
         <div class="card-body">
-            <?php if ($newAccountStatus["Attempted"]) { ?>
-                    <div class="alert alert-danger" role="alert">
-                        <?php echo $newAccountStatus["ErrorMessage"]; ?>
-                    </div>
-            <?php } ?>
             <div class="form-group form-field">
                 <label for="nom">Nom:</label>
                 <input type="text" name="nom" id="nom" class="form-control" required>

@@ -1,8 +1,11 @@
-<footer>
-    <p>© 2024 My Page</p>
-    <ul>
-        <li><a href="#">Terms of Service</a></li>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Contact Us</a></li>
-    </ul>
+<footer class="navbar navbar-expand-lg bg-dark-subtle ">
+    <div class="container-fluid ">
+        <p>© 2024 My Page</p>
+
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li><a href="#" class="text-white nav-link active">Home</a></li>
+            <li><a href="#" class="text-white nav-link active">About</a></li>
+            <li><a href="#" class="text-white nav-link active">Contact</a></li>
+        </ul>
+    </div>
 </footer>

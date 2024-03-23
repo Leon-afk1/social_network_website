@@ -20,11 +20,11 @@ function executeRequete($req)
 {
     global $conn;
     $resultat = $conn->query($req);
-    if(!$resultat) // 
+    if(!$resultat) 
     {
         die("Erreur sur la requete sql.<br>Message : " . $conn->error . "<br>Code: " . $req);
     }
-    return $resultat; // 
+    return $resultat; 
 }
 
 function SecurizeString_ForSQL($string) {
