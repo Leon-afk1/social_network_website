@@ -1,6 +1,18 @@
 <?php
 include ("BoutDePages/dataBaseFunctions.php");
 ConnectToDataBase();
+
+$modifierProfile = false;
+if (isset($_POST["modifierProfile"])) {
+    $modifierProfile = true;
+}
+
+if (isset($_POST["submitModification"])) {
+    $result=UpdateInfosProfile($_COOKIE['user_id']);
+    if ($result["Successful"]){
+        $modifierProfile = false;
+    }
+}
 $AccountStatus = CheckLogin();
 
 if (!$AccountStatus["loginSuccessful"]){
@@ -12,8 +24,6 @@ if (!$AccountStatus["loginSuccessful"]){
 $Infos = GetInfoProfile($_COOKIE['user_id']);
 
 include ("BoutDePages/header.php");
-
-
 
 ?>
 
@@ -32,7 +42,13 @@ include ("BoutDePages/header.php");
         <div class="container mt-5" id="sign_in">
             <div class="row justify-content-center">
                 <div class="col-md-6 col-lg-4">
-                  <?php include ("BoutDePages/modifierProfile.php"); ?>
+                  <?php 
+                    if ($modifierProfile){
+                        include ("BoutDePages/modifierProfile.php");
+                    }else{
+                        include ("BoutDePages/monProfil.php");
+                    }
+                  ?>
                 </div>
             </div>
         </div>

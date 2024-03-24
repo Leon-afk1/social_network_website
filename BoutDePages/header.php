@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-dark-subtle px-3 mb-3 mt-3 mx-3 sticky-top rounded-3 ">
+<nav class="navbar navbar-expand-lg bg-dark-subtle px-3 mb-3 mt-3 mx-3 sticky-top rounded-3 shadow">
   <div class="container-fluid ">
     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
       <li class="nav-item"><a class="nav-link active" aria-current="page" href="./index.php">Home</a></li>
@@ -16,8 +16,8 @@
     </ul>
 
     <form class="d-flex" role="search">
-      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-secondary" type="submit">Search</button>
+      <input class="form-control me-2 shadow" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-secondary shadow" type="submit">Search</button>
     </form>
   </div>
 </nav>
