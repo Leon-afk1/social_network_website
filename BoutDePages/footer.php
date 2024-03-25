@@ -1,5 +1,5 @@
 <footer>
-    <p>© 2024 My Page</p>
+    <p>© 2024 Y Social Network</p>
     <ul>
         <li><a href="#">Terms of Service</a></li>
         <li><a href="#">Privacy Policy</a></li>

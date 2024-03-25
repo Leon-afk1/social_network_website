@@ -84,7 +84,8 @@ CREATE TABLE `post` (
   `id_utilisateur` bigint(20) NOT NULL,
   `contenu` longtext NOT NULL,
   `date` date NOT NULL,
-  `image` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`image`))
+  `image` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`image`)),
+  `videoLink` VARCHAR(300)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

@@ -1,6 +1,6 @@
 <?php
 
-$rootpath = "localhost/WE4A/social_network_website";
+$rootpath = "localhost/WE4A/social_network_website"; // chemin relatif ?
 
 function ConnectToDataBase() {
     $serveur = 'localhost';
