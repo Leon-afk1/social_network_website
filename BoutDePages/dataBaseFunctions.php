@@ -268,3 +268,47 @@ function UpdateInfosProfile($userId){
         return $resultArray;
     }
 }
+
+function changermdp($userId){
+    global $conn;
+
+    $updateAttempted = false;
+    $updateSuccessful = false;
+    $error = NULL;
+    
+    if ($_POST["submitModificationMdp"]){
+        $updateAttempted = true;
+
+        $query = "SELECT * FROM utilisateur WHERE id_utilisateur = $userId";
+        $result = executeRequete($query);
+        $row = $result->fetch_assoc();
+        $passwordHash = $row['mdp'];
+
+        if (!password_verify($_POST["mdp"], $passwordHash)){
+            $error = "Mot de passe incorrect";
+        }
+        else if ($_POST["newmdp1"] != $_POST["newmdp2"]){
+            $error = "Les nouveaux mots de passe ne correspondent pas";
+        }
+        else if (strlen($_POST["newmdp1"]) < 2){
+            $error = "Mot de passe trop court";
+        }
+        else {
+            $newPassword = password_hash($_POST["newmdp1"], PASSWORD_DEFAULT);
+            $query = "UPDATE utilisateur SET mdp = '$newPassword' WHERE id_utilisateur = $userId";
+            $result = executeRequete($query);
+            if ($result === TRUE) {
+                $updateSuccessful = true;
+                $_COOKIE['password'] = $_POST["newmdp1"];
+            } else {
+                $error = "Erreur lors de l'insertion SQL: " . $conn->error;
+            }
+        }
+    }
+
+    $resultArray = ['Attempted' => $updateAttempted, 
+                    'Successful' => $updateSuccessful, 
+                    'ErrorMessage' => $error];
+
+    return $resultArray;
+}

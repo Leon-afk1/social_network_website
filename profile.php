@@ -13,6 +13,19 @@ if (isset($_POST["submitModification"])) {
         $modifierProfile = false;
     }
 }
+
+$modifierMotDePasse = false;
+if (isset($_POST["modifierMotDePasse"])) {
+    $modifierMotDePasse = true;
+}
+
+if (isset($_POST["submitModificationMdp"])) {
+    $result=changermdp($_COOKIE['user_id']);
+    if ($result["Successful"]){
+        $modifierMotDePasse = false;
+    }
+}
+
 $AccountStatus = CheckLogin();
 
 if (!$AccountStatus["loginSuccessful"]){
@@ -45,6 +58,8 @@ include ("BoutDePages/header.php");
                   <?php 
                     if ($modifierProfile){
                         include ("BoutDePages/modifierProfile.php");
+                    }else if ($modifierMotDePasse){
+                        include ("BoutDePages/modifiermdp.php");
                     }else{
                         include ("BoutDePages/monProfil.php");
                     }

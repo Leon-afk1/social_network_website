@@ -19,14 +19,20 @@
         </div>
         <div class="form-group form-field">
             <label for="description"><?php echo $Infos["description"] ?></label>
-        <div class="form-group form-field">
-            <label for="post">Posts :</label>
+            <br>
         </div>
         <div class="form-group text-center">
             <form action="./profile.php" method="post">
                 <input type="hidden" name="modifierProfile" value="true">
                 <button type="submit" class="btn btn-outline-secondary">Modifier profil</button>
             </form>
+            <form action="./profile.php" method="post">
+                <input type="hidden" name="modifierMotDePasse" value="true">
+                <button type="submit" class="btn btn-outline-secondary">Changer de mot de passe</button>
+            </form>
+        </div>
+        <div class="form-group form-field">
+            <label for="post">Posts :</label>
         </div>
     </div>
 </div>
