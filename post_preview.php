@@ -12,7 +12,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title> Valider votre message </title>
+        <title>Valider votre message </title>
         <link rel="stylesheet" href="styles.css">
         <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" /> <!-- from stackoverflow -->
     </head>

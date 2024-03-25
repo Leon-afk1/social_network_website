@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title> Poster un message </title>
+        <title>Poster un message </title>
         <link rel="stylesheet" href="styles.css">
         <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" /> <!-- from stackoverflow -->
     </head>
