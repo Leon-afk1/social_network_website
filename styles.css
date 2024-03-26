@@ -80,7 +80,7 @@ section h2 {
 } */
 
 /* header properties */
-.header {
+/* .header {
     background-color: #333;
     color: #fff;
     display: flex;
@@ -152,7 +152,7 @@ section h2 {
 }
 
 /* Footer properties */
-
+/* 
 footer {
     background-color: #333;
     color: #fff;
@@ -187,16 +187,16 @@ footer li {
 footer a:link, a:visited, a:hover, a:active{
     text-decoration: none;
     color: #ffffff;
-}
+} */
 
 /* Main properties */
-
+/* 
 main {
     flex: 1 0 auto;
-}
+} */
 
 /* General properties */
-
+/* 
 html{
     background-color: #66696a;
     font-family: sans-serif;
@@ -207,10 +207,10 @@ body{
     background-color: #66696a;
     height: 80%;
     padding-bottom: 6%;
-}
+} */
 
 /* New login properties */
-
+/* 
 .newlogin {
     display: flex;
     flex-direction: column;
@@ -246,6 +246,6 @@ body{
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;
-}
+} 
 
-
+ */

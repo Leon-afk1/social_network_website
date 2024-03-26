@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 19 mars 2024 à 09:01
+-- Généré le : dim. 24 mars 2024 à 17:44
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -96,24 +96,22 @@ CREATE TABLE `post` (
 
 CREATE TABLE `utilisateur` (
   `id_utilisateur` bigint(20) NOT NULL,
-  `nom` text NOT NULL,
-  `prenom` text NOT NULL,
-  `email` longtext NOT NULL,
-  `mdp` mediumtext NOT NULL,
-  `avatar` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `nom` varchar(50) NOT NULL,
+  `prenom` varchar(50) NOT NULL,
+  `email` varchar(75) NOT NULL,
+  `mdp` varchar(255) NOT NULL,
+  `description` varchar(400) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `dateNaissance` date NOT NULL,
-  `username` mediumtext NOT NULL
+  `username` varchar(75) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `utilisateur`
 --
 
-INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `prenom`, `email`, `mdp`, `avatar`, `dateNaissance`, `username`) VALUES
-(2, 'moraless', 'leon', 'leon.morales@utbm.fr', 'test', NULL, '2024-03-07', 'leon_mls'),
-(3, 'morales', 'renaud', 'renlaure@free.fr', 'testgcdkuyg', NULL, '1973-08-02', 'renlaure'),
-(4, 'morales', 'renaud', 'renlaure@free.fr', 'test', NULL, '1973-08-02', 'renlaure'),
-(5, 'test_imput', '<input type=\"text\" name=\"nom\" id=\"nom\" class=\"form-control\" required>', 'test@gmail.com', 'test', NULL, '2024-03-09', 'test2');
+INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `prenom`, `email`, `mdp`, `description`, `dateNaissance`, `username`) VALUES
+(25, 'Morales', 'Léon', 'leon.morales@utbm.fr', '$2y$10$Ovjs5jBta0NYgrcEZVuG/u7wTTWJfv2JARRUFrvwst79A8B/klyFS', 'Bonjour je m&#039;appelle léon', '2024-03-14', 'Léon'),
+(26, 'LAVARDE', 'Morgane', 'morgane.lavarde@gmail.com', '$2y$10$mkD7mB5wNTslQ5Ydxe71H.7QEACDgXWpGFnQDi0/OYL797FFv.Ecm', '', '2003-07-20', 'mlavarde');
 
 --
 -- Index pour les tables déchargées
@@ -195,7 +193,7 @@ ALTER TABLE `post`
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id_utilisateur` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_utilisateur` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Contraintes pour les tables déchargées

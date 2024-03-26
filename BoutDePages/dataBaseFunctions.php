@@ -20,11 +20,11 @@ function executeRequete($req)
 {
     global $conn;
     $resultat = $conn->query($req);
-    if(!$resultat) // 
+    if(!$resultat) 
     {
         die("Erreur sur la requete sql.<br>Message : " . $conn->error . "<br>Code: " . $req);
     }
-    return $resultat; // 
+    return $resultat; 
 }
 
 function SecurizeString_ForSQL($string) {
@@ -118,7 +118,7 @@ function CheckLogin() {
     $error = NULL;
     $loginSuccessful = false;
     $userId = NULL;
-    if ($_SERVER["REQUEST_METHOD"] == "POST"){
+    if (isset($_POST['username']) && isset($_POST['password'])){
         $username = SecurizeString_ForSQL($_POST['username']);
         $password = $_POST['password'];
         $tryConnect = true;
@@ -178,3 +178,137 @@ function DeleteLoginCookie() {
     setcookie('user_id', '', -1);
 }
 
+function GetInfoProfile($userId) {
+    global $conn;
+
+    $query = "SELECT * FROM utilisateur WHERE id_utilisateur = $userId";
+    $result = executeRequete($query);
+    $row = $result->fetch_assoc();
+
+    return $row;
+}
+
+function UpdateInfosProfile($userId){
+    global $conn;
+
+    $updateAttempted = false;
+    $updateSuccessful = false;
+    $error = NULL;
+    
+    if ($_POST["submitModification"]){
+        $updateAttempted = true;
+
+        if (strlen($_POST["nom"]) < 2){
+            $error = "Nom trop court";
+        }
+        else if (strlen($_POST["prenom"]) < 2){
+            $error = "Prénom trop court";
+        }
+        else if (strlen($_POST["username"]) < 2){
+            $error = "Nom d'utilisateur trop court";
+        }
+        else if (strlen($_POST["email"]) < 2){
+            $error = "Email trop court";
+        }
+        else if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)){
+            $error = "Email invalide";
+        }
+
+        // else if (!checkAge($_POST["date_naissance"])){
+        //     $error = "Vous devez avoir au moins 18 ans pour vous inscrire";
+        // }       
+        else {
+            $query1 = "SELECT * FROM utilisateur WHERE username = '" . SecurizeString_ForSQL($_POST["username"]) . "'";
+            $result1 = executeRequete($query1);
+            $query2 = "SELECT * FROM utilisateur WHERE email = '" . SecurizeString_ForSQL($_POST["email"]) . "'";
+            $result2 = executeRequete($query2);
+            if ($result1->num_rows > 0) {
+                if ($result1->num_rows == 1){
+                    $row = $result1->fetch_assoc();
+                    if ($row['id_utilisateur'] != $userId){
+                        $error = "Nom d'utilisateur déjà utilisé";
+                    }
+                }
+                else {
+                    $error = "Nom d'utilisateur déjà utilisé";
+                }
+            }
+            if ($result2->num_rows > 0) {
+                if ($result2->num_rows == 1){
+                    $row = $result2->fetch_assoc();
+                    if ($row['id_utilisateur'] != $userId){
+                        $error = "Email déjà utilisé";
+                    }
+                }
+                else {
+                    $error = "Email déjà utilisé";
+                }
+            }
+            if ($error == NULL){
+                $nom = SecurizeString_ForSQL($_POST["nom"]);
+                $prenom = SecurizeString_ForSQL($_POST["prenom"]);
+                $username = SecurizeString_ForSQL($_POST["username"]);
+                $dateNaissance = $_POST["date_naissance"];
+                $email = $_POST["email"];
+                $description = SecurizeString_ForSQL($_POST["description"]);
+
+                $query = "UPDATE utilisateur SET nom = '$nom', prenom = '$prenom', username = '$username', dateNaissance = '$dateNaissance', email = '$email' , description= '$description' WHERE id_utilisateur = $userId";
+                $result = executeRequete($query);
+                if ($result === TRUE) {
+                    $updateSuccessful = true;
+                } else {
+                    $error = "Erreur lors de l'insertion SQL: " . $conn->error;
+                }
+            }
+        }
+        $resultArray = ['Attempted' => $updateAttempted, 
+                        'Successful' => $updateSuccessful, 
+                        'ErrorMessage' => $error];
+
+        return $resultArray;
+    }
+}
+
+function changermdp($userId){
+    global $conn;
+
+    $updateAttempted = false;
+    $updateSuccessful = false;
+    $error = NULL;
+    
+    if ($_POST["submitModificationMdp"]){
+        $updateAttempted = true;
+
+        $query = "SELECT * FROM utilisateur WHERE id_utilisateur = $userId";
+        $result = executeRequete($query);
+        $row = $result->fetch_assoc();
+        $passwordHash = $row['mdp'];
+
+        if (!password_verify($_POST["mdp"], $passwordHash)){
+            $error = "Mot de passe incorrect";
+        }
+        else if ($_POST["newmdp1"] != $_POST["newmdp2"]){
+            $error = "Les nouveaux mots de passe ne correspondent pas";
+        }
+        else if (strlen($_POST["newmdp1"]) < 2){
+            $error = "Mot de passe trop court";
+        }
+        else {
+            $newPassword = password_hash($_POST["newmdp1"], PASSWORD_DEFAULT);
+            $query = "UPDATE utilisateur SET mdp = '$newPassword' WHERE id_utilisateur = $userId";
+            $result = executeRequete($query);
+            if ($result === TRUE) {
+                $updateSuccessful = true;
+                $_COOKIE['password'] = $_POST["newmdp1"];
+            } else {
+                $error = "Erreur lors de l'insertion SQL: " . $conn->error;
+            }
+        }
+    }
+
+    $resultArray = ['Attempted' => $updateAttempted, 
+                    'Successful' => $updateSuccessful, 
+                    'ErrorMessage' => $error];
+
+    return $resultArray;
+}
