@@ -352,14 +352,15 @@ function ajouterNewPost($userId){
                     $error = "Seuls les fichiers JPG, JPEG, PNG sont autorisés.";
                     $uploadOk = 0;
                 }
-                if ($uploadOk == 0) {
-                    $error = "Erreur lors de l'upload de l'image.";
-                } else {
+                if ($uploadOk != 0) {
                     if (move_uploaded_file($image["tmp_name"], $imagePath)) {
                         $ajouterPost = false;
                     } else {
                         $error = "Erreur lors de l'upload de l'image.";
                     }
+                }else {
+                    $query = "DELETE FROM post WHERE id_utilisateur = $userId AND contenu = '$commentaire' AND image = '$imagePath'";
+                    $result = executeRequete($query);
                 }
             } else {
                 $error = "Erreur lors de l'insertion SQL: " . $conn->error;

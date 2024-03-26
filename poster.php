@@ -8,9 +8,12 @@ if (isset($_POST["submitPost"]) && isset($_FILES["image"])) {
     $result=ajouterNewPost($_COOKIE['user_id']);
     if ($result["Successful"]){
         $ajouterPost = false;
+    }else{
+        echo 
+        "<div class='alert alert-danger' role='alert'>
+            ".$result["ErrorMessage"]."
+            </div>";
     }
-}else{
-    echo "erreur";
 }
 
 
