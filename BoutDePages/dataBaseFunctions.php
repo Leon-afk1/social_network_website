@@ -1,6 +1,6 @@
 <?php
 
-$rootpath = "localhost/WE4A/social_network_website";
+define('__ROOT__', dirname(__FILE__) );
 
 function ConnectToDataBase() {
     $serveur = 'localhost';
@@ -256,6 +256,7 @@ function UpdateInfosProfile($userId){
                 $result = executeRequete($query);
                 if ($result === TRUE) {
                     $updateSuccessful = true;
+                    $_COOKIE['username'] = $_POST["username"];
                 } else {
                     $error = "Erreur lors de l'insertion SQL: " . $conn->error;
                 }
@@ -311,4 +312,78 @@ function changermdp($userId){
                     'ErrorMessage' => $error];
 
     return $resultArray;
+}
+
+
+function ajouterNewPost($userId){
+    global $conn;
+
+    $ajouterPost = false;
+    $error = NULL;
+    if ($_POST["submitPost"]){
+        $ajouterPost = true;
+
+        if ($_FILES['image']["size"] == 0){
+            $error = "Veuillez choisir une image";
+        }
+        else {
+            $commentaire = SecurizeString_ForSQL($_POST["commentaire"]);
+            $image = $_FILES["image"];
+            $imagePath = "./images/" . $image["name"];
+            $imagePath = SecurizeString_ForSQL($imagePath);
+
+            $query = "INSERT INTO post (id_utilisateur, contenu, image) VALUES ($userId, '$commentaire', '$imagePath')";
+            $result = executeRequete($query);
+            if ($result === TRUE) {
+                $uploadOk = 1;
+                $imageFileType = strtolower(pathinfo($imagePath,PATHINFO_EXTENSION));
+                $check = getimagesize($image["tmp_name"]);
+                if($check !== false) {
+                    $uploadOk = 1;
+                } else {
+                    $error = "Le fichier n'est pas une image.";
+                    $uploadOk = 0;
+                }
+                if ($image["size"] > 500000) {
+                    $error = "L'image est trop grande.";
+                    $uploadOk = 0;
+                }
+                if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
+                    $error = "Seuls les fichiers JPG, JPEG, PNG sont autorisés.";
+                    $uploadOk = 0;
+                }
+                if ($uploadOk == 0) {
+                    $error = "Erreur lors de l'upload de l'image.";
+                } else {
+                    if (move_uploaded_file($image["tmp_name"], $imagePath)) {
+                        $ajouterPost = false;
+                    } else {
+                        $error = "Erreur lors de l'upload de l'image.";
+                    }
+                }
+            } else {
+                $error = "Erreur lors de l'insertion SQL: " . $conn->error;
+            }
+        }
+    }
+
+    $resultArray = ['Attempted' => $ajouterPost, 
+                    'Successful' => !$ajouterPost,
+                    'ErrorMessage' => $error];
+
+    return $resultArray;
+}
+
+function GetPosts($userId){
+    global $conn;
+
+    $query = "SELECT * FROM post WHERE id_utilisateur = $userId";
+    $result = executeRequete($query);
+
+    $posts = [];
+    while ($row = $result->fetch_assoc()) {
+        $posts[] = $row;
+    }
+
+    return $posts;
 }

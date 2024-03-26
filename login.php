@@ -5,7 +5,7 @@ $AccountStatus = CheckLogin();
 
 if ($AccountStatus["loginSuccessful"]){
     echo "connected";
-	header("Location:http://".$rootpath."/index.php");
+	header("Location:http://".__ROOT__."/index.php");
     exit();
 }
 

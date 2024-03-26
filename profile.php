@@ -30,7 +30,7 @@ $AccountStatus = CheckLogin();
 
 if (!$AccountStatus["loginSuccessful"]){
     echo "non connecté";
-	header("Location:http://".$rootpath."/index.php");
+	header("Location:http://".__ROOT__."/index.php");
     exit();
 }
 
@@ -67,8 +67,9 @@ include ("BoutDePages/header.php");
                 </div>
             </div>
         </div>
+        <br>
+
     </main>
-    <script src="script.js"></script>
     <?php include ("BoutDePages/footer.php"); ?>
   </body>
 </html>

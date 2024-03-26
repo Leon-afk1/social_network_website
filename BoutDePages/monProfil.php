@@ -33,6 +33,21 @@
         </div>
         <div class="form-group form-field">
             <label for="post">Posts :</label>
+            <br>
+            <?php
+                $posts = GetPosts($_COOKIE['user_id']);
+                foreach ($posts as $post){
+                    echo "<div class='card text-bg-dark border-secondary'>";
+                    echo "<div class='card-header'>";
+                    echo "</div>";
+                    echo "<div class='card-body'>";
+                    echo "<img src='".$post["image"]."' class='img-fluid'>";
+                    echo "<p class='card-text'>".$post["contenu"]."</p>";
+                    echo "</div>";
+                    echo "</div>";
+                    echo "<br>";
+                }
+            ?>
         </div>
     </div>
 </div>
