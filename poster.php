@@ -1,6 +1,6 @@
 <?php
-include ("BoutDePages/dataBaseFunctions.php");
-ConnectToDataBase();
+include ("loc.php");
+
 
 $ajouterPost = false;
 if (isset($_POST["submitPost"]) && isset($_FILES["image"])) {

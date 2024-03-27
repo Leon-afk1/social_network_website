@@ -1,7 +1,5 @@
 <?php
 
-define('__ROOT__', dirname(__FILE__) );
-
 function ConnectToDataBase() {
     $serveur = 'localhost';
     $utilisateur = 'root';
@@ -261,6 +259,7 @@ function UpdateInfosProfile($userId){
                     $error = "Erreur lors de l'insertion SQL: " . $conn->error;
                 }
             }
+            
         }
         $resultArray = ['Attempted' => $updateAttempted, 
                         'Successful' => $updateSuccessful, 
@@ -268,6 +267,68 @@ function UpdateInfosProfile($userId){
 
         return $resultArray;
     }
+}
+
+function UpdateAvatar($userId){
+    global $conn;
+
+    $updateAttempted = false;
+    $updateSuccessful = false;
+    $error = NULL;
+    
+    if ($_POST["submitModification"]){
+        $updateAttempted = true;
+
+        if ($_FILES['avatar']["size"] == 0){
+            $error = "Veuillez choisir une image";
+        }
+        else {
+            $avatar = $_FILES["avatar"];
+            $avatarPath = "./images/" . $avatar["name"];
+            $avatarPath = SecurizeString_ForSQL($avatarPath);
+
+            $query = "UPDATE utilisateur SET avatar = '$avatarPath' WHERE id_utilisateur = $userId";
+            $result = executeRequete($query);
+            if ($result === TRUE) {
+                $uploadOk = 1;
+                $avatarFileType = strtolower(pathinfo($avatarPath,PATHINFO_EXTENSION));
+                $check = getimagesize($avatar["tmp_name"]);
+                if($check !== false) {
+                    $uploadOk = 1;
+                } else {
+                    $error = "Le fichier n'est pas une image.";
+                    $uploadOk = 0;
+                }
+                if ($avatar["size"] > 500000) {
+                    $error = "L'image est trop grande.";
+                    $uploadOk = 0;
+                }
+                if($avatarFileType != "jpg" && $avatarFileType != "png" && $avatarFileType != "jpeg") {
+                    $error = "Seuls les fichiers JPG, JPEG, PNG sont autorisés.";
+                    $uploadOk = 0;
+                }
+                if ($uploadOk != 0) {
+                    if (move_uploaded_file($avatar["tmp_name"], $avatarPath)) {
+                        $updateSuccessful = true;
+                    } else {
+                        $error = "Erreur lors de l'upload de l'image.";
+                    }
+                }else {
+                    $query = "UPDATE utilisateur SET avatar = NULL WHERE id_utilisateur = $userId";
+                    $result = executeRequete($query);
+                }
+            } else {
+                $error = "Erreur lors de l'insertion SQL: " . $conn->error;
+            }
+        }
+    }
+
+    $resultArray = ['Attempted' => $updateAttempted, 
+                    'Successful' => $updateSuccessful,
+                    'ErrorMessage' => $error];
+
+    return $resultArray;
+
 }
 
 function changermdp($userId){

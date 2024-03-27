@@ -1,6 +1,6 @@
 <?php
-include ("BoutDePages/dataBaseFunctions.php");
-ConnectToDataBase();
+include ("loc.php");
+
 $newAccountStatus = register();
 
 if ($newAccountStatus["Successful"]){

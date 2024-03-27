@@ -1,6 +1,5 @@
 <?php
-include ("BoutDePages/dataBaseFunctions.php");
-ConnectToDataBase();
+include ("loc.php");
 $AccountStatus = CheckLogin();
 
 if ($AccountStatus["loginSuccessful"]){
