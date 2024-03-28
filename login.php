@@ -1,11 +1,10 @@
 <?php
-include ("BoutDePages/dataBaseFunctions.php");
-ConnectToDataBase();
+include ("loc.php");
 $AccountStatus = CheckLogin();
 
 if ($AccountStatus["loginSuccessful"]){
     echo "connected";
-	header("Location:http://".$rootpath."/index.php");
+	header("Location:./index.php");
     exit();
 }
 
@@ -19,16 +18,15 @@ include ("BoutDePages/header.php");
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   </head>
-  <body>
-    <main>
-        <div class="container mt-5" id="sign_in">
-            <div class="row justify-content-center">
-                <div class="col-md-6 col-lg-4">
-                    <form action="login.php" method="post" class="mb-4">
-                        <div class="form-group text-center mb-4">
-                            <h1>Se connecter</h1>
-                        </div>
-                        <!-- Affiche un message d'erreur s'il y en a un -->
+  <body class="text-bg-dark">
+    <main class="p-3 d-flex w-100 h-75 mx-auto flex-column">
+        <div class="row justify-content-center">
+            <div class="card w-50 text-bg-dark border-secondary">
+                <form action="login.php" method="post" class="mb-4">
+                    <div class="card-header">
+                        <h1 class="card-title">Se connecter</h1>
+                    </div>
+                    <div class="card-body">
                         <?php if (isset($erreur)) { ?>
                             <div class="alert alert-danger" role="alert">
                                 <?php echo $erreur; ?>
@@ -45,19 +43,12 @@ include ("BoutDePages/header.php");
                         <div class="form-group text-center">
                             <input type="submit" value="Se connecter" class="btn btn-primary">
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form> 
             </div>
         </div>
     </main>
-    <footer>
-      <p>© 2024 My Page</p>
-      <ul>
-        <li><a href="#">Terms of Service</a></li>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Contact Us</a></li>
-      </ul>
-    </footer>
+    <?php include ("BoutDePages/footer.php"); ?>
     <script src="script.js"></script>
   </body>
 </html>
