@@ -1,17 +1,34 @@
 <?php
 include ("loc.php");
 
-$newAccountStatus = register();
 
-if ($newAccountStatus["Successful"]){
-	  header("Location:./login.php");
+$ajouterPost = false;
+if (isset($_POST["submitPost"]) && isset($_FILES["image"])) {
+    $ajouterPost = true;
+    $result=ajouterNewPost($_COOKIE['user_id']);
+    if ($result["Successful"]){
+        $ajouterPost = false;
+        header("Location:./index.php");
+        exit();
+    }else{
+        echo 
+        "<div class='alert alert-danger' role='alert'>
+            ".$result["ErrorMessage"]."
+            </div>";
+    }
+}
+
+
+$AccountStatus = CheckLogin();
+if (!$AccountStatus["loginSuccessful"]){
+    echo "non connecté";
+    header("Location:./index.php");
     exit();
 }
 
 include ("BoutDePages/header.php");
 
 ?>
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -27,13 +44,14 @@ include ("BoutDePages/header.php");
         <div class="container mt-5" id="sign_in">
             <div class="row justify-content-center">
                 <div class="col-md-6 col-lg-4">
-                  <?php include ("BoutDePages/newlogin.php"); ?>
+                  <?php 
+                    include ("BoutDePages/ajouterPost.php");
+                  ?>
                 </div>
             </div>
         </div>
         <br>
     </main>
-    <script src="script.js"></script>
     <?php include ("BoutDePages/footer.php"); ?>
   </body>
 </html>
