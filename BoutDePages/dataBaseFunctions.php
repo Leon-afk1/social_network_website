@@ -60,6 +60,9 @@ function register(){
         else if (strlen($_POST["password"]) < 2){
             $error = "Mot de passe trop court";
         }
+        else if ($_POST["password"] != $_POST["password_confirm"]){
+            $error = "Les mots de passe ne correspondent pas";
+        }
         // else if (!checkAge($_POST["date_naissance"])){
         //     $error = "Vous devez avoir au moins 18 ans pour vous inscrire";
         // }       

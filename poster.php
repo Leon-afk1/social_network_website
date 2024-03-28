@@ -8,6 +8,8 @@ if (isset($_POST["submitPost"]) && isset($_FILES["image"])) {
     $result=ajouterNewPost($_COOKIE['user_id']);
     if ($result["Successful"]){
         $ajouterPost = false;
+        header("Location:./index.php");
+        exit();
     }else{
         echo 
         "<div class='alert alert-danger' role='alert'>
@@ -20,7 +22,7 @@ if (isset($_POST["submitPost"]) && isset($_FILES["image"])) {
 $AccountStatus = CheckLogin();
 if (!$AccountStatus["loginSuccessful"]){
     echo "non connecté";
-	header("Location:http://".__ROOT__."/index.php");
+    header("Location:./index.php");
     exit();
 }
 
