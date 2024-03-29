@@ -8,7 +8,6 @@
     $embed_video = '<iframe width="560" height="315" src="'.$videoEmbed.'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
 ?>
 
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -25,6 +24,7 @@
         ?>
     </body>
     <br>
+    <!-- faire un form pour prendre en compte les clics sur les boutons-->
     <button type = "button" class="btn btn-primary" onclick = "history.back()">Modifier</button>
     <button type = "submit" class="btn btn-primary">Valider et poster</button>
     <!-- IMPORTANT -->

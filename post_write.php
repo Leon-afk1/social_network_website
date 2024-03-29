@@ -6,7 +6,7 @@
     <head>
         <title>Poster un message </title>
         <link rel="stylesheet" href="styles.css">
-        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" /> <!-- from stackoverflow -->
+        <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" /> <!-- from stackoverflow -->
     </head>
     <body>
         <main>
@@ -30,6 +30,7 @@
                                 <input type="text" class="form-control" id="postVideoLink" name="postVideoLink">
                             </div>
                             <button type="submit" class="btn btn-primary">Poster</button>
+                            
                         </form>
                     </div>
                 </div>
