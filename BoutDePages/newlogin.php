@@ -26,6 +26,10 @@
                 <input type="date" name="date_naissance" id="date_naissance" class="form-control" required>
             </div>
             <div class="form-group form-field">
+                <label for="adresse">Adresse:</label>
+                <input type="text" name="adresse" id="adresse" class="form-control" required>
+            </div>
+            <div class="form-group form-field">
                 <label for="email">Adresse e-mail:</label>
                 <input type="email" name="email" id="email" class="form-control" required>
             </div>

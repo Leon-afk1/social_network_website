@@ -1,10 +1,13 @@
+<link rel="stylesheet" href="styles.css">
 <div class="card text-bg-dark border-secondary">
     <div class="text-center card-header">
-        <h1 class="card-title"><?php echo $Infos["username"];
+        <h1 class="card-title"><?php 
         if ($Infos["avatar"] != NULL){
-            echo "<img src='".$Infos["avatar"]."' class='img-fluid rounded-circle w-25 p-3'>";
+            echo "<img src='".$Infos["avatar"]."' class='avatar avatar-xxl'>";
         }
-         ?></h1>
+         ?>
+        </h1>
+        <?php echo $Infos["username"] ?>
     </div>
     <div class="card-body">
         <div class="form-group form-field">
