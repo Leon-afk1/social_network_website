@@ -46,7 +46,9 @@
                 $posts = GetPosts($_COOKIE['user_id']);
                 foreach ($posts as $post){
                     echo "<div class='card text-bg-dark border-secondary'>";
-                    echo "<div class='card-header'>";
+                    echo "<div class='card-header border-secondary text-bg-dark'>";
+                    echo "<img src='".$Infos["avatar"]."' class='avatar avatar-ml'>";
+                    echo "<label for='nom'>". $Infos["nom"]." ".$Infos["prenom"]."</label>";
                     echo "</div>";
                     echo "<div class='card-body'>";
                     echo "<img src='".$post["image"]."' class='img-fluid'>";
