@@ -302,7 +302,7 @@ function UpdateAvatar($userId){
         }
         else {
             $avatar = $_FILES["avatar"];
-            $avatarPath = "./images/" . $avatar["name"];
+            $avatarPath = "./avatar/" . $avatar["name"];
             $avatarPath = SecurizeString_ForSQL($avatarPath);
 
             $query = "UPDATE utilisateur SET avatar = '$avatarPath' WHERE id_utilisateur = $userId";
@@ -399,64 +399,82 @@ function ajouterNewPost($userId){
 
     $ajouterPost = false;
     $error = NULL;
+    $imagePathForDB = "";
+
     if ($_POST["submitPost"]){
         $ajouterPost = true;
+        $commentaire = SecurizeString_ForSQL($_POST["commentaire"]);
 
-        if ($_FILES['image']["size"] == 0){
-            $error = "Veuillez choisir une image";
-        }
-        else {
-            $commentaire = SecurizeString_ForSQL($_POST["commentaire"]);
-            $image = $_FILES["image"];
-            $imagePath = "./images/" . $image["name"];
-            $imagePath = SecurizeString_ForSQL($imagePath);
-            $uploadOk = 1;
-            $imageFileType = strtolower(pathinfo($imagePath,PATHINFO_EXTENSION));
-            $check = getimagesize($image["tmp_name"]);
-            if($check !== false) {
+        $query = "INSERT INTO post (id_utilisateur, contenu) VALUES ($userId, '$commentaire')";
+        if (mysqli_query($conn, $query)) {
+            $postId = mysqli_insert_id($conn);
+
+            if ($_FILES['image']["size"] > 0){
+                $image = $_FILES["image"];
+                $imagePath = "./images/" . $postId . ".jpg"; 
+                $imagePathForDB = SecurizeString_ForSQL($imagePath); 
                 $uploadOk = 1;
-            } else {
-                $error = "Le fichier n'est pas une image.";
-                $uploadOk = 0;
-            }
-            if ($image["size"] > 500000) {
-                $error = "L'image est trop grande.";
-                $uploadOk = 0;
-            }
-            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
-                $error = "Seuls les fichiers JPG, JPEG, PNG sont autorisés.";
-                $uploadOk = 0;
-            }
-            if ($uploadOk != 0) {
-                
-                if (move_uploaded_file($image["tmp_name"], $imagePath)) {
-                    $ajouterPost = false;
-                    $query = "INSERT INTO post (id_utilisateur, commentaire, image) VALUES ($userId, '$commentaire', '$imagePath')";
+                $imageFileType = strtolower(pathinfo($imagePath,PATHINFO_EXTENSION));
+                $check = getimagesize($image["tmp_name"]);
+                if($check !== false) {
+                    $uploadOk = 1;
                 } else {
-                    $error = "Erreur lors de l'upload de l'image.";
+                    $error = "Le fichier n'est pas une image.";
+                    $uploadOk = 0;
                 }
-            }    
-        
+                if ($image["size"] > 500000) {
+                    $error = "L'image est trop grande.";
+                    $uploadOk = 0;
+                }
+                if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
+                    $error = "Seuls les fichiers JPG, JPEG, PNG sont autorisés.";
+                    $uploadOk = 0;
+                }
+                if ($uploadOk != 0) {
+                    if (move_uploaded_file($image["tmp_name"], $imagePath)) {
+                        $query = "UPDATE post SET image_path = '$imagePathForDB' WHERE id_post = $postId";
+                        if (!mysqli_query($conn, $query)) {
+                            $error = "Erreur lors de la mise à jour du chemin de l'image dans la base de données.";
+                        }
+                    } else {
+                        $error = "Erreur lors de l'upload de l'image.";
+                    }
+                }
+            }
+        } else {
+            $error = "Erreur lors de l'insertion dans la base de données: " . mysqli_error($conn);
         }
     }
 
     $resultArray = ['Attempted' => $ajouterPost, 
-                    'Successful' => !$ajouterPost,
+                    'Successful' => $ajouterPost,
                     'ErrorMessage' => $error];
 
     return $resultArray;
 }
 
-function GetPosts($userId){
+function getAllPosts($userId) {
     global $conn;
 
-    $query = "SELECT * FROM post WHERE id_utilisateur = $userId";
+    $query = "SELECT post.id_post, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom FROM post
+              INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur
+              WHERE post.id_utilisateur = $userId
+              ORDER BY post.date DESC";
     $result = executeRequete($query);
 
     $posts = [];
     while ($row = $result->fetch_assoc()) {
-        $posts[] = $row;
+        $post = [
+            'id' => $row['id_post'],
+            'contenu' => $row['contenu'],
+            'image' => $row['image_path'],
+            'date' => $row['date'],
+            'nom_utilisateur' => $row['nom'],
+            'prenom_utilisateur' => $row['prenom']
+        ];
+        $posts[] = $post;
     }
 
     return $posts;
 }
+
