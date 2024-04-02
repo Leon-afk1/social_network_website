@@ -39,6 +39,7 @@ function register(){
     $creationAttempted = false;
     $creationSuccessful = false;
     $error = NULL;
+    $loginSuccessful = false;
     if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $creationAttempted = true;
 
@@ -63,6 +64,9 @@ function register(){
         else if ($_POST["password"] != $_POST["password_confirm"]){
             $error = "Les mots de passe ne correspondent pas";
         }
+        else if (strlen($_POST["adresse"]) < 5){
+            $error = "Adresse trop courte";
+        }
         // else if (!checkAge($_POST["date_naissance"])){
         //     $error = "Vous devez avoir au moins 18 ans pour vous inscrire";
         // }       
@@ -83,11 +87,17 @@ function register(){
                 $dateNaissance = $_POST["date_naissance"];
                 $email = $_POST["email"];
                 $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+                $adresse = SecurizeString_ForSQL($_POST["adresse"]);
 
-                $query = "INSERT INTO utilisateur (nom, prenom, username, dateNaissance, email, mdp) VALUES ('$nom', '$prenom', '$username', '$dateNaissance', '$email', '$password')";
+                $query = "INSERT INTO utilisateur (nom, prenom, username, dateNaissance, email, mdp, adresse) VALUES ('$nom', '$prenom', '$username', '$dateNaissance', '$email', '$password', '$adresse')";
                 $result = executeRequete($query);
                 if ($result === TRUE) {
                     $creationSuccessful = true;
+                    $query = "SELECT * FROM utilisateur WHERE username = '$username'";
+                    $result = executeRequete($query);
+                    $row = $result->fetch_assoc();
+                    CreateLoginCookie($username, $_POST["password"], $row['id_utilisateur']);
+                    $loginSuccessful = true;
                 } else {
                     $error = "Erreur lors de l'insertion SQL: " . $conn->error;
                 }
@@ -98,7 +108,8 @@ function register(){
 	
 	$resultArray = ['Attempted' => $creationAttempted, 
 					'Successful' => $creationSuccessful, 
-					'ErrorMessage' => $error];
+					'ErrorMessage' => $error,
+                    'LoginSuccessful' => $loginSuccessful];
 
     return $resultArray;
 }
@@ -214,6 +225,9 @@ function UpdateInfosProfile($userId){
         else if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)){
             $error = "Email invalide";
         }
+        else if (strlen($_POST["adresse"]) < 5){
+            $error = "Adresse trop courte";
+        }
 
         // else if (!checkAge($_POST["date_naissance"])){
         //     $error = "Vous devez avoir au moins 18 ans pour vous inscrire";
@@ -252,8 +266,9 @@ function UpdateInfosProfile($userId){
                 $dateNaissance = $_POST["date_naissance"];
                 $email = $_POST["email"];
                 $description = SecurizeString_ForSQL($_POST["description"]);
+                $adresse = SecurizeString_ForSQL($_POST["adresse"]);
 
-                $query = "UPDATE utilisateur SET nom = '$nom', prenom = '$prenom', username = '$username', dateNaissance = '$dateNaissance', email = '$email' , description= '$description' WHERE id_utilisateur = $userId";
+                $query = "UPDATE utilisateur SET nom = '$nom', prenom = '$prenom', username = '$username', dateNaissance = '$dateNaissance', email = '$email' , description= '$description', adresse='$adresse' WHERE id_utilisateur = $userId";
                 $result = executeRequete($query);
                 if ($result === TRUE) {
                     $updateSuccessful = true;
@@ -287,7 +302,7 @@ function UpdateAvatar($userId){
         }
         else {
             $avatar = $_FILES["avatar"];
-            $avatarPath = "./images/" . $avatar["name"];
+            $avatarPath = "./avatar/" . $avatar["name"];
             $avatarPath = SecurizeString_ForSQL($avatarPath);
 
             $query = "UPDATE utilisateur SET avatar = '$avatarPath' WHERE id_utilisateur = $userId";
@@ -384,21 +399,20 @@ function ajouterNewPost($userId){
 
     $ajouterPost = false;
     $error = NULL;
+    $imagePathForDB = "";
+
     if ($_POST["submitPost"]){
         $ajouterPost = true;
+        $commentaire = SecurizeString_ForSQL($_POST["commentaire"]);
 
-        if ($_FILES['image']["size"] == 0){
-            $error = "Veuillez choisir une image";
-        }
-        else {
-            $commentaire = SecurizeString_ForSQL($_POST["commentaire"]);
-            $image = $_FILES["image"];
-            $imagePath = "./images/" . $image["name"];
-            $imagePath = SecurizeString_ForSQL($imagePath);
+        $query = "INSERT INTO post (id_utilisateur, contenu) VALUES ($userId, '$commentaire')";
+        if (mysqli_query($conn, $query)) {
+            $postId = mysqli_insert_id($conn);
 
-            $query = "INSERT INTO post (id_utilisateur, contenu, image) VALUES ($userId, '$commentaire', '$imagePath')";
-            $result = executeRequete($query);
-            if ($result === TRUE) {
+            if ($_FILES['image']["size"] > 0){
+                $image = $_FILES["image"];
+                $imagePath = "./images/" . $postId . ".jpg"; 
+                $imagePathForDB = SecurizeString_ForSQL($imagePath); 
                 $uploadOk = 1;
                 $imageFileType = strtolower(pathinfo($imagePath,PATHINFO_EXTENSION));
                 $check = getimagesize($image["tmp_name"]);
@@ -418,37 +432,49 @@ function ajouterNewPost($userId){
                 }
                 if ($uploadOk != 0) {
                     if (move_uploaded_file($image["tmp_name"], $imagePath)) {
-                        $ajouterPost = false;
+                        $query = "UPDATE post SET image_path = '$imagePathForDB' WHERE id_post = $postId";
+                        if (!mysqli_query($conn, $query)) {
+                            $error = "Erreur lors de la mise à jour du chemin de l'image dans la base de données.";
+                        }
                     } else {
                         $error = "Erreur lors de l'upload de l'image.";
                     }
-                }else {
-                    $query = "DELETE FROM post WHERE id_utilisateur = $userId AND contenu = '$commentaire' AND image = '$imagePath'";
-                    $result = executeRequete($query);
                 }
-            } else {
-                $error = "Erreur lors de l'insertion SQL: " . $conn->error;
             }
+        } else {
+            $error = "Erreur lors de l'insertion dans la base de données: " . mysqli_error($conn);
         }
     }
 
     $resultArray = ['Attempted' => $ajouterPost, 
-                    'Successful' => !$ajouterPost,
+                    'Successful' => $ajouterPost,
                     'ErrorMessage' => $error];
 
     return $resultArray;
 }
 
-function GetPosts($userId){
+function getAllPosts($userId) {
     global $conn;
 
-    $query = "SELECT * FROM post WHERE id_utilisateur = $userId";
+    $query = "SELECT post.id_post, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom FROM post
+              INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur
+              WHERE post.id_utilisateur = $userId
+              ORDER BY post.date DESC";
     $result = executeRequete($query);
 
     $posts = [];
     while ($row = $result->fetch_assoc()) {
-        $posts[] = $row;
+        $post = [
+            'id' => $row['id_post'],
+            'contenu' => $row['contenu'],
+            'image' => $row['image_path'],
+            'date' => $row['date'],
+            'nom_utilisateur' => $row['nom'],
+            'prenom_utilisateur' => $row['prenom']
+        ];
+        $posts[] = $post;
     }
 
     return $posts;
 }
+

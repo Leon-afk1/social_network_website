@@ -6,7 +6,7 @@
         <div class="card-body">
             <div class="form-group form-field">
                 <label for="Commentaire">Commentaire:</label>
-                <textarea name="commentaire" class="form-control" rows="3"></textarea>
+                <textarea name="commentaire" class="form-control" rows="3"  require></textarea>
             </div>
             <div class="form-group form-field">
                 <label for="image">Image:</label>
