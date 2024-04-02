@@ -302,7 +302,7 @@ function UpdateAvatar($userId){
         }
         else {
             $avatar = $_FILES["avatar"];
-            $avatarPath = "./avatar/" . $avatar["name"];
+            $avatarPath = "./avatar/" . $userId . ".jpg";
             $avatarPath = SecurizeString_ForSQL($avatarPath);
 
             $query = "UPDATE utilisateur SET avatar = '$avatarPath' WHERE id_utilisateur = $userId";
