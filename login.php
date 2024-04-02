@@ -1,11 +1,10 @@
 <?php
-include ("BoutDePages/dataBaseFunctions.php");
-ConnectToDataBase();
+include ("loc.php");
 $AccountStatus = CheckLogin();
 
 if ($AccountStatus["loginSuccessful"]){
     echo "connected";
-	header("Location:http://".$rootpath."/index.php");
+	header("Location:./index.php");
     exit();
 }
 

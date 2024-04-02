@@ -8,6 +8,7 @@
         if(isset($_COOKIE['user_id'])){
           echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./logout.php'>Logout</a></li>";
           echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./profile.php'>Profile</a></li>";
+          echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./poster.php'>Poster</a></li>";
         } else {
           echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./login.php'>Login</a></li>";
           echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./sign_in.php'>Sign In</a></li>";

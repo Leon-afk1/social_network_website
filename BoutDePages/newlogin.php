@@ -33,8 +33,13 @@
                 <label for="password">Mot de passe:</label>
                 <input type="password" name="password" id="password" class="form-control" required>
             </div>
+            <div class="form-group form-field">
+                <label for="password_confirm">Confirmer le mot de passe:</label>
+                <input type="password" name="password_confirm" id="password_confirm" class="form-control" required>
+            </div>
+            <br>
             <div class="form-group text-center">
-                <button type="submit">S'inscrire</button>
+                <button type="submit" class="btn btn-outline-secondary">S'inscrire</button>
             </div>
         </div>
     </form>

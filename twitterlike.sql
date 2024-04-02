@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : dim. 24 mars 2024 à 17:44
+-- Généré le : mer. 27 mars 2024 à 14:38
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -82,11 +82,20 @@ CREATE TABLE `message` (
 CREATE TABLE `post` (
   `id_post` bigint(20) NOT NULL,
   `id_utilisateur` bigint(20) NOT NULL,
-  `contenu` longtext NOT NULL,
-  `date` date NOT NULL,
-  `image` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`image`)),
-  `videoLink` VARCHAR(300)
+  `contenu` varchar(520) NOT NULL,
+  `date` date NOT NULL DEFAULT current_timestamp(),
+  `image` longblob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `post`
+--
+
+INSERT INTO `post` (`id_post`, `id_utilisateur`, `contenu`, `date`, `image`) VALUES
+(18, 27, 'ceci est un post', '2024-03-26', 0x2e2f696d616765732f736b6975742e6a7067),
+(19, 27, 'test', '2024-03-26', 0x2e2f696d616765732f494d472d32303231303631312d5741303031352e6a7067),
+(20, 27, ';jysjgd', '2024-03-27', 0x2e2f696d616765732f736b6975742e6a7067),
+(30, 27, 'test', '2024-03-27', 0x2e2f696d616765732f6c656f6e2d70686f746f3530362e6a7067);
 
 -- --------------------------------------------------------
 
@@ -102,16 +111,17 @@ CREATE TABLE `utilisateur` (
   `mdp` varchar(255) NOT NULL,
   `description` varchar(400) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `dateNaissance` date NOT NULL,
-  `username` varchar(75) NOT NULL
+  `username` varchar(75) NOT NULL,
+  `avatar` longblob DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `utilisateur`
 --
 
-INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `prenom`, `email`, `mdp`, `description`, `dateNaissance`, `username`) VALUES
-(25, 'Morales', 'Léon', 'leon.morales@utbm.fr', '$2y$10$Ovjs5jBta0NYgrcEZVuG/u7wTTWJfv2JARRUFrvwst79A8B/klyFS', 'Bonjour je m&#039;appelle léon', '2024-03-14', 'Léon'),
-(26, 'LAVARDE', 'Morgane', 'morgane.lavarde@gmail.com', '$2y$10$mkD7mB5wNTslQ5Ydxe71H.7QEACDgXWpGFnQDi0/OYL797FFv.Ecm', '', '2003-07-20', 'mlavarde');
+INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `prenom`, `email`, `mdp`, `description`, `dateNaissance`, `username`, `avatar`) VALUES
+(26, 'LAVARDE', 'Morgane', 'morgane.lavarde@gmail.com', '$2y$10$mkD7mB5wNTslQ5Ydxe71H.7QEACDgXWpGFnQDi0/OYL797FFv.Ecm', '', '2003-07-20', 'mlavarde', NULL),
+(27, 'morales', 'Léon', 'leon.morales@utbm.fr', '$2y$10$EGrUAgKkF7qd/xwvouCfrexqMcfSHu8J3WE1eMKliir6AJ.v.b1v2', 'Je suis Léon test', '2003-08-19', 'Léon', 0x2e2f696d616765732f6c656f6e2d70686f746f3530362e6a7067);
 
 --
 -- Index pour les tables déchargées
@@ -153,7 +163,7 @@ ALTER TABLE `message`
 --
 ALTER TABLE `post`
   ADD PRIMARY KEY (`id_post`),
-  ADD UNIQUE KEY `id_utilisateur` (`id_utilisateur`);
+  ADD KEY `fk_utilisateur_id` (`id_utilisateur`);
 
 --
 -- Index pour la table `utilisateur`
@@ -187,13 +197,13 @@ ALTER TABLE `message`
 -- AUTO_INCREMENT pour la table `post`
 --
 ALTER TABLE `post`
-  MODIFY `id_post` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_post` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id_utilisateur` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id_utilisateur` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- Contraintes pour les tables déchargées
@@ -230,7 +240,7 @@ ALTER TABLE `message`
 -- Contraintes pour la table `post`
 --
 ALTER TABLE `post`
-  ADD CONSTRAINT `post_ibfk_1` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE NO ACTION ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_utilisateur_id` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE NO ACTION ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

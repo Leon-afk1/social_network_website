@@ -1,13 +1,19 @@
 <?php
-include ("BoutDePages/dataBaseFunctions.php");
-ConnectToDataBase();
+include ("loc.php");
 
 $modifierProfile = false;
 if (isset($_POST["modifierProfile"])) {
     $modifierProfile = true;
 }
 
-if (isset($_POST["submitModification"])) {
+
+if (isset($_POST["submitModification"]) && isset($_FILES["avatar"]) && !empty($_FILES["avatar"]["name"])) {
+    $resultAvatar=UpdateAvatar($_COOKIE['user_id']);
+    $result=UpdateInfosProfile($_COOKIE['user_id']);
+    if ($resultAvatar["Successful"] && $result["Successful"]){
+        $modifierProfile = false;
+    }
+}else if (isset($_POST["submitModification"])) {
     $result=UpdateInfosProfile($_COOKIE['user_id']);
     if ($result["Successful"]){
         $modifierProfile = false;
@@ -30,7 +36,7 @@ $AccountStatus = CheckLogin();
 
 if (!$AccountStatus["loginSuccessful"]){
     echo "non connecté";
-	header("Location:http://".$rootpath."/index.php");
+	header("Location:http://".__ROOT__."/index.php");
     exit();
 }
 
@@ -67,8 +73,9 @@ include ("BoutDePages/header.php");
                 </div>
             </div>
         </div>
+        <br>
+
     </main>
-    <script src="script.js"></script>
     <?php include ("BoutDePages/footer.php"); ?>
   </body>
 </html>
