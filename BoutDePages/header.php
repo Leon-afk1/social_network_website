@@ -1,3 +1,37 @@
+<script>
+
+//Variable globale
+previousText2 = "";
+timer2 = 0;
+
+//Timer qui boucle toutes les secondes pour changer la variable globale
+function TimerIncrease_fetch() {
+  timer2+=200;
+  setTimeout('TimerIncrease_fetch()',200);
+}
+TimerIncrease_fetch();
+
+//Pour utiliser fetch, la fonction doit être "asynchrone"
+async function suggestNamesFromInput_fetch(currentText) {
+
+  if (currentText != previousText2 && timer2 >= 200 ){
+
+	var AJAXresult = await fetch("./BoutDePages/rechercheCompte.php?var=" + currentText);
+	document.getElementById("suggestions2").innerHTML = await AJAXresult.text();
+
+    previousText2 = currentText;
+    timer2 = 0;
+  }else {
+    document.getElementById("suggestions2").innerHTML = ''; // Efface les suggestions si la barre de recherche est vide
+  }
+}
+
+function autoFillName_fetch(nametext){
+  document.getElementById("suggestField2").value = nametext;
+}
+
+</script>
+
 <?php
   if(isset($_COOKIE['user_id'])){
     $Infos = GetInfoProfile($_COOKIE['user_id']);
@@ -39,9 +73,10 @@
     </div>
     <div class="d-flex">
       <form class="d-flex nav-item" role="search">
-        <input class="form-control me-2 shadow" type="search" placeholder="Search" aria-label="Search">
+        <input id="suggestField2" class="form-control me-2 shadow" type="search" placeholder="Search" onkeyup="suggestNamesFromInput_fetch(this.value)">
         <button class="btn btn-outline-secondary shadow" type="submit">Search</button>
       </form>
+      <div id="suggestions2"></div>
     </div>
     
   </div>
