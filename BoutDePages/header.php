@@ -1,17 +1,14 @@
 <script>
 
-//Variable globale
 previousText2 = "";
 timer2 = 0;
 
-//Timer qui boucle toutes les secondes pour changer la variable globale
 function TimerIncrease_fetch() {
   timer2+=200;
   setTimeout('TimerIncrease_fetch()',200);
 }
 TimerIncrease_fetch();
 
-//Pour utiliser fetch, la fonction doit être "asynchrone"
 async function suggestNamesFromInput_fetch(currentText) {
 
   if (currentText != previousText2 && timer2 >= 200 ){
@@ -22,13 +19,11 @@ async function suggestNamesFromInput_fetch(currentText) {
     previousText2 = currentText;
     timer2 = 0;
   }else {
-    document.getElementById("suggestions2").innerHTML = ''; // Efface les suggestions si la barre de recherche est vide
+    document.getElementById("suggestions2").innerHTML = ''; 
   }
 }
 
-function autoFillName_fetch(nametext){
-  document.getElementById("suggestField2").value = nametext;
-}
+
 
 </script>
 
@@ -50,7 +45,7 @@ function autoFillName_fetch(nametext){
             if ($Infos["avatar"] != NULL){
               echo "
               <li class='nav-item'>
-                <a class='nav-link active' aria-current='page' href='./profile.php'>
+                <a class='nav-link active' aria-current='page' href='./profile.php?id=".$_COOKIE['user_id']."'> 
                   <img src='".$Infos["avatar"]."' class='avatar avatar-lg'>
                 </a>
               </li>";
@@ -61,7 +56,7 @@ function autoFillName_fetch(nametext){
         <?php
           if(isset($_COOKIE['user_id'])){
             echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./logout.php'>Logout</a></li>";
-            echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./profile.php'>Profile</a></li>";
+            echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./profile.php?id=".$_COOKIE['user_id']."'>Profile</a></li>";
             echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./poster.php'>Poster</a></li>";
             echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='#'>Statistique</a></li>";
           } else {

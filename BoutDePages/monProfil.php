@@ -7,7 +7,7 @@
         }
          ?>
         </h1>
-        <?php echo $Infos["username"] ?>
+        <?php echo $Infos["username"]?>
     </div>
     <div class="card-body">
         <div class="form-group form-field">
@@ -30,11 +30,11 @@
             <br>
         </div>
         <div class="form-group text-center">
-            <form action="./profile.php" method="post">
+            <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
                 <input type="hidden" name="modifierProfile" value="true">
                 <button type="submit" class="btn btn-outline-secondary">Modifier profil</button>
             </form>
-            <form action="./profile.php" method="post">
+            <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
                 <input type="hidden" name="modifierMotDePasse" value="true">
                 <button type="submit" class="btn btn-outline-secondary">Changer de mot de passe</button>
             </form>
