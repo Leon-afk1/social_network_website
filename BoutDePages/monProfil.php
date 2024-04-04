@@ -1,10 +1,13 @@
+<link rel="stylesheet" href="styles.css">
 <div class="card text-bg-dark border-secondary">
     <div class="text-center card-header">
-        <h1 class="card-title"><?php echo $Infos["username"];
+        <h1 class="card-title"><?php 
         if ($Infos["avatar"] != NULL){
-            echo "<img src='".$Infos["avatar"]."' class='img-fluid rounded-circle w-25 p-3'>";
+            echo "<img src='".$Infos["avatar"]."' class='avatar avatar-xxl'>";
         }
-         ?></h1>
+         ?>
+        </h1>
+        <?php echo $Infos["username"] ?>
     </div>
     <div class="card-body">
         <div class="form-group form-field">
@@ -40,15 +43,20 @@
             <label for="post">Posts :</label>
             <br>
             <?php
-                $posts = GetPosts($_COOKIE['user_id']);
-                foreach ($posts as $post){
+                $allPosts = GetAllPosts($_COOKIE['user_id']);
+                foreach ($allPosts as $post){
                     echo "<div class='card text-bg-dark border-secondary'>";
-                    echo "<div class='card-header'>";
+                    echo "<div class='card-header border-secondary text-bg-dark'>";
+                    echo "<img src='".$Infos["avatar"]."' class='avatar avatar-ml'>";
+                    echo "<label for='nom'>". $Infos["nom"]." ".$Infos["prenom"]."</label>";
                     echo "</div>";
                     echo "<div class='card-body'>";
-                    echo "<img src='".$post["image"]."' class='img-fluid'>";
+                    if (!empty($post['image'])) {
+                        echo "<img src='{$post['image']}' class='img-fluid'>";
+                    }
                     echo "<p class='card-text'>".$post["contenu"]."</p>";
                     echo "</div>";
+                    echo "<p class='card-text'>".$post["date"]."</p>";
                     echo "</div>";
                     echo "<br>";
                 }
