@@ -478,3 +478,61 @@ function getAllPosts($userId) {
     return $posts;
 }
 
+function getPostInfos($postId){ //récupérer les infos d'un post sauf les likes
+    global $conn;
+
+    $query = "SELECT post.id_post, post.contenu, post.image_path, post.date, post.video_link, utilisateur.username FROM post
+              INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur
+              WHERE post.id_post = $postId";
+    $result = executeRequete($query);
+    $row = $result->fetch_assoc();
+    $post = [
+        'id' => $row['id_post'],
+        'contenu' => $row['contenu'],
+        'image' => $row['image_path'],
+        'date' => $row['date'],
+        'auteur' => $row['username'],
+        'lien_video' => $row['video_link']
+    ];
+    //var_dump($post); //pour visualiser le contenu de la variable
+    return $post;
+}
+
+function getNumberLikes($postId){ //fonction qui retourne le nombre de likes d'un post
+    $query= "SELECT COUNT(*) FROM likes WHERE id_post=$postId";
+    $result = executeRequete($query);
+    //var_dump($result); //our visualiser le contenu de la variable
+    $row = [];
+    $row = $result->fetch_assoc();
+    return $row['COUNT(*)'];
+}
+
+function likePost($userId, $postId){ //fonction pour liker un post
+    global $conn;
+    //Dans un premier temps on vérifie le like n'existe pas déjà
+    $query = "SELECT * FROM likes WHERE id_utilisateur = $userId AND id_post = $postId";
+    $result = executeRequete($query);
+
+    if ($result->num_rows == 0) {
+        $query = "INSERT INTO likes (id_post, id_utilisateur) VALUES ($postId, $userId)";
+        $result = executeRequete($query);
+    }
+}
+
+
+//functions to get embedded youtube video
+//source code : https://youthsforum.com/programming/php/get-youtube-embed-code-from-video-url-using-php/
+function __getYouTubeEmbeddedURL($url) {
+    return "https://www.youtube.com/embed/" . __getYouTubeID($url);
+}
+
+function __getYouTubeID($url) {
+    $queryString = parse_url($url, PHP_URL_QUERY);
+    parse_str($queryString, $params);
+    if (isset($params['v']) && strlen($params['v']) > 0) {
+        return $params['v'];
+    } else {
+        return "";
+    }
+}
+
