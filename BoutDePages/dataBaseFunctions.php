@@ -476,3 +476,133 @@ function getAllPosts($userId) {
     return $posts;
 }
 
+function follow($userId, $userIdToFollow){
+    global $conn;
+
+    $query = "INSERT INTO follower (id_utilisateur, id_utilisateur_suivi) VALUES ($userId, $userIdToFollow)";
+    if (mysqli_query($conn, $query)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function unfollow($userId, $userIdToUnfollow){
+    global $conn;
+
+    $query = "DELETE FROM follower WHERE id_utilisateur = $userId AND id_utilisateur_suivi = $userIdToUnfollow";
+    if (mysqli_query($conn, $query)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function verifFollow($userId, $userIdToFollow){
+    global $conn;
+
+    $query = "SELECT * FROM follower WHERE id_utilisateur = $userId AND id_utilisateur_suivi = $userIdToFollow";
+    $result = executeRequete($query);
+    if ($result->num_rows > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function totalFollowers($userId){
+    global $conn;
+
+    $query = "SELECT * FROM follower WHERE id_utilisateur_suivi = $userId";
+    $result = executeRequete($query);
+    return $result->num_rows;
+}
+
+function totalFollowing($userId){
+    global $conn;
+
+    $query = "SELECT * FROM follower WHERE id_utilisateur = $userId";
+    $result = executeRequete($query);
+    return $result->num_rows;
+}
+
+function afficherPosts($post, $infos){
+    echo "<div class='card text-bg-dark border-secondary'>";
+    echo "<div class='card-header border-secondary text-bg-dark'>";
+    echo "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'> 
+            <img src='".$infos["avatar"]."' class='avatar avatar-lg'>
+            <label for='nom'>". $infos["nom"]." ".$infos["prenom"]."</label>
+            </a>";
+    echo "</div>";
+    echo "<div class='card-body'>";
+    if (!empty($post['image'])) {
+        echo "<img src='{$post['image']}' class='img-fluid'>";
+    }
+    echo "<p class='card-text'>".$post["contenu"]."</p>";
+    echo "</div>";
+    echo "<p class='card-text'>".$post["date"]."</p>";
+    echo "</div>";
+    echo "<br>";
+}
+
+function afficherBestPosts($userId){
+    global $conn;
+
+    $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom FROM post
+              INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur AND post.id_utilisateur != $userId
+              ORDER BY post.date DESC";
+    $result = executeRequete($query);
+
+    $posts = [];
+    while ($row = $result->fetch_assoc()) {
+        $post = [
+            'id' => $row['id_post'],
+            'id_utilisateur' => $row['id_utilisateur'],
+            'contenu' => $row['contenu'],
+            'image' => $row['image_path'],
+            'date' => $row['date'],
+            'nom_utilisateur' => $row['nom'],
+            'prenom_utilisateur' => $row['prenom']
+        ];
+        $posts[] = $post;
+    }
+
+    return $posts;
+}
+
+function afficherRecentPostsFollowed($userId){
+    global $conn;
+
+    $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom FROM post
+              INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur
+              WHERE post.id_utilisateur IN (SELECT id_utilisateur_suivi FROM follower WHERE id_utilisateur = $userId)
+              ORDER BY post.date DESC";
+    $result = executeRequete($query);
+
+    $posts = [];
+    while ($row = $result->fetch_assoc()) {
+        $post = [
+            'id' => $row['id_post'],
+            'id_utilisateur' => $row['id_utilisateur'],
+            'contenu' => $row['contenu'],
+            'image' => $row['image_path'],
+            'date' => $row['date'],
+            'nom_utilisateur' => $row['nom'],
+            'prenom_utilisateur' => $row['prenom']
+        ];
+        $posts[] = $post;
+    }
+
+    return $posts;
+}
+    
+
+function GetInfos($id){
+    global $conn;
+
+    $query = "SELECT * FROM utilisateur WHERE id_utilisateur = $id";
+    $result = executeRequete($query);
+    $row = $result->fetch_assoc();
+
+    return $row;
+}

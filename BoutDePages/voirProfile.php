@@ -8,8 +8,37 @@
          ?>
         </h1>
         <?php echo $InfosCompteExterne["username"] ?>
+        <br>
+        <?php 
+        if ($AccountStatus["loginSuccessful"]){
+            if (verifFollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"])){
+                echo "<form action='./profile.php?id=".$InfosCompteExterne["id_utilisateur"]."' method='post'>";
+                echo "<input type='hidden' name='unfollow' value='true'>";
+                echo "<button type='submit' class='btn btn-primary'>Unfollow</button>";
+                echo "</form>";
+            }else{
+                echo "<form action='./profile.php?id=".$InfosCompteExterne["id_utilisateur"]."' method='post'>";
+                echo "<input type='hidden' name='follow' value='true'>";
+                echo "<button type='submit' class='btn btn-primary'>Follow</button>";
+                echo "</form>";
+            }
+        }
+        ?>
+        <div class="container text-center">
+            <div class="row align-items-center">
+                <div class="col">
+                    <label for="followers">Followers : <?php echo totalFollowers($InfosCompteExterne["id_utilisateur"]) ?></label>
+                </div>
+                <div class="col">
+                    <label for="following">Following : <?php echo totalFollowing($InfosCompteExterne["id_utilisateur"]) ?></label>
+                </div>
+            </div>
+        </div>
+        
+
     </div>
     <div class="card-body">
+
         <div class="form-group form-field">
             <label for="nom"><?php echo $InfosCompteExterne["nom"]." ".$InfosCompteExterne["prenom"] ?></label>
             
@@ -24,20 +53,7 @@
             <?php
                 $allPosts = GetAllPosts($InfosCompteExterne["id_utilisateur"]);
                 foreach ($allPosts as $post){
-                    echo "<div class='card text-bg-dark border-secondary'>";
-                    echo "<div class='card-header border-secondary text-bg-dark'>";
-                    echo "<img src='".$InfosCompteExterne["avatar"]."' class='avatar avatar-ml'>";
-                    echo "<label for='nom'>". $InfosCompteExterne["nom"]." ".$InfosCompteExterne["prenom"]."</label>";
-                    echo "</div>";
-                    echo "<div class='card-body'>";
-                    if (!empty($post['image'])) {
-                        echo "<img src='{$post['image']}' class='img-fluid'>";
-                    }
-                    echo "<p class='card-text'>".$post["contenu"]."</p>";
-                    echo "</div>";
-                    echo "<p class='card-text'>".$post["date"]."</p>";
-                    echo "</div>";
-                    echo "<br>";
+                    afficherPosts($post,$InfosCompteExterne);
                 }
             ?>
         </div>

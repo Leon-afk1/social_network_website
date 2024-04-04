@@ -8,6 +8,18 @@
          ?>
         </h1>
         <?php echo $Infos["username"]?>
+
+        <br>
+        <div class="container text-center">
+            <div class="row align-items-center">
+                <div class="col">
+                    <label for="followers">Followers : <?php echo totalFollowers($InfosCompteExterne["id_utilisateur"]) ?></label>
+                </div>
+                <div class="col">
+                    <label for="following">Following : <?php echo totalFollowing($InfosCompteExterne["id_utilisateur"]) ?></label>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="card-body">
         <div class="form-group form-field">
@@ -45,20 +57,7 @@
             <?php
                 $allPosts = GetAllPosts($_COOKIE['user_id']);
                 foreach ($allPosts as $post){
-                    echo "<div class='card text-bg-dark border-secondary'>";
-                    echo "<div class='card-header border-secondary text-bg-dark'>";
-                    echo "<img src='".$Infos["avatar"]."' class='avatar avatar-ml'>";
-                    echo "<label for='nom'>". $Infos["nom"]." ".$Infos["prenom"]."</label>";
-                    echo "</div>";
-                    echo "<div class='card-body'>";
-                    if (!empty($post['image'])) {
-                        echo "<img src='{$post['image']}' class='img-fluid'>";
-                    }
-                    echo "<p class='card-text'>".$post["contenu"]."</p>";
-                    echo "</div>";
-                    echo "<p class='card-text'>".$post["date"]."</p>";
-                    echo "</div>";
-                    echo "<br>";
+                    afficherPosts($post,$Infos);
                 }
             ?>
         </div>

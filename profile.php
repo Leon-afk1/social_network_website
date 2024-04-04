@@ -41,14 +41,23 @@ if (isset($_POST["submitModificationMdp"])) {
 }
 
 $AccountStatus = CheckLogin();
-
 if (!$AccountStatus["loginSuccessful"]){
-    echo "non connecté";
-	header("Location:".$rootpath."/index.php");
-    exit();
+    if ($monCompte){
+        echo "non connecté";
+        header("Location:".$rootpath."/index.php");
+        exit();
+    }
 }
 
 $Infos = GetInfoProfile($protectedID);
+
+if (isset($_POST["unfollow"])) {
+    unfollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
+}
+
+if (isset($_POST["follow"])) {
+    follow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
+}
 
 include ("BoutDePages/header.php");
 

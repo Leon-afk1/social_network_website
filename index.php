@@ -18,21 +18,53 @@ include ("BoutDePages/header.php");
   
     <main class="p-3 d-flex w-100 h-75 mx-auto flex-column">
         <div class="px-3">
-          <?php
-            if (isset($_COOKIE['user_id'])) {
-              echo "<h1>Welcome back, " . $_COOKIE['username'] . "!</h1>";
-            } else {
-              echo "<h1>Welcome to My Page</h1>";
-            }
-          ?>
-          <h2>For you</h2>
-          <ul id="trending-posts"></ul>
-      
-          <h2>Following</h2>
-          <ul id="following-posts"></ul>
+          <div class="container text-center">
+            <?php 
+              if ($AccountStatus["loginSuccessful"]){
+                ?>
+              <div class="row align-items-start">
+                  <div class="col">
+                    <h2 class="card-title">Meilleurs posts du moment :</h2>
+                    <br>
+                    <?php
+                        $allPosts = afficherBestPosts($_COOKIE['user_id']);
+                        foreach ($allPosts as $post){
+                            $infos = GetInfos($post["id_utilisateur"]);
+                            afficherPosts($post,$infos);
+                        }
+                    ?>
+                  </div>
+                  <div class="col">
+                        <h2 class="card-title">Post recent que vous suivez :</h2>
+                        <br>
+                        <?php
+                            $allPosts = afficherRecentPostsFollowed($_COOKIE['user_id']);
+                            foreach ($allPosts as $post){
+                                $infos = GetInfos($post["id_utilisateur"]);
+                                afficherPosts($post,$infos);
+                            }
+                        ?>
+                  </div>
+              </div>
+              <?php
+              }else{
+                ?>
+                <h2 class="card-title">Meilleurs posts du moment :</h2>
+                <br>
+                <?php
+                    $allPosts = afficherBestPosts(0);
+                    foreach ($allPosts as $post){
+                        $infos = GetInfos($post["id_utilisateur"]);
+                        afficherPosts($post,$infos);
+                    }
+                ?>
+                <?php
+              }
+            ?>
+          </div>
         </div>
     </main>
-    <?php include ("BoutDePages/footer.php"); ?>
+    <!-- <?php include ("BoutDePages/footer.php"); ?> -->
     <script src="script.js"></script>
   </body>
 </html>
