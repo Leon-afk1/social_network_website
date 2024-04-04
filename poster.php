@@ -3,7 +3,7 @@ include ("loc.php");
 
 
 $ajouterPost = false;
-if (isset($_POST["submitPost"]) && isset($_FILES["image"])) {
+if (isset($_POST["submitPost"])) {
     $ajouterPost = true;
     $result=ajouterNewPost($_COOKIE['user_id']);
     if ($result["Successful"]){
@@ -32,7 +32,7 @@ include ("BoutDePages/header.php");
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My Page</title>
+    <title>Poster</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 

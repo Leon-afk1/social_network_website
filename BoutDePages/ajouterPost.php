@@ -5,12 +5,18 @@
         </div>
         <div class="card-body">
             <div class="form-group form-field">
-                <label for="Commentaire">Commentaire:</label>
+                <label for="Commentaire">Message:</label>
                 <textarea name="commentaire" class="form-control" rows="3"></textarea>
             </div>
+            <br>
             <div class="form-group form-field">
                 <label for="image">Image:</label>
                 <input type="file" name="image" class="form-control">
+            </div>
+            <br>
+            <div class="form-group form-field">
+                <label for="tags">Lien Vidéo (Youtube)</label>
+                <input type="text" name="video" class="form-control">
             </div>
             <br>
             <div class="form-group text-center">

@@ -1,3 +1,4 @@
+<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" /> <!-- shows y icon on the tab-->
 <nav class="navbar navbar-expand-lg bg-dark-subtle px-3 mb-3 mt-3 mx-3 sticky-top rounded-3 shadow">
   <div class="container-fluid ">
     <ul class="navbar-nav me-auto mb-2 mb-lg-0">

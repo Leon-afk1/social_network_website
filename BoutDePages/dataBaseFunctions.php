@@ -389,14 +389,16 @@ function ajouterNewPost($userId){
     if ($_POST["submitPost"]){
         $ajouterPost = true;
 
-        if ($_FILES['image']["size"] == 0){
-            $error = "Veuillez choisir une image";
-        }
-        else {
+        //if ($_FILES['image']["size"] == 0){
+        //    $error = "Veuillez choisir une image";
+        //}
+        //else {
             $commentaire = SecurizeString_ForSQL($_POST["commentaire"]);
             $image = $_FILES["image"];
             $imagePath = "./images/" . $image["name"];
             $imagePath = SecurizeString_ForSQL($imagePath);
+            $videolink= SecurizeString_ForSQL($_POST["video"]);
+            $videoEmbed = __getYouTubeEmbeddedURL($videolink);
 
             $query = "INSERT INTO post (id_utilisateur, contenu, image) VALUES ($userId, '$commentaire', '$imagePath')";
             $result = executeRequete($query);
@@ -431,7 +433,7 @@ function ajouterNewPost($userId){
             } else {
                 $error = "Erreur lors de l'insertion SQL: " . $conn->error;
             }
-        }
+        //}
     }
 
     $resultArray = ['Attempted' => $ajouterPost, 
@@ -453,4 +455,20 @@ function GetPosts($userId){
     }
 
     return $posts;
+}
+
+//functions to get embedded youtube video
+//source code : https://youthsforum.com/programming/php/get-youtube-embed-code-from-video-url-using-php/
+function __getYouTubeEmbeddedURL($url) {
+    return "https://www.youtube.com/embed/" . __getYouTubeID($url);
+}
+
+function __getYouTubeID($url) {
+    $queryString = parse_url($url, PHP_URL_QUERY);
+    parse_str($queryString, $params);
+    if (isset($params['v']) && strlen($params['v']) > 0) {
+        return $params['v'];
+    } else {
+        return "";
+    }
 }
