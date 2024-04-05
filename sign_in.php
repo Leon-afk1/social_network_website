@@ -1,6 +1,8 @@
 <?php
 include ("loc.php");
 
+include ("BoutDePages/header.php");
+
 $newAccountStatus = register();
 
 if ($newAccountStatus["Successful"]){
@@ -13,7 +15,6 @@ if ($newAccountStatus["Successful"]){
   }
 }
 
-include ("BoutDePages/header.php");
 
 ?>
 

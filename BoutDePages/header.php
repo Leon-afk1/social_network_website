@@ -23,15 +23,53 @@ async function suggestNamesFromInput_fetch(currentText) {
   }
 }
 
+function toggleLoginForm() {
+    var loginForm = document.getElementById("loginForm");
+    var overlay = document.getElementById("overlay");
+    if (loginForm.style.display === "none") {
+        loginForm.style.display = "block";
+        overlay.style.display = "block";
+    } else {
+        loginForm.style.display = "none";
+        overlay.style.display = "none";
+    }
+}
 
+function hideLoginForm(event) {
+    var loginForm = document.getElementById("loginForm");
+    var overlay = document.getElementById("overlay");
+    var card = document.querySelector(".card");
+    if (!card.contains(event.target)) {
+        loginForm.style.display = "none";
+        overlay.style.display = "none";
+    }
+}
 
 </script>
 
 <?php
+  
+  $AccountStatus = CheckLogin();
+
+  $tryLogin = false;
+  if (isset($_POST["username"]) && isset($_POST["password"])) {
+    $tryLogin = true;
+    $AccountStatus = CheckLogin();
+    if ($AccountStatus["loginSuccessful"]){
+      header("Location:./index.php");
+      exit();
+    }
+  }
   if(isset($_COOKIE['user_id'])){
     $Infos = GetInfoProfile($_COOKIE['user_id']);
   }
 ?>
+
+ <head>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <link href="https://cdn.jsdelivr.net/npm/fastbootstrap@2.2.0/dist/css/fastbootstrap.min.css" rel="stylesheet" integrity="sha256-V6lu+OdYNKTKTsVFBuQsyIlDiRWiOmtC8VQ8Lzdm2i4=" crossorigin="anonymous">
+  </head>
 
 <nav class="navbar navbar-expand-lg bg-dark-subtle px-3 mb-3 mt-3 mx-3 sticky-top rounded-3 shadow">
   <div class="container-fluid ">
@@ -60,7 +98,7 @@ async function suggestNamesFromInput_fetch(currentText) {
             echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./poster.php'>Poster</a></li>";
             echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='#'>Statistique</a></li>";
           } else {
-            echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./login.php'>Login</a></li>";
+            echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='toggleLoginForm()' aria-current='page'>Login</button></li>";
             echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./sign_in.php'>Sign In</a></li>";
           }
         ?>
@@ -76,3 +114,37 @@ async function suggestNamesFromInput_fetch(currentText) {
     
   </div>
 </nav>  
+
+<div class="overlay" id="overlay" onclick="hideLoginForm(event)">
+  <main class="p-3 d-flex col-md-8 col-lg-8 mx-auto flex-column ">
+      <div class="row justify-content-center ">
+          <div class="card w-50 text-bg-dark border-secondary position-absolute top-50 start-50 translate-middle" id="loginForm" style="display: none;">
+              <form action="index.php" method="post" class="mb-4">
+                  <div class="card-header">
+                      <h1 class="card-title">Se connecter</h1>
+                  </div>
+                  <div class="card-body">
+                      <?php if (isset($erreur)) { ?>
+                          <div class="alert alert-danger" role="alert">
+                              <?php echo $erreur; ?>
+                          </div>
+                      <?php } ?>
+                      <div class="form-group form-field">
+                          <label for="username">Nom d'utilisateur:</label>
+                          <input type="text" name="username" id="username" class="form-control" required>
+                      </div>
+                      <div class="form-group form-field">
+                          <label for="password">Mot de passe:</label>
+                          <input type="password" name="password" id="password" class="form-control" required>
+                      </div>
+                      <div class="form-group text-center">
+                          <input type="submit" value="Se connecter" class="btn btn-primary">
+                      </div>
+                  </div>
+              </form> 
+          </div>
+      </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>

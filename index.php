@@ -4,13 +4,14 @@ include ("loc.php");
 $AccountStatus = CheckLogin();
 
 include ("BoutDePages/header.php");
+
+
 ?>
 <!DOCTYPE html>
 <html>
   <head>
     <title>My Page</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <link href="https://cdn.jsdelivr.net/npm/fastbootstrap@2.2.0/dist/css/fastbootstrap.min.css" rel="stylesheet" integrity="sha256-V6lu+OdYNKTKTsVFBuQsyIlDiRWiOmtC8VQ8Lzdm2i4=" crossorigin="anonymous">
   </head>
   <body class="text-bg-dark">
@@ -42,6 +43,9 @@ include ("BoutDePages/header.php");
                             foreach ($allPosts as $post){
                                 $infos = GetInfos($post["id_utilisateur"]);
                                 afficherPosts($post,$infos);
+                            }
+                            if (count($allPosts) == 0){
+                                echo "Vous ne suivez personne";
                             }
                         ?>
                   </div>

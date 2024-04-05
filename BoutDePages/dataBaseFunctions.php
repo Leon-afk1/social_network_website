@@ -114,7 +114,7 @@ function register(){
     return $resultArray;
 }
 
-function  checkAge($date_naissance){
+function checkAge($date_naissance){
     $date_naissance = new DateTime($date_naissance);
     $date_actuelle = new DateTime();
     $age = $date_naissance->diff($date_actuelle)->y;
@@ -540,7 +540,6 @@ function afficherPosts($post, $infos){
     }
     echo "<p class='card-text'>".$post["contenu"]."</p>";
     echo "</div>";
-    echo "<p class='card-text'>".$post["date"]."</p>";
     echo "</div>";
     echo "<br>";
 }
