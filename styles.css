@@ -260,3 +260,8 @@ body{
     z-index: 999; 
     display: none; 
 }
+
+.blur {
+    filter: blur(5px); 
+    pointer-events: none; 
+}

@@ -73,7 +73,7 @@ include ("BoutDePages/header.php");
   </head>
   <body class="text-bg-dark">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <main>
+    <main id="mainContent">
         <div class="container mt-5" id="sign_in">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-8">
