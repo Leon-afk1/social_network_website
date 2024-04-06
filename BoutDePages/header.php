@@ -2,6 +2,8 @@
   
   $AccountStatus = CheckLogin();
 
+  $currentURL = $_SERVER['REQUEST_URI'];
+
   $tryLogin = false;
   if (isset($_POST["usernameLogin"]) && isset($_POST["passwordLogin"])) {
     $tryLogin = true;
@@ -69,7 +71,7 @@
         <li class="nav-item"><button class="nav-link btn btn-link" onclick="window.location.href='./index.php'" aria-current="page">Home</button></li>
         <?php
           if(isset($_COOKIE['user_id'])){
-            echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./logout.php`' aria-current='page'>Logout</button></li>";
+            echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./logout.php?redirect=$currentURL`' aria-current='page'>Logout</button></li>";
             echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./profile.php?id=".$_COOKIE['user_id']."`' aria-current='page'>Profile</button></li>";
             echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./poster.php`' aria-current='page'>Poster</button></li>";
             echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='#'>Statistique</a></li>";
