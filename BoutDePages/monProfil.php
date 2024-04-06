@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="styles.css">
-<div class="card text-bg-dark border-secondary">
+<div class="card outline-secondary">
     <div class="text-center card-header">
         <h1 class="card-title"><?php 
         if ($Infos["avatar"] != NULL){

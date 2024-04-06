@@ -533,8 +533,8 @@ function totalFollowing($userId){
 }
 
 function afficherPosts($post, $infos){
-    echo "<div class='card text-bg-dark border-secondary'>";
-    echo "<div class='card-header border-secondary text-bg-dark'>";
+    echo "<div class='card outline-secondary'>";
+    echo "<div class='card-header outline-secondary'>";
     echo "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'> 
             <img src='".$infos["avatar"]."' class='avatar avatar-lg'>
             <label for='nom'>". $infos["nom"]." ".$infos["prenom"]."</label>

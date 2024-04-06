@@ -48,58 +48,61 @@
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <link href="https://cdn.jsdelivr.net/npm/fastbootstrap@2.2.0/dist/css/fastbootstrap.min.css" rel="stylesheet" integrity="sha256-V6lu+OdYNKTKTsVFBuQsyIlDiRWiOmtC8VQ8Lzdm2i4=" crossorigin="anonymous">
   </head>
+  <body class="text-body bg-body" data-bs-theme="dark">
 
-<nav class="navbar navbar-expand-lg bg-dark-subtle px-3 mb-3 mt-3 mx-3 sticky-top rounded-3 shadow">
-  <div class="container-fluid ">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 mb-l-0 mb-m-0">
-      <?php
-          if(isset($_COOKIE['user_id'])){
-            if ($Infos["avatar"] != NULL){
-              echo "
-              <li class='nav-item'>
-                <a class='nav-link active' aria-current='page' href='./profile.php?id=".$_COOKIE['user_id']."'> 
-                  <img src='".$Infos["avatar"]."' class='avatar avatar-lg'>
-                </a>
-              </li>";
-              }
-          }
-        ?>
-        <li class="nav-item"><button class="nav-link btn btn-link" onclick="window.location.href='./index.php'" aria-current="page">Home</button></li>
-        <?php
-          if(isset($_COOKIE['user_id'])){
-            echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./logout.php?redirect=$currentURL`' aria-current='page'>Logout</button></li>";
-            echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./profile.php?id=".$_COOKIE['user_id']."`' aria-current='page'>Profile</button></li>";
-            echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./poster.php`' aria-current='page'>Poster</button></li>";
-            echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='#'>Statistique</a></li>";
-          } else {
-            echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='toggleLoginForm()' aria-current='page'>Login</button></li>";
-            echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='toggleNewLoginForm()' aria-current='page'>Sign in</button></li>";
-          }
-        ?>
-      </ul>
-    </div>
-    <div class="d-flex">
-      <form class="d-flex nav-item" role="search">
-        <input id="suggestField2" class="form-control me-2 shadow" type="search" placeholder="Search" onkeyup="suggestNamesFromInput_fetch(this.value)">
-      </form>
-      <div id="suggestions2"></div>
-    </div>
-    
-  </div>
-</nav>  
 
-<main class="p-3 d-flex col-md-8 col-lg-8 mx-auto flex-column ">
-  <div class="overlay" id="overlay" onclick="hideLoginForm(event)">
-      <?php include ("BoutDePages/login.php"); ?>
-  </div>
-  <div class="overlay" id="overlay1" onclick="hideNewLoginForm(event)">
-      <?php include ("BoutDePages/newlogin.php"); ?>
-  </div>
-</main>
+  <nav class="navbar navbar-expand-lg px-3 mb-3 mt-3 mx-3 sticky-top rounded-3 shadow outline-secondary text-bg-secondary">
+    <div class="container-fluid ">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 mb-l-0 mb-m-0">
+          <?php
+            if(isset($_COOKIE['user_id'])){
+              if ($Infos["avatar"] != NULL){
+                echo "
+                <li class='nav-item'>
+                  <a class='nav-link active' aria-current='page' href='./profile.php?id=".$_COOKIE['user_id']."'> 
+                    <img src='".$Infos["avatar"]."' class='avatar avatar-lg'>
+                  </a>
+                </li>";
+                }
+            }
+          ?>
+          <li class="nav-item"><button class="nav-link btn btn-link" onclick="window.location.href='./index.php'" aria-current="page">Home</button></li>
+          <?php
+            if(isset($_COOKIE['user_id'])){
+              echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./logout.php?redirect=$currentURL`' aria-current='page'>Logout</button></li>";
+              echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./profile.php?id=".$_COOKIE['user_id']."`' aria-current='page'>Profile</button></li>";
+              echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./poster.php`' aria-current='page'>Poster</button></li>";
+              echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='#'>Statistique</a></li>";
+            } else {
+              echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='toggleLoginForm()' aria-current='page'>Login</button></li>";
+              echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='toggleNewLoginForm()' aria-current='page'>Sign in</button></li>";
+            }
+          ?>
+        </ul>
+      </div>
+      <div class="d-flex navbar-nav">
+        <form class="d-flex nav-item" role="search">
+          <input id="suggestField2" class="form-control me-2 shadow" type="search" placeholder="Search" onkeyup="suggestNamesFromInput_fetch(this.value)">
+        </form>
+        <div id="suggestions2"></div>
+      </div>
+      
+    </div>
+  </nav>  
+
+  <main class="p-3 d-flex col-md-8 col-lg-8 mx-auto flex-column ">
+    <div class="overlay" id="overlay" onclick="hideLoginForm(event)">
+        <?php include ("BoutDePages/login.php"); ?>
+    </div>
+    <div class="overlay" id="overlay1" onclick="hideNewLoginForm(event)">
+        <?php include ("BoutDePages/newlogin.php"); ?>
+    </div>
+  </main>
+</body>
 
 <script>
 

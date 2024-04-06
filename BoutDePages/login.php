@@ -1,5 +1,5 @@
 <div class="row justify-content-center ">
-    <div class="card login-card w-50 text-bg-dark border-secondary position-absolute top-50 start-50 translate-middle" id="loginForm" style="display: none;">
+    <div class="card login-card w-50 outline-secondary position-absolute top-50 start-50 translate-middle" id="loginForm" style="display: none;">
         <form action="index.php" method="post" class="mb-4">
             <div class="card-header">
                 <h1 class="card-title">Se connecter</h1>

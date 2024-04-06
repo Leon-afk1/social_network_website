@@ -1,4 +1,4 @@
-<div class="card text-bg-dark border-secondary">
+<div class="card outline-secondary">
     <form action="#" method="post" class="mb-4">
         <div class="text-center card-header">
             <h1 class="card-title">Modifier mon mot de passe</h1>
