@@ -40,7 +40,7 @@ function register(){
     $creationSuccessful = false;
     $error = NULL;
     $loginSuccessful = false;
-    if ($_SERVER["REQUEST_METHOD"] == "POST"){
+    if (isset($_POST["nom"]) && isset($_POST["prenom"]) && isset($_POST["username"]) && isset($_POST["date_naissance"]) && isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["password_confirm"]) && isset($_POST["adresse"])){
         $creationAttempted = true;
 
         if (strlen($_POST["nom"]) < 2){
@@ -71,11 +71,17 @@ function register(){
         //     $error = "Vous devez avoir au moins 18 ans pour vous inscrire";
         // }       
         else {
-            $query1 = "SELECT * FROM utilisateur WHERE username = '" . SecurizeString_ForSQL($_POST["username"]) . "'";
+            $query1 = "SELECT id_utilisateur FROM utilisateur WHERE username = '" . SecurizeString_ForSQL($_POST["username"]) . "'";
             $result1 = executeRequete($query1);
-            $query2 = "SELECT * FROM utilisateur WHERE email = '" . SecurizeString_ForSQL($_POST["email"]) . "'";
+            $query2 = "SELECT id_utilisateur FROM utilisateur WHERE email = '" . SecurizeString_ForSQL($_POST["email"]) . "'";
             $result2 = executeRequete($query2);
             if ($result1->num_rows > 0) {
+                $result1 = $result1->fetch_assoc();
+                foreach ($result1 as $row){
+                    echo $row;
+                }
+
+
                 $error = "Nom d'utilisateur déjà utilisé";
             }
             else if ($result2->num_rows > 0) {
@@ -130,9 +136,9 @@ function CheckLogin() {
     $error = NULL;
     $loginSuccessful = false;
     $userId = NULL;
-    if (isset($_POST['username']) && isset($_POST['password'])){
-        $username = SecurizeString_ForSQL($_POST['username']);
-        $password = $_POST['password'];
+    if (isset($_POST['usernameLogin']) && isset($_POST['passwordLogin'])){
+        $username = SecurizeString_ForSQL($_POST['usernameLogin']);
+        $password = $_POST['passwordLogin'];
         $tryConnect = true;
     }
 

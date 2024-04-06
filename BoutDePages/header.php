@@ -1,65 +1,41 @@
-<script>
-
-previousText2 = "";
-timer2 = 0;
-
-function TimerIncrease_fetch() {
-  timer2+=200;
-  setTimeout('TimerIncrease_fetch()',200);
-}
-TimerIncrease_fetch();
-
-async function suggestNamesFromInput_fetch(currentText) {
-
-  if (currentText != previousText2 && timer2 >= 200 ){
-
-	var AJAXresult = await fetch("./BoutDePages/rechercheCompte.php?var=" + currentText);
-	document.getElementById("suggestions2").innerHTML = await AJAXresult.text();
-
-    previousText2 = currentText;
-    timer2 = 0;
-  }else {
-    document.getElementById("suggestions2").innerHTML = ''; 
-  }
-}
-
-function toggleLoginForm() {
-    var loginForm = document.getElementById("loginForm");
-    var overlay = document.getElementById("overlay");
-    if (loginForm.style.display === "none") {
-        loginForm.style.display = "block";
-        overlay.style.display = "block";
-    } else {
-        loginForm.style.display = "none";
-        overlay.style.display = "none";
-    }
-}
-
-function hideLoginForm(event) {
-    var loginForm = document.getElementById("loginForm");
-    var overlay = document.getElementById("overlay");
-    var card = document.querySelector(".card");
-    if (!card.contains(event.target)) {
-        loginForm.style.display = "none";
-        overlay.style.display = "none";
-    }
-}
-
-</script>
-
 <?php
   
   $AccountStatus = CheckLogin();
 
   $tryLogin = false;
-  if (isset($_POST["username"]) && isset($_POST["password"])) {
+  if (isset($_POST["usernameLogin"]) && isset($_POST["passwordLogin"])) {
     $tryLogin = true;
     $AccountStatus = CheckLogin();
     if ($AccountStatus["loginSuccessful"]){
       header("Location:./index.php");
       exit();
+    }else{
+      $erreur = $AccountStatus["error"];
+      echo "<script>toggleLoginFormIfNeeded();</script>";
     }
   }
+  if (!$AccountStatus["loginSuccessful"]){
+    $newAccountStatus = array("Attempted" => false);
+
+    $tryNewAccount = false;
+    if (isset($_POST["nom"]) && isset($_POST["prenom"]) && isset($_POST["username"]) && isset($_POST["date_naissance"]) && isset($_POST["adresse"]) && isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["password_confirm"])) {
+      $tryNewAccount = true;
+      $newAccountStatus = register();
+      if ($newAccountStatus["Successful"]){
+        if (isset($_COOKIE['user_id'])){
+          header("Location:./profile.php");
+          exit();
+        }else{
+          header("Location:./index.php");
+          exit();
+        }
+      }else{
+        echo $newAccountStatus["ErrorMessage"];
+      }
+    }
+  }
+  
+
   if(isset($_COOKIE['user_id'])){
     $Infos = GetInfoProfile($_COOKIE['user_id']);
   }
@@ -90,16 +66,16 @@ function hideLoginForm(event) {
               }
           }
         ?>
-        <li class="nav-item"><a class="nav-link active" aria-current="page" href="./index.php">Home</a></li>
+        <li class="nav-item"><button class="nav-link btn btn-link" onclick="window.location.href='./index.php'" aria-current="page">Home</button></li>
         <?php
           if(isset($_COOKIE['user_id'])){
-            echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./logout.php'>Logout</a></li>";
-            echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./profile.php?id=".$_COOKIE['user_id']."'>Profile</a></li>";
-            echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./poster.php'>Poster</a></li>";
+            echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./logout.php`' aria-current='page'>Logout</button></li>";
+            echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./profile.php?id=".$_COOKIE['user_id']."`' aria-current='page'>Profile</button></li>";
+            echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./poster.php`' aria-current='page'>Poster</button></li>";
             echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='#'>Statistique</a></li>";
           } else {
             echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='toggleLoginForm()' aria-current='page'>Login</button></li>";
-            echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='./sign_in.php'>Sign In</a></li>";
+            echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='toggleNewLoginForm()' aria-current='page'>Sign in</button></li>";
           }
         ?>
       </ul>
@@ -107,7 +83,6 @@ function hideLoginForm(event) {
     <div class="d-flex">
       <form class="d-flex nav-item" role="search">
         <input id="suggestField2" class="form-control me-2 shadow" type="search" placeholder="Search" onkeyup="suggestNamesFromInput_fetch(this.value)">
-        <button class="btn btn-outline-secondary shadow" type="submit">Search</button>
       </form>
       <div id="suggestions2"></div>
     </div>
@@ -115,36 +90,114 @@ function hideLoginForm(event) {
   </div>
 </nav>  
 
-<div class="overlay" id="overlay" onclick="hideLoginForm(event)">
-  <main class="p-3 d-flex col-md-8 col-lg-8 mx-auto flex-column ">
-      <div class="row justify-content-center ">
-          <div class="card w-50 text-bg-dark border-secondary position-absolute top-50 start-50 translate-middle" id="loginForm" style="display: none;">
-              <form action="index.php" method="post" class="mb-4">
-                  <div class="card-header">
-                      <h1 class="card-title">Se connecter</h1>
-                  </div>
-                  <div class="card-body">
-                      <?php if (isset($erreur)) { ?>
-                          <div class="alert alert-danger" role="alert">
-                              <?php echo $erreur; ?>
-                          </div>
-                      <?php } ?>
-                      <div class="form-group form-field">
-                          <label for="username">Nom d'utilisateur:</label>
-                          <input type="text" name="username" id="username" class="form-control" required>
-                      </div>
-                      <div class="form-group form-field">
-                          <label for="password">Mot de passe:</label>
-                          <input type="password" name="password" id="password" class="form-control" required>
-                      </div>
-                      <div class="form-group text-center">
-                          <input type="submit" value="Se connecter" class="btn btn-primary">
-                      </div>
-                  </div>
-              </form> 
-          </div>
-      </div>
-  </main>
-</div>
+<main class="p-3 d-flex col-md-8 col-lg-8 mx-auto flex-column ">
+  <div class="overlay" id="overlay" onclick="hideLoginForm(event)">
+      <?php include ("BoutDePages/login.php"); ?>
+  </div>
+  <div class="overlay" id="overlay1" onclick="hideNewLoginForm(event)">
+      <?php include ("BoutDePages/newlogin.php"); ?>
+  </div>
+</main>
+
+<script>
+
+previousText2 = "";
+timer2 = 0;
+
+function TimerIncrease_fetch() {
+  timer2+=200;
+  setTimeout('TimerIncrease_fetch()',200);
+}
+TimerIncrease_fetch();
+
+async function suggestNamesFromInput_fetch(currentText) {
+
+  if (currentText != previousText2 && timer2 >= 200 ){
+
+	var AJAXresult = await fetch("./BoutDePages/rechercheCompte.php?var=" + currentText);
+	document.getElementById("suggestions2").innerHTML = await AJAXresult.text();
+
+    previousText2 = currentText;
+    timer2 = 0;
+  }else {
+    document.getElementById("suggestions2").innerHTML = ''; 
+  }
+}
+
+function toggleLoginForm() {
+    var loginForm = document.getElementById("loginForm");
+    var overlay = document.getElementById("overlay");
+    var newLoginForm = document.getElementById("newLoginForm");
+    var overlay1 = document.getElementById("overlay1");
+    if (loginForm.style.display === "none") {
+        loginForm.style.display = "block";
+        overlay.style.display = "block";
+        newLoginForm.style.display = "none";
+        overlay1.style.display = "none";
+    } else {
+        loginForm.style.display = "none";
+        overlay.style.display = "none";
+    }
+}
+
+function hideLoginForm(event) {
+    var loginForm = document.getElementById("loginForm");
+    var overlay = document.getElementById("overlay");
+    if (!loginForm.contains(event.target)) {
+        loginForm.style.display = "none";
+        overlay.style.display = "none";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    toggleLoginFormIfNeeded();
+});
+
+function toggleLoginFormIfNeeded() {
+    <?php
+    if (isset($erreur)) {
+        echo "toggleLoginForm();";
+    }
+    ?>
+}
+
+function toggleNewLoginForm() {
+    var newLoginForm = document.getElementById("newLoginForm");
+    var overlay = document.getElementById("overlay1");
+    var loginForm = document.getElementById("loginForm");
+    var overlay1 = document.getElementById("overlay");
+    if (newLoginForm.style.display === "none") {
+        newLoginForm.style.display = "block";
+        overlay.style.display = "block";
+        loginForm.style.display = "none";
+        overlay1.style.display = "none";
+    } else {
+        newLoginForm.style.display = "none";
+        overlay.style.display = "none";
+    }
+}
+
+function hideNewLoginForm(event) {
+    var newLoginForm = document.getElementById("newLoginForm");
+    var overlay = document.getElementById("overlay1");
+    if (!newLoginForm.contains(event.target)) {
+        newLoginForm.style.display = "none";
+        overlay.style.display = "none";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    toggleNewLoginFormIfNeeded();
+});
+
+function toggleNewLoginFormIfNeeded() {
+    <?php
+    if (isset($newAccountStatus["Attempted"]) && $newAccountStatus["Attempted"]==true) {
+        echo "toggleNewLoginForm();";
+    }
+    ?>
+}
+
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>

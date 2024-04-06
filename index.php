@@ -69,6 +69,5 @@ include ("BoutDePages/header.php");
         </div>
     </main>
     <!-- <?php include ("BoutDePages/footer.php"); ?> -->
-    <script src="script.js"></script>
   </body>
 </html>
