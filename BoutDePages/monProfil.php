@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="styles.css">
-<div class="card text-bg-dark border-secondary">
+<div class="card outline-secondary">
     <div class="text-center card-header">
         <h1 class="card-title"><?php 
         if ($Infos["avatar"] != NULL){
@@ -7,7 +7,19 @@
         }
          ?>
         </h1>
-        <?php echo $Infos["username"] ?>
+        <?php echo $Infos["username"]?>
+
+        <br>
+        <div class="container text-center">
+            <div class="row align-items-center">
+                <div class="col">
+                    <label for="followers">Followers : <?php echo totalFollowers($InfosCompteExterne["id_utilisateur"]) ?></label>
+                </div>
+                <div class="col">
+                    <label for="following">Following : <?php echo totalFollowing($InfosCompteExterne["id_utilisateur"]) ?></label>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="card-body">
         <div class="form-group form-field">
@@ -30,11 +42,11 @@
             <br>
         </div>
         <div class="form-group text-center">
-            <form action="./profile.php" method="post">
+            <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
                 <input type="hidden" name="modifierProfile" value="true">
                 <button type="submit" class="btn btn-outline-secondary">Modifier profil</button>
             </form>
-            <form action="./profile.php" method="post">
+            <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
                 <input type="hidden" name="modifierMotDePasse" value="true">
                 <button type="submit" class="btn btn-outline-secondary">Changer de mot de passe</button>
             </form>
@@ -45,20 +57,7 @@
             <?php
                 $allPosts = GetAllPosts($_COOKIE['user_id']);
                 foreach ($allPosts as $post){
-                    echo "<div class='card text-bg-dark border-secondary'>";
-                    echo "<div class='card-header border-secondary text-bg-dark'>";
-                    echo "<img src='".$Infos["avatar"]."' class='avatar avatar-ml'>";
-                    echo "<label for='nom'>". $Infos["nom"]." ".$Infos["prenom"]."</label>";
-                    echo "</div>";
-                    echo "<div class='card-body'>";
-                    if (!empty($post['image'])) {
-                        echo "<img src='{$post['image']}' class='img-fluid'>";
-                    }
-                    echo "<p class='card-text'>".$post["contenu"]."</p>";
-                    echo "</div>";
-                    echo "<p class='card-text'>".$post["date"]."</p>";
-                    echo "</div>";
-                    echo "<br>";
+                    afficherPosts($post,$Infos);
                 }
             ?>
         </div>

@@ -40,7 +40,7 @@ function register(){
     $creationSuccessful = false;
     $error = NULL;
     $loginSuccessful = false;
-    if ($_SERVER["REQUEST_METHOD"] == "POST"){
+    if (isset($_POST["nom"]) && isset($_POST["prenom"]) && isset($_POST["username"]) && isset($_POST["date_naissance"]) && isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["password_confirm"]) && isset($_POST["adresse"])){
         $creationAttempted = true;
 
         if (strlen($_POST["nom"]) < 2){
@@ -71,11 +71,17 @@ function register(){
         //     $error = "Vous devez avoir au moins 18 ans pour vous inscrire";
         // }       
         else {
-            $query1 = "SELECT * FROM utilisateur WHERE username = '" . SecurizeString_ForSQL($_POST["username"]) . "'";
+            $query1 = "SELECT id_utilisateur FROM utilisateur WHERE username = '" . SecurizeString_ForSQL($_POST["username"]) . "'";
             $result1 = executeRequete($query1);
-            $query2 = "SELECT * FROM utilisateur WHERE email = '" . SecurizeString_ForSQL($_POST["email"]) . "'";
+            $query2 = "SELECT id_utilisateur FROM utilisateur WHERE email = '" . SecurizeString_ForSQL($_POST["email"]) . "'";
             $result2 = executeRequete($query2);
             if ($result1->num_rows > 0) {
+                $result1 = $result1->fetch_assoc();
+                foreach ($result1 as $row){
+                    echo $row;
+                }
+
+
                 $error = "Nom d'utilisateur déjà utilisé";
             }
             else if ($result2->num_rows > 0) {
@@ -114,7 +120,7 @@ function register(){
     return $resultArray;
 }
 
-function  checkAge($date_naissance){
+function checkAge($date_naissance){
     $date_naissance = new DateTime($date_naissance);
     $date_actuelle = new DateTime();
     $age = $date_naissance->diff($date_actuelle)->y;
@@ -130,9 +136,9 @@ function CheckLogin() {
     $error = NULL;
     $loginSuccessful = false;
     $userId = NULL;
-    if (isset($_POST['username']) && isset($_POST['password'])){
-        $username = SecurizeString_ForSQL($_POST['username']);
-        $password = $_POST['password'];
+    if (isset($_POST['usernameLogin']) && isset($_POST['passwordLogin'])){
+        $username = SecurizeString_ForSQL($_POST['usernameLogin']);
+        $password = $_POST['passwordLogin'];
         $tryConnect = true;
     }
 
@@ -191,8 +197,6 @@ function DeleteLoginCookie() {
 }
 
 function GetInfoProfile($userId) {
-    global $conn;
-
     $query = "SELECT * FROM utilisateur WHERE id_utilisateur = $userId";
     $result = executeRequete($query);
     $row = $result->fetch_assoc();
@@ -302,7 +306,7 @@ function UpdateAvatar($userId){
         }
         else {
             $avatar = $_FILES["avatar"];
-            $avatarPath = "./avatar/" . $avatar["name"];
+            $avatarPath = "./avatar/" . $userId . ".jpg";
             $avatarPath = SecurizeString_ForSQL($avatarPath);
 
             $query = "UPDATE utilisateur SET avatar = '$avatarPath' WHERE id_utilisateur = $userId";
@@ -478,3 +482,132 @@ function getAllPosts($userId) {
     return $posts;
 }
 
+function follow($userId, $userIdToFollow){
+    global $conn;
+
+    $query = "INSERT INTO follower (id_utilisateur, id_utilisateur_suivi) VALUES ($userId, $userIdToFollow)";
+    if (mysqli_query($conn, $query)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function unfollow($userId, $userIdToUnfollow){
+    global $conn;
+
+    $query = "DELETE FROM follower WHERE id_utilisateur = $userId AND id_utilisateur_suivi = $userIdToUnfollow";
+    if (mysqli_query($conn, $query)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function verifFollow($userId, $userIdToFollow){
+    global $conn;
+
+    $query = "SELECT * FROM follower WHERE id_utilisateur = $userId AND id_utilisateur_suivi = $userIdToFollow";
+    $result = executeRequete($query);
+    if ($result->num_rows > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function totalFollowers($userId){
+    global $conn;
+
+    $query = "SELECT * FROM follower WHERE id_utilisateur_suivi = $userId";
+    $result = executeRequete($query);
+    return $result->num_rows;
+}
+
+function totalFollowing($userId){
+    global $conn;
+
+    $query = "SELECT * FROM follower WHERE id_utilisateur = $userId";
+    $result = executeRequete($query);
+    return $result->num_rows;
+}
+
+function afficherPosts($post, $infos){
+    echo "<div class='card outline-secondary'>";
+    echo "<div class='card-header outline-secondary'>";
+    echo "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'> 
+            <img src='".$infos["avatar"]."' class='avatar avatar-lg'>
+            <label for='nom'>". $infos["nom"]." ".$infos["prenom"]."</label>
+            </a>";
+    echo "</div>";
+    echo "<div class='card-body'>";
+    if (!empty($post['image'])) {
+        echo "<img src='{$post['image']}' class='img-fluid'>";
+    }
+    echo "<p class='card-text'>".$post["contenu"]."</p>";
+    echo "</div>";
+    echo "</div>";
+    echo "<br>";
+}
+
+function afficherBestPosts($userId){
+    global $conn;
+
+    $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom FROM post
+              INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur AND post.id_utilisateur != $userId
+              ORDER BY post.date DESC";
+    $result = executeRequete($query);
+
+    $posts = [];
+    while ($row = $result->fetch_assoc()) {
+        $post = [
+            'id' => $row['id_post'],
+            'id_utilisateur' => $row['id_utilisateur'],
+            'contenu' => $row['contenu'],
+            'image' => $row['image_path'],
+            'date' => $row['date'],
+            'nom_utilisateur' => $row['nom'],
+            'prenom_utilisateur' => $row['prenom']
+        ];
+        $posts[] = $post;
+    }
+
+    return $posts;
+}
+
+function afficherRecentPostsFollowed($userId){
+    global $conn;
+
+    $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom FROM post
+              INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur
+              WHERE post.id_utilisateur IN (SELECT id_utilisateur_suivi FROM follower WHERE id_utilisateur = $userId)
+              ORDER BY post.date DESC";
+    $result = executeRequete($query);
+
+    $posts = [];
+    while ($row = $result->fetch_assoc()) {
+        $post = [
+            'id' => $row['id_post'],
+            'id_utilisateur' => $row['id_utilisateur'],
+            'contenu' => $row['contenu'],
+            'image' => $row['image_path'],
+            'date' => $row['date'],
+            'nom_utilisateur' => $row['nom'],
+            'prenom_utilisateur' => $row['prenom']
+        ];
+        $posts[] = $post;
+    }
+
+    return $posts;
+}
+    
+
+function GetInfos($id){
+    global $conn;
+
+    $query = "SELECT * FROM utilisateur WHERE id_utilisateur = $id";
+    $result = executeRequete($query);
+    $row = $result->fetch_assoc();
+
+    return $row;
+}
