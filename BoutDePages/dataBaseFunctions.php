@@ -528,10 +528,10 @@ function likePost($userId, $postId){ //fonction pour liker un post
     $verification = isLiked($userId, $postId);
     if ($verification == false) {
         $query = "INSERT INTO likes (id_post, id_utilisateur) VALUES ($postId, $userId)";
-        $result = executeRequete($query);
+        executeRequete($query);
     } else {
         $query = "DELETE FROM likes WHERE id_post = $postId AND id_utilisateur = $userId";
-        $result = executeRequete($query);
+        executeRequete($query);
     }
 }
 
@@ -615,8 +615,10 @@ function afficherPosts($post, $infos){
     echo "<p class='card-text'>".$post["contenu"]."</p>";
     if (!empty($post['video_lien'])) {
         $videoEmbed = getYoutubeEmbedUrl($post['video_lien']);
-        $videoEmbedDisplay = '<iframe width="560" height="315" src="'.$videoEmbed.'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-        echo $videoEmbedDisplay;
+        
+        $videoEmbedDisplay = '<iframe src="'.$videoEmbed.'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+        echo "<p class='card-text'>".$videoEmbedDisplay."</p>";
+        //echo $videoEmbedDisplay;
         echo "<br>";
     }
     echo "<br>";
@@ -643,7 +645,7 @@ function afficherPosts($post, $infos){
     function toggleLike(button, postId) {
         $.post('like.php', { postId: postId }, function(data) {
             if (data.success) {
-                // Mettez à jour le texte du bouton et son style en fonction de la réponse du serveur
+                // Mettre à jour l'image du bouton en fonction de l'état actuel
                 if (data.liked) {
                     button.src = 'like.png';
                     button.alt = 'Liked';
