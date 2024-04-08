@@ -508,7 +508,6 @@ function getNumberLikes($postId){ //fonction qui retourne le nombre de likes d'u
 }
 
 function likePost($userId, $postId){ //fonction pour liker un post
-    global $conn;
     //Dans un premier temps on vérifie le like n'existe pas déjà
     $query = "SELECT * FROM likes WHERE id_utilisateur = $userId AND id_post = $postId";
     $result = executeRequete($query);
@@ -516,23 +515,6 @@ function likePost($userId, $postId){ //fonction pour liker un post
     if ($result->num_rows == 0) {
         $query = "INSERT INTO likes (id_post, id_utilisateur) VALUES ($postId, $userId)";
         $result = executeRequete($query);
-    }
-}
-
-
-//functions to get embedded youtube video
-//source code : https://youthsforum.com/programming/php/get-youtube-embed-code-from-video-url-using-php/
-function __getYouTubeEmbeddedURL($url) {
-    return "https://www.youtube.com/embed/" . __getYouTubeID($url);
-}
-
-function __getYouTubeID($url) {
-    $queryString = parse_url($url, PHP_URL_QUERY);
-    parse_str($queryString, $params);
-    if (isset($params['v']) && strlen($params['v']) > 0) {
-        return $params['v'];
-    } else {
-        return "";
     }
 }
 
