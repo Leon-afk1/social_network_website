@@ -408,8 +408,9 @@ function ajouterNewPost($userId){
     if ($_POST["submitPost"]){
         $ajouterPost = true;
         $commentaire = SecurizeString_ForSQL($_POST["commentaire"]);
+        $video = SecurizeString_ForSQL($_POST["video"]);
 
-        $query = "INSERT INTO post (id_utilisateur, contenu) VALUES ($userId, '$commentaire')";
+        $query = "INSERT INTO post (id_utilisateur, contenu, video_lien) VALUES ($userId, '$commentaire', '$video')";
         if (mysqli_query($conn, $query)) {
             $postId = mysqli_insert_id($conn);
 
@@ -460,7 +461,7 @@ function ajouterNewPost($userId){
 function getAllPosts($userId) {
     global $conn;
 
-    $query = "SELECT post.id_post, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom FROM post
+    $query = "SELECT post.id_post, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom, post.video_lien FROM post
               INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur
               WHERE post.id_utilisateur = $userId
               ORDER BY post.date DESC";
@@ -474,7 +475,8 @@ function getAllPosts($userId) {
             'image' => $row['image_path'],
             'date' => $row['date'],
             'nom_utilisateur' => $row['nom'],
-            'prenom_utilisateur' => $row['prenom']
+            'prenom_utilisateur' => $row['prenom'],
+            'video_lien' => $row['video_lien']
         ];
         $posts[] = $post;
     }
@@ -511,13 +513,24 @@ function getNumberLikes($postId){ //fonction qui retourne le nombre de likes d'u
     return $row['COUNT(*)'];
 }
 
-function likePost($userId, $postId){ //fonction pour liker un post
-    //Dans un premier temps on vérifie le like n'existe pas déjà
+function isLiked($userId, $postId){ //fonction pour vérifier si un post est liké par un utilisateur
     $query = "SELECT * FROM likes WHERE id_utilisateur = $userId AND id_post = $postId";
     $result = executeRequete($query);
+    if ($result->num_rows > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
-    if ($result->num_rows == 0) {
+function likePost($userId, $postId){ //fonction pour liker un post
+    //Dans un premier temps on vérifie le like n'existe pas déjà
+    $verification = isLiked($userId, $postId);
+    if ($verification == false) {
         $query = "INSERT INTO likes (id_post, id_utilisateur) VALUES ($postId, $userId)";
+        $result = executeRequete($query);
+    } else {
+        $query = "DELETE FROM likes WHERE id_post = $postId AND id_utilisateur = $userId";
         $result = executeRequete($query);
     }
 }
@@ -572,12 +585,27 @@ function totalFollowing($userId){
     return $result->num_rows;
 }
 
+function getYoutubeEmbedUrl($url) // https://stackoverflow.com/questions/19050890/find-youtube-link-in-php-string-and-convert-it-into-embed-code
+{
+     $shortUrlRegex = '/youtu.be\/([a-zA-Z0-9_-]+)\??/i';
+     $longUrlRegex = '/youtube.com\/((?:embed)|(?:watch))((?:\?v\=)|(?:\/))([a-zA-Z0-9_-]+)/i';
+
+    if (preg_match($longUrlRegex, $url, $matches)) {
+        $youtube_id = $matches[count($matches) - 1];
+    }
+
+    if (preg_match($shortUrlRegex, $url, $matches)) {
+        $youtube_id = $matches[count($matches) - 1];
+    }
+    return 'https://www.youtube.com/embed/' . $youtube_id ;
+}
+
 function afficherPosts($post, $infos){
     echo "<div class='card outline-secondary'>";
     echo "<div class='card-header outline-secondary'>";
     echo "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'> 
             <img src='".$infos["avatar"]."' class='avatar avatar-lg'>
-            <label for='nom'>". $infos["nom"]." ".$infos["prenom"]."</label>
+            <label for='nom'>". $infos["username"]."</label>
             </a>";
     echo "</div>";
     echo "<div class='card-body'>";
@@ -585,6 +613,62 @@ function afficherPosts($post, $infos){
         echo "<img src='{$post['image']}' class='img-fluid'>";
     }
     echo "<p class='card-text'>".$post["contenu"]."</p>";
+    if (!empty($post['video_lien'])) {
+        $videoEmbed = getYoutubeEmbedUrl($post['video_lien']);
+        $videoEmbedDisplay = '<iframe width="560" height="315" src="'.$videoEmbed.'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+        echo $videoEmbedDisplay;
+        echo "<br>";
+    }
+    echo "<br>";
+    $likesAmount = getNumberLikes($post["id"]); //récupère le nb de likes du post
+    echo "<p class='card-text'>".$likesAmount." likes</p>";
+    echo "<br>";
+    echo "<br>";
+    $estLike = isLiked($_COOKIE['user_id'], $post["id"]); //vérifie si l'utilisateur a liké le post
+    if($estLike == true){
+        echo "post liké";
+    }else{
+        echo "post non liké";
+    }
+    // Intégration du bouton "like" dynamique en JavaScript avec des images
+    if ($estLike) {
+        echo "<img id='likeButton' onclick='toggleLike(this, {$post['id']})' src='./images/like.png' alt='Liked' class='like-button'>";
+    } else {
+        echo "<img id='likeButton' onclick='toggleLike(this, {$post['id']})' src='./images/nolike.png' alt='Not Liked' class='like-button'>";
+    }
+    
+    ?>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    function toggleLike(button, postId) {
+        $.post('like.php', { postId: postId }, function(data) {
+            if (data.success) {
+                // Mettez à jour le texte du bouton et son style en fonction de la réponse du serveur
+                if (data.liked) {
+                    button.src = 'like.png';
+                    button.alt = 'Liked';
+                } else {
+                    button.src = 'nolike.png';
+                    button.alt = 'Not Liked';
+                }
+                
+                // Mettre à jour le nombre de likes affiché en temps réel
+                var likesCount = document.getElementById('likesCount-' + postId);
+                if (likesCount) {
+                    likesCount.innerText = data.likesCount + " likes";
+                }
+                
+                // Afficher un message de confirmation
+                alert("Post liked successfully!");
+            } else {
+                // Gérez les erreurs de requête ici
+                console.error('Erreur lors de la requête AJAX');
+            }
+        });
+    }
+    </script>
+    <?php
+    echo "<p class='card-text'>".$post["date"]."</p>";
     echo "</div>";
     echo "</div>";
     echo "<br>";

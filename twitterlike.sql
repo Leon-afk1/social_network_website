@@ -1,11 +1,7 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Apr 04, 2024 at 04:17 PM
--- Server version: 10.4.21-MariaDB
--- PHP Version: 8.1.2
 -- Hôte : 127.0.0.1
 -- Généré le : lun. 08 avr. 2024 à 08:48
 -- Version du serveur : 10.4.32-MariaDB
@@ -22,24 +18,24 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `twitterlike`
+-- Base de données : `twitterlike`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admin`
+-- Structure de la table `admin`
 --
 
 CREATE TABLE `admin` (
   `id_admin` int(11) NOT NULL,
   `id_utilisateur` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `commentaire`
+-- Structure de la table `commentaire`
 --
 
 CREATE TABLE `commentaire` (
@@ -48,12 +44,12 @@ CREATE TABLE `commentaire` (
   `id_utilisateur` bigint(20) NOT NULL,
   `contenu` longtext NOT NULL,
   `date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `follower`
+-- Structure de la table `follower`
 --
 
 CREATE TABLE `follower` (
@@ -78,7 +74,7 @@ INSERT INTO `follower` (`id_follower`, `id_utilisateur`, `id_utilisateur_suivi`)
 -- --------------------------------------------------------
 
 --
--- Table structure for table `message`
+-- Structure de la table `message`
 --
 
 CREATE TABLE `message` (
@@ -88,12 +84,12 @@ CREATE TABLE `message` (
   `contenu` longtext NOT NULL,
   `date` date NOT NULL,
   `statut_lecture` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `post`
+-- Structure de la table `post`
 --
 
 CREATE TABLE `post` (
@@ -127,7 +123,7 @@ INSERT INTO `post` (`id_post`, `id_utilisateur`, `contenu`, `date`, `image_path`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `utilisateur`
+-- Structure de la table `utilisateur`
 --
 
 CREATE TABLE `utilisateur` (
@@ -141,17 +137,15 @@ CREATE TABLE `utilisateur` (
   `username` varchar(75) NOT NULL,
   `avatar` varchar(255) DEFAULT './avatar/defaultAvatar.jpg',
   `adresse` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `utilisateur`
+-- Déchargement des données de la table `utilisateur`
 --
 
 INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `prenom`, `email`, `mdp`, `description`, `dateNaissance`, `username`, `avatar`, `adresse`) VALUES
 (27, 'morales', 'Léon', 'leon.morales@utbm.fr', '$2y$10$EGrUAgKkF7qd/xwvouCfrexqMcfSHu8J3WE1eMKliir6AJ.v.b1v2', 'Je suis Léon test', '2003-08-19', 'Léon', './avatar/27.jpg', 'testt'),
 (30, 'test', 'test', 'test@test.fr', '$2y$10$xwgwQA65kXeUlB4eya/zYOxaFch//wFwvj1OGE60WbXnrWu3e3FqW', 'pourquoi pas', '2024-03-14', 'test', './avatar/30.jpg', 'testt'),
-(31, 'test', 'test', 'test2@test.fr', '$2y$10$.dfn.bTEPbsxyq2BZP9rN.7P6lDputsy.mrHLX09rWlc04/kbMzR6', '', '2024-03-13', 'test2', NULL, 'testt'),
-(32, 'Morin', 'alban', 'alban.morin@utbm.fr', '$2y$10$SQwAu3/HSWTuCeUT3cm0jOK29spn73i9.o6PlT2DY/kNZyf0f/rkG', NULL, '2002-01-01', 'alban78', NULL, '12 rue du caca cacaville');
 (31, 'test', 'test', 'test2@test.fr', '$2y$10$.dfn.bTEPbsxyq2BZP9rN.7P6lDputsy.mrHLX09rWlc04/kbMzR6', '', '2024-03-13', 'test2', './avatar/defaultAvatar.jpg', 'testt'),
 (32, 'test', 'test', 'test.morales@utbm.fr', '$2y$10$xAQH4UGrnPSnUJaczlBuCeUyLKDKA2QVVGmdUDnVQ7VPJbHIJSnDy', NULL, '2024-04-12', 'test3', './avatar/32.jpg', '36 rue du Neufeld'),
 (40, 'Morales', 'Léon', 'sgefffs.morales@utbm.fr', '$2y$10$xquP3E.LqPEbKzFp6SK1POf.gTjkHcufpUMwfa/2FTIVs33quxVD2', NULL, '2024-04-19', 'wrg', './avatar/defaultAvatar.jpg', '35 rue du Neufeld'),
@@ -173,7 +167,7 @@ ALTER TABLE `admin`
   ADD UNIQUE KEY `id_utilisateur` (`id_utilisateur`);
 
 --
--- Indexes for table `commentaire`
+-- Index pour la table `commentaire`
 --
 ALTER TABLE `commentaire`
   ADD PRIMARY KEY (`id_commentaire`),
@@ -181,7 +175,7 @@ ALTER TABLE `commentaire`
   ADD KEY `id_utilisateur` (`id_utilisateur`);
 
 --
--- Indexes for table `follower`
+-- Index pour la table `follower`
 --
 ALTER TABLE `follower`
   ADD PRIMARY KEY (`id_follower`),
@@ -189,15 +183,7 @@ ALTER TABLE `follower`
   ADD KEY `id_utilisateur_suivi` (`id_utilisateur_suivi`);
 
 --
--- Indexes for table `likes`
---
-ALTER TABLE `likes`
-  ADD PRIMARY KEY (`id_like`),
-  ADD KEY `like_ibfk_utilisateur` (`id_utilisateur`),
-  ADD KEY `like_ibfk_post` (`id_post`);
-
---
--- Indexes for table `message`
+-- Index pour la table `message`
 --
 ALTER TABLE `message`
   ADD PRIMARY KEY (`id_message`),
@@ -205,98 +191,85 @@ ALTER TABLE `message`
   ADD KEY `id_destinataire` (`id_destinataire`);
 
 --
--- Indexes for table `post`
+-- Index pour la table `post`
 --
 ALTER TABLE `post`
   ADD PRIMARY KEY (`id_post`),
   ADD KEY `fk_utilisateur_id` (`id_utilisateur`);
 
 --
--- Indexes for table `utilisateur`
+-- Index pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
   ADD PRIMARY KEY (`id_utilisateur`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT pour les tables déchargées
 --
 
 --
--- AUTO_INCREMENT for table `commentaire`
+-- AUTO_INCREMENT pour la table `commentaire`
 --
 ALTER TABLE `commentaire`
   MODIFY `id_commentaire` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `follower`
+-- AUTO_INCREMENT pour la table `follower`
 --
 ALTER TABLE `follower`
   MODIFY `id_follower` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT for table `likes`
---
-ALTER TABLE `likes`
-  MODIFY `id_like` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `message`
+-- AUTO_INCREMENT pour la table `message`
 --
 ALTER TABLE `message`
   MODIFY `id_message` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `post`
+-- AUTO_INCREMENT pour la table `post`
 --
 ALTER TABLE `post`
   MODIFY `id_post` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
--- AUTO_INCREMENT for table `utilisateur`
+-- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
   MODIFY `id_utilisateur` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
--- Constraints for dumped tables
+-- Contraintes pour les tables déchargées
 --
 
 --
--- Constraints for table `admin`
+-- Contraintes pour la table `admin`
 --
 ALTER TABLE `admin`
   ADD CONSTRAINT `admin_ibfk_1` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `commentaire`
+-- Contraintes pour la table `commentaire`
 --
 ALTER TABLE `commentaire`
   ADD CONSTRAINT `commentaire_ibfk_1` FOREIGN KEY (`id_post`) REFERENCES `post` (`id_post`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `commentaire_ibfk_2` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `follower`
+-- Contraintes pour la table `follower`
 --
 ALTER TABLE `follower`
   ADD CONSTRAINT `follower_ibfk_1` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `follower_ibfk_2` FOREIGN KEY (`id_utilisateur_suivi`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `likes`
---
-ALTER TABLE `likes`
-  ADD CONSTRAINT `like_ibfk_post` FOREIGN KEY (`id_post`) REFERENCES `post` (`id_post`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `like_ibfk_utilisateur` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `message`
+-- Contraintes pour la table `message`
 --
 ALTER TABLE `message`
   ADD CONSTRAINT `message_ibfk_1` FOREIGN KEY (`id_expediteur`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `message_ibfk_2` FOREIGN KEY (`id_destinataire`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Constraints for table `post`
+-- Contraintes pour la table `post`
 --
 ALTER TABLE `post`
   ADD CONSTRAINT `fk_utilisateur_id` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE NO ACTION ON UPDATE CASCADE;
