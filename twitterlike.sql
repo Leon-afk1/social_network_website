@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 04 avr. 2024 à 16:49
+-- Généré le : lun. 08 avr. 2024 à 08:48
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -58,6 +58,19 @@ CREATE TABLE `follower` (
   `id_utilisateur_suivi` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Déchargement des données de la table `follower`
+--
+
+INSERT INTO `follower` (`id_follower`, `id_utilisateur`, `id_utilisateur_suivi`) VALUES
+(6, 27, 30),
+(4, 27, 31),
+(5, 27, 32),
+(7, 30, 27),
+(8, 30, 31),
+(9, 30, 32),
+(11, 45, 27);
+
 -- --------------------------------------------------------
 
 --
@@ -83,7 +96,7 @@ CREATE TABLE `post` (
   `id_post` bigint(20) NOT NULL,
   `id_utilisateur` bigint(20) NOT NULL,
   `contenu` varchar(520) NOT NULL,
-  `date` date NOT NULL DEFAULT current_timestamp(),
+  `date` datetime NOT NULL DEFAULT current_timestamp(),
   `image_path` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -92,16 +105,20 @@ CREATE TABLE `post` (
 --
 
 INSERT INTO `post` (`id_post`, `id_utilisateur`, `contenu`, `date`, `image_path`) VALUES
-(39, 27, 'test', '2024-04-02', NULL),
-(40, 27, 'test2', '2024-04-02', NULL),
-(41, 27, 'test3', '2024-04-02', NULL),
-(43, 27, 'test avec image', '2024-04-02', './images/43.jpg'),
-(44, 27, 'test avec image 2', '2024-04-02', './images/44.jpg'),
-(45, 27, 'test', '2024-04-04', NULL),
-(46, 27, 'test avec image', '2024-04-04', './images/46.jpg'),
-(47, 30, 'test', '2024-04-04', NULL),
-(48, 30, 'test', '2024-04-04', './images/48.jpg'),
-(49, 31, 'test', '2024-04-04', NULL);
+(39, 27, 'test', '2024-04-02 00:00:00', NULL),
+(40, 27, 'test2', '2024-04-02 00:00:00', NULL),
+(41, 27, 'test3', '2024-04-02 00:00:00', NULL),
+(43, 27, 'test avec image', '2024-04-02 00:00:00', './images/43.jpg'),
+(44, 27, 'test avec image 2', '2024-04-02 00:00:00', './images/44.jpg'),
+(45, 27, 'test', '2024-04-04 00:00:00', NULL),
+(46, 27, 'test avec image', '2024-04-04 00:00:00', './images/46.jpg'),
+(47, 30, 'test', '2024-04-04 00:00:00', NULL),
+(48, 30, 'test', '2024-04-04 00:00:00', './images/48.jpg'),
+(52, 32, 'test', '2024-04-04 00:00:00', NULL),
+(53, 32, 'test heure', '2024-04-05 16:14:58', NULL),
+(54, 32, 'test min', '2024-04-05 16:25:21', NULL),
+(55, 27, 'test', '2024-04-08 08:46:24', NULL),
+(56, 27, 'test avec image', '2024-04-08 08:46:47', './images/56.jpg');
 
 -- --------------------------------------------------------
 
@@ -130,7 +147,13 @@ INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `prenom`, `email`, `mdp`, `d
 (27, 'morales', 'Léon', 'leon.morales@utbm.fr', '$2y$10$EGrUAgKkF7qd/xwvouCfrexqMcfSHu8J3WE1eMKliir6AJ.v.b1v2', 'Je suis Léon test', '2003-08-19', 'Léon', './avatar/27.jpg', 'testt'),
 (30, 'test', 'test', 'test@test.fr', '$2y$10$xwgwQA65kXeUlB4eya/zYOxaFch//wFwvj1OGE60WbXnrWu3e3FqW', 'pourquoi pas', '2024-03-14', 'test', './avatar/30.jpg', 'testt'),
 (31, 'test', 'test', 'test2@test.fr', '$2y$10$.dfn.bTEPbsxyq2BZP9rN.7P6lDputsy.mrHLX09rWlc04/kbMzR6', '', '2024-03-13', 'test2', './avatar/defaultAvatar.jpg', 'testt'),
-(32, 'test', 'test', 'test.morales@utbm.fr', '$2y$10$xAQH4UGrnPSnUJaczlBuCeUyLKDKA2QVVGmdUDnVQ7VPJbHIJSnDy', NULL, '2024-04-12', 'test3', './avatar/defaultAvatar.jpg', '36 rue du Neufeld');
+(32, 'test', 'test', 'test.morales@utbm.fr', '$2y$10$xAQH4UGrnPSnUJaczlBuCeUyLKDKA2QVVGmdUDnVQ7VPJbHIJSnDy', NULL, '2024-04-12', 'test3', './avatar/32.jpg', '36 rue du Neufeld'),
+(40, 'Morales', 'Léon', 'sgefffs.morales@utbm.fr', '$2y$10$xquP3E.LqPEbKzFp6SK1POf.gTjkHcufpUMwfa/2FTIVs33quxVD2', NULL, '2024-04-19', 'wrg', './avatar/defaultAvatar.jpg', '35 rue du Neufeld'),
+(41, 'Morales', 'Léon', 'afzezzd.morales@utbm.fr', '$2y$10$BEIKLRfv1dyFaQS2DKs9LueCBBdSSyFtpCGO1RGHya8KYWjxs.Zna', NULL, '2024-04-11', 'sefe', './avatar/defaultAvatar.jpg', '35 rue du Neufeld'),
+(42, 'Morales', 'Léon', 'dfgrr.morales@utbm.fr', '$2y$10$orhNN154nYOoRDeNDKYCDeK1BXosm0oC1ldVDh.gWlJ/hG3F/1zua', NULL, '2024-04-17', 'feez', './avatar/defaultAvatar.jpg', '35 rue du Neufeld'),
+(43, 'Morales', 'Léon', 'rsece.morales@utbm.fr', '$2y$10$C3PuwMAMkc3.LXbs/lv0oegWD99M.tz3NZjD2267SvW4O/Q8VG/LS', NULL, '2024-04-20', 'zevc', './avatar/defaultAvatar.jpg', '35 rue du Neufeld'),
+(44, 'Morales', 'Léon', 'fezez.morales@utbm.fr', '$2y$10$Vbj8iXlHKzaf74dcmMzH7uzWa1o0y6J4IQIyhMBRQFP8QSNDJQweW', NULL, '2024-04-19', 'fzaeaz', './avatar/defaultAvatar.jpg', '35 rue du Neufeld'),
+(45, 'Morales', 'Léon', 'zefezfd.morales@utbm.fr', '$2y$10$n2XAMXVHzohjxMQzt2KGfOrK6GPURpXZl.rE54ClLsNr6gCA3Fsi6', NULL, '2024-04-27', 'ezez', './avatar/defaultAvatar.jpg', '35 rue du Neufeld');
 
 --
 -- Index pour les tables déchargées
@@ -194,7 +217,7 @@ ALTER TABLE `commentaire`
 -- AUTO_INCREMENT pour la table `follower`
 --
 ALTER TABLE `follower`
-  MODIFY `id_follower` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_follower` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT pour la table `message`
@@ -206,13 +229,13 @@ ALTER TABLE `message`
 -- AUTO_INCREMENT pour la table `post`
 --
 ALTER TABLE `post`
-  MODIFY `id_post` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id_post` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id_utilisateur` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id_utilisateur` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- Contraintes pour les tables déchargées
