@@ -6,11 +6,19 @@ if (isset($_POST["modifierProfile"])) {
     $modifierProfile = true;
 }
 
+$protectedID = SecurizeString_ForSQL($_GET["id"]);
+
+$monCompte = false;
+if (isset($_COOKIE['user_id']) && $_COOKIE['user_id'] == $protectedID){
+    $monCompte = true;
+}
+$InfosCompteExterne = GetInfoProfile($protectedID);
 
 if (isset($_POST["submitModification"]) && isset($_FILES["avatar"]) && !empty($_FILES["avatar"]["name"])) {
     $resultAvatar=UpdateAvatar($_COOKIE['user_id']);
     $result=UpdateInfosProfile($_COOKIE['user_id']);
     if ($resultAvatar["Successful"] && $result["Successful"]){
+        $Infos = GetInfoProfile($protectedID);
         $modifierProfile = false;
     }
 }else if (isset($_POST["submitModification"])) {
@@ -33,14 +41,23 @@ if (isset($_POST["submitModificationMdp"])) {
 }
 
 $AccountStatus = CheckLogin();
-
 if (!$AccountStatus["loginSuccessful"]){
-    echo "non connecté";
-	header("Location:".$rootpath."/index.php");
-    exit();
+    if ($monCompte){
+        echo "non connecté";
+        header("Location:".$rootpath."/index.php");
+        exit();
+    }
 }
 
-$Infos = GetInfoProfile($_COOKIE['user_id']);
+$Infos = GetInfoProfile($protectedID);
+
+if (isset($_POST["unfollow"])) {
+    unfollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
+}
+
+if (isset($_POST["follow"])) {
+    follow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
+}
 
 include ("BoutDePages/header.php");
 
@@ -54,15 +71,16 @@ include ("BoutDePages/header.php");
     <link href="https://cdn.jsdelivr.net/npm/fastbootstrap@2.2.0/dist/css/fastbootstrap.min.css" rel="stylesheet" integrity="sha256-V6lu+OdYNKTKTsVFBuQsyIlDiRWiOmtC8VQ8Lzdm2i4=" crossorigin="anonymous">
 
   </head>
-  <body class="text-bg-dark">
+  <body class="text-body bg-body" data-bs-theme="dark">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-
-    <main>
+    <main id="mainContent">
         <div class="container mt-5" id="sign_in">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-8">
                   <?php 
-                    if ($modifierProfile){
+                    if (!$monCompte){
+                        include ("BoutDePages/voirProfile.php");
+                    }else if ($modifierProfile){
                         include ("BoutDePages/modifierProfile.php");
                     }else if ($modifierMotDePasse){
                         include ("BoutDePages/modifiermdp.php");
