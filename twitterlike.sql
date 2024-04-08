@@ -7,7 +7,7 @@
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.1.2
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 04 avr. 2024 à 16:49
+-- Généré le : lun. 08 avr. 2024 à 08:48
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -60,26 +60,20 @@ CREATE TABLE `follower` (
   `id_follower` bigint(20) NOT NULL,
   `id_utilisateur` bigint(20) NOT NULL,
   `id_utilisateur_suivi` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Table structure for table `likes`
+-- Déchargement des données de la table `follower`
 --
 
-CREATE TABLE `likes` (
-  `id_like` bigint(20) NOT NULL,
-  `id_post` bigint(20) NOT NULL,
-  `id_utilisateur` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `likes`
---
-
-INSERT INTO `likes` (`id_like`, `id_post`, `id_utilisateur`) VALUES
-(3, 45, 32);
+INSERT INTO `follower` (`id_follower`, `id_utilisateur`, `id_utilisateur_suivi`) VALUES
+(6, 27, 30),
+(4, 27, 31),
+(5, 27, 32),
+(7, 30, 27),
+(8, 30, 31),
+(9, 30, 32),
+(11, 45, 27);
 
 -- --------------------------------------------------------
 
@@ -106,33 +100,29 @@ CREATE TABLE `post` (
   `id_post` bigint(20) NOT NULL,
   `id_utilisateur` bigint(20) NOT NULL,
   `contenu` varchar(520) NOT NULL,
-  `date` date NOT NULL DEFAULT current_timestamp(),
-  `image_path` varchar(255) DEFAULT NULL,
-  `video_link` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `date` datetime NOT NULL DEFAULT current_timestamp(),
+  `image_path` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `post`
+-- Déchargement des données de la table `post`
 --
 
-INSERT INTO `post` (`id_post`, `id_utilisateur`, `contenu`, `date`, `image_path`, `video_link`) VALUES
-(39, 27, 'test', '2024-04-02', NULL, NULL),
-(40, 27, 'test2', '2024-04-02', NULL, NULL),
-(41, 27, 'test3', '2024-04-02', NULL, NULL),
-(43, 27, 'test avec image', '2024-04-02', './images/43.jpg', NULL),
-(44, 27, 'test avec image 2', '2024-04-02', './images/44.jpg', NULL),
-(45, 32, 'premier post', '2024-04-04', NULL, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ');
 INSERT INTO `post` (`id_post`, `id_utilisateur`, `contenu`, `date`, `image_path`) VALUES
-(39, 27, 'test', '2024-04-02', NULL),
-(40, 27, 'test2', '2024-04-02', NULL),
-(41, 27, 'test3', '2024-04-02', NULL),
-(43, 27, 'test avec image', '2024-04-02', './images/43.jpg'),
-(44, 27, 'test avec image 2', '2024-04-02', './images/44.jpg'),
-(45, 27, 'test', '2024-04-04', NULL),
-(46, 27, 'test avec image', '2024-04-04', './images/46.jpg'),
-(47, 30, 'test', '2024-04-04', NULL),
-(48, 30, 'test', '2024-04-04', './images/48.jpg'),
-(49, 31, 'test', '2024-04-04', NULL);
+(39, 27, 'test', '2024-04-02 00:00:00', NULL),
+(40, 27, 'test2', '2024-04-02 00:00:00', NULL),
+(41, 27, 'test3', '2024-04-02 00:00:00', NULL),
+(43, 27, 'test avec image', '2024-04-02 00:00:00', './images/43.jpg'),
+(44, 27, 'test avec image 2', '2024-04-02 00:00:00', './images/44.jpg'),
+(45, 27, 'test', '2024-04-04 00:00:00', NULL),
+(46, 27, 'test avec image', '2024-04-04 00:00:00', './images/46.jpg'),
+(47, 30, 'test', '2024-04-04 00:00:00', NULL),
+(48, 30, 'test', '2024-04-04 00:00:00', './images/48.jpg'),
+(52, 32, 'test', '2024-04-04 00:00:00', NULL),
+(53, 32, 'test heure', '2024-04-05 16:14:58', NULL),
+(54, 32, 'test min', '2024-04-05 16:25:21', NULL),
+(55, 27, 'test', '2024-04-08 08:46:24', NULL),
+(56, 27, 'test avec image', '2024-04-08 08:46:47', './images/56.jpg');
 
 -- --------------------------------------------------------
 
@@ -163,14 +153,20 @@ INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `prenom`, `email`, `mdp`, `d
 (31, 'test', 'test', 'test2@test.fr', '$2y$10$.dfn.bTEPbsxyq2BZP9rN.7P6lDputsy.mrHLX09rWlc04/kbMzR6', '', '2024-03-13', 'test2', NULL, 'testt'),
 (32, 'Morin', 'alban', 'alban.morin@utbm.fr', '$2y$10$SQwAu3/HSWTuCeUT3cm0jOK29spn73i9.o6PlT2DY/kNZyf0f/rkG', NULL, '2002-01-01', 'alban78', NULL, '12 rue du caca cacaville');
 (31, 'test', 'test', 'test2@test.fr', '$2y$10$.dfn.bTEPbsxyq2BZP9rN.7P6lDputsy.mrHLX09rWlc04/kbMzR6', '', '2024-03-13', 'test2', './avatar/defaultAvatar.jpg', 'testt'),
-(32, 'test', 'test', 'test.morales@utbm.fr', '$2y$10$xAQH4UGrnPSnUJaczlBuCeUyLKDKA2QVVGmdUDnVQ7VPJbHIJSnDy', NULL, '2024-04-12', 'test3', './avatar/defaultAvatar.jpg', '36 rue du Neufeld');
+(32, 'test', 'test', 'test.morales@utbm.fr', '$2y$10$xAQH4UGrnPSnUJaczlBuCeUyLKDKA2QVVGmdUDnVQ7VPJbHIJSnDy', NULL, '2024-04-12', 'test3', './avatar/32.jpg', '36 rue du Neufeld'),
+(40, 'Morales', 'Léon', 'sgefffs.morales@utbm.fr', '$2y$10$xquP3E.LqPEbKzFp6SK1POf.gTjkHcufpUMwfa/2FTIVs33quxVD2', NULL, '2024-04-19', 'wrg', './avatar/defaultAvatar.jpg', '35 rue du Neufeld'),
+(41, 'Morales', 'Léon', 'afzezzd.morales@utbm.fr', '$2y$10$BEIKLRfv1dyFaQS2DKs9LueCBBdSSyFtpCGO1RGHya8KYWjxs.Zna', NULL, '2024-04-11', 'sefe', './avatar/defaultAvatar.jpg', '35 rue du Neufeld'),
+(42, 'Morales', 'Léon', 'dfgrr.morales@utbm.fr', '$2y$10$orhNN154nYOoRDeNDKYCDeK1BXosm0oC1ldVDh.gWlJ/hG3F/1zua', NULL, '2024-04-17', 'feez', './avatar/defaultAvatar.jpg', '35 rue du Neufeld'),
+(43, 'Morales', 'Léon', 'rsece.morales@utbm.fr', '$2y$10$C3PuwMAMkc3.LXbs/lv0oegWD99M.tz3NZjD2267SvW4O/Q8VG/LS', NULL, '2024-04-20', 'zevc', './avatar/defaultAvatar.jpg', '35 rue du Neufeld'),
+(44, 'Morales', 'Léon', 'fezez.morales@utbm.fr', '$2y$10$Vbj8iXlHKzaf74dcmMzH7uzWa1o0y6J4IQIyhMBRQFP8QSNDJQweW', NULL, '2024-04-19', 'fzaeaz', './avatar/defaultAvatar.jpg', '35 rue du Neufeld'),
+(45, 'Morales', 'Léon', 'zefezfd.morales@utbm.fr', '$2y$10$n2XAMXVHzohjxMQzt2KGfOrK6GPURpXZl.rE54ClLsNr6gCA3Fsi6', NULL, '2024-04-27', 'ezez', './avatar/defaultAvatar.jpg', '35 rue du Neufeld');
 
 --
--- Indexes for dumped tables
+-- Index pour les tables déchargées
 --
 
 --
--- Indexes for table `admin`
+-- Index pour la table `admin`
 --
 ALTER TABLE `admin`
   ADD PRIMARY KEY (`id_admin`),
@@ -235,7 +231,7 @@ ALTER TABLE `commentaire`
 -- AUTO_INCREMENT for table `follower`
 --
 ALTER TABLE `follower`
-  MODIFY `id_follower` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_follower` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `likes`
@@ -253,15 +249,13 @@ ALTER TABLE `message`
 -- AUTO_INCREMENT for table `post`
 --
 ALTER TABLE `post`
-  MODIFY `id_post` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
-  MODIFY `id_post` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id_post` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id_utilisateur` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
-  MODIFY `id_utilisateur` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id_utilisateur` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- Constraints for dumped tables
