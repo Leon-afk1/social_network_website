@@ -14,8 +14,7 @@ function ConnectToDataBase() {
     }
 }
 
-function executeRequete($req)
-{
+function executeRequete($req){
     global $conn;
     $resultat = $conn->query($req);
     if(!$resultat) 
@@ -182,7 +181,6 @@ function CheckLogin() {
 
     return $result;
 }
-
 
 function CreateLoginCookie($username, $password, $userId) {
     setcookie('username', $username, time() + 3600 * 24 );
@@ -397,72 +395,87 @@ function changermdp($userId){
     return $resultArray;
 }
 
-
-function ajouterNewPost($userId){
+function ajouterNewPost($userId, $parentId = null){
     global $conn;
 
+    $ajouterPosttry = false;
     $ajouterPost = false;
     $error = NULL;
     $imagePathForDB = "";
 
     if ($_POST["submitPost"]){
-        $ajouterPost = true;
+        $ajouterPosttry = true;
         $commentaire = SecurizeString_ForSQL($_POST["commentaire"]);
 
-        $query = "INSERT INTO post (id_utilisateur, contenu) VALUES ($userId, '$commentaire')";
+        $query = "INSERT INTO post (id_utilisateur, contenu, id_parent) VALUES ($userId, '$commentaire', $parentId)";
         if (mysqli_query($conn, $query)) {
             $postId = mysqli_insert_id($conn);
 
             if ($_FILES['image']["size"] > 0){
                 $image = $_FILES["image"];
-                $imagePath = "./images/" . $postId . ".jpg"; 
-                $imagePathForDB = SecurizeString_ForSQL($imagePath); 
+
+                $file = $_FILES['image']['name'];
+                $path = pathinfo($file); 
+                $ext = $path['extension'];
+
+                $path_filename_ext = "./images/".$postId.".".$ext;
+                $imagePathForDB = SecurizeString_ForSQL($path_filename_ext); 
                 $uploadOk = 1;
-                $imageFileType = strtolower(pathinfo($imagePath,PATHINFO_EXTENSION));
                 $check = getimagesize($image["tmp_name"]);
+
                 if($check !== false) {
                     $uploadOk = 1;
                 } else {
                     $error = "Le fichier n'est pas une image.";
                     $uploadOk = 0;
                 }
-                if ($image["size"] > 500000) {
+                if ($image["size"] > 5500000) {
                     $error = "L'image est trop grande.";
                     $uploadOk = 0;
                 }
-                if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
+                if($_FILES['image']['type'] != "image/jpeg" && $_FILES['image']['type'] != "image/png" && $_FILES['image']['type'] != "image/jpg" && $_FILES['image']['type'] != "image/gif"){
                     $error = "Seuls les fichiers JPG, JPEG, PNG sont autorisés.";
                     $uploadOk = 0;
                 }
                 if ($uploadOk != 0) {
-                    if (move_uploaded_file($image["tmp_name"], $imagePath)) {
+                    if (move_uploaded_file($image["tmp_name"], $path_filename_ext)) {
                         $query = "UPDATE post SET image_path = '$imagePathForDB' WHERE id_post = $postId";
                         if (!mysqli_query($conn, $query)) {
                             $error = "Erreur lors de la mise à jour du chemin de l'image dans la base de données.";
+                        }else {
+                            $ajouterPost = true;
                         }
                     } else {
                         $error = "Erreur lors de l'upload de l'image.";
                     }
+                }else {
+                    $query = "DELETE FROM post WHERE id_post = $postId";
+                    if (!mysqli_query($conn, $query)) {
+                        $error = "Erreur lors de la suppression du post dans la base de données.";
+                    }
                 }
+            }else{
+                $ajouterPost = true;
             }
         } else {
             $error = "Erreur lors de l'insertion dans la base de données: " . mysqli_error($conn);
         }
     }
 
-    $resultArray = ['Attempted' => $ajouterPost, 
+    $resultArray = ['Attempted' => $ajouterPosttry, 
                     'Successful' => $ajouterPost,
                     'ErrorMessage' => $error];
 
     return $resultArray;
 }
 
+
 function getAllPosts($userId) {
     global $conn;
 
     $query = "SELECT post.id_post, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom FROM post
               INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur
-              WHERE post.id_utilisateur = $userId
+              WHERE post.id_utilisateur = $userId AND post.id_parent IS NULL
               ORDER BY post.date DESC";
     $result = executeRequete($query);
 
@@ -532,6 +545,22 @@ function totalFollowing($userId){
     return $result->num_rows;
 }
 
+?>
+<script>
+function toggleForm(postId) {
+    var form = document.getElementById("postForm_" + postId);
+    var button = document.getElementById("toggleFormButton_" + postId);
+
+    if (form.style.display === "none") {
+        form.style.display = "block";
+        button.innerHTML = "Masquer le formulaire";
+    } else {
+        form.style.display = "none";
+        button.innerHTML = "Afficher le formulaire";
+    }
+}
+</script>
+<?php
 function afficherPosts($post, $infos){
     echo "<div class='card outline-secondary'>";
     echo "<div class='card-header outline-secondary'>";
@@ -545,10 +574,91 @@ function afficherPosts($post, $infos){
         echo "<img src='{$post['image']}' class='img-fluid'>";
     }
     echo "<p class='card-text'>".$post["contenu"]."</p>";
+    
+    // ID du post
+    $idPost = $post['id'];
+
+    // Bouton pour masquer/afficher le formulaire avec ID de post
+    echo "<button onclick='toggleForm($idPost)' class='btn btn-outline-secondary'>Réagir</button>";
+    echo "<br>";
+    echo "<br>";
+
+    // Formulaire avec ID de post
+    echo "<form id='postForm_{$idPost}' action='#' method='post' class='mb-4' enctype='multipart/form-data' style='display: none;'>";
+    echo "<div class='form-group form-field'>";
+    if (isset($erreurPost)) {
+        echo "<div class='alert alert-danger' role='alert'>";
+        echo $erreurPost;
+        echo "</div>";
+    }
+    echo "<label for='commentaire'>Commentaire:</label>";
+    echo "<textarea name='commentaire' class='form-control' rows='3'  required></textarea>";
+    echo "</div>";
+    echo "<div class='form-group form-field'>";
+    echo "<label for='image'>Image:</label>";
+    echo "<input type='file' name='image' class='form-control'>";
+    echo "</div>";
+    echo "<div class='form-group text-center'>";
+    echo "<input type='hidden' name='idPost' value='$idPost'>";
+    echo "<input type='hidden' name='submitPost' value='true'>";
+    echo "<br>";
+    echo "<button type='submit' class='btn btn-outline-secondary'>Valider</button>";
+    echo "</div>";
+    echo "</form>";    
+
+    $reponses = getReponsesCommentaire($post['id']);
+    if (!empty($reponses)) {
+        echo "<div class='reponses-container'>";
+        foreach ($reponses as $reponse) {
+            $query = "SELECT * FROM utilisateur WHERE id_utilisateur = ".$reponse['id_utilisateur'];
+            $result = executeRequete($query);
+            $row = $result->fetch_assoc();
+            echo "<div class='card outline-secondary'>";
+            echo "<div class='card-header outline-secondary'>";
+            echo "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$row["id_utilisateur"]."'> 
+                    <img src='".$row["avatar"]."' class='avatar avatar-lg'>
+                    <label for='nom'>". $row["nom"]." ".$row["prenom"]."</label>
+                    </a>";
+            echo "</div>";
+            echo "<div class='card-body'>";
+            if (!empty($reponse['image'])) {
+                echo "<img src='{$reponse['image']}' class='img-fluid'>";
+            }
+            echo "<p class='card-text'>".$reponse["contenu"]."</p>";
+            echo "</div>";
+            echo "</div>";
+        }
+        echo "</div>";
+        echo "<button onclick='chargerPlusReponses($idPost)'>Charger plus</button>";
+    }
+    
     echo "</div>";
     echo "</div>";
     echo "<br>";
 }
+
+function getReponsesCommentaire($idPost){
+    global $conn;
+
+    $query = "SELECT * FROM post WHERE id_parent = $idPost  LIMIT 3";
+    $result = executeRequete($query);
+
+    $reponses = [];
+    while ($row = $result->fetch_assoc()) {
+        $reponse = [
+            'id' => $row['id_post'],
+            'contenu' => $row['contenu'],
+            'image' => $row['image_path'],
+            'date' => $row['date'],
+            'id_utilisateur' => $row['id_utilisateur']
+        ];
+        $reponses[] = $reponse;
+    }
+
+    return $reponses;
+}
+
+
 
 function afficherBestPosts($userId){
     global $conn;
@@ -601,7 +711,6 @@ function afficherRecentPostsFollowed($userId){
     return $posts;
 }
     
-
 function GetInfos($id){
     global $conn;
 
@@ -611,3 +720,5 @@ function GetInfos($id){
 
     return $row;
 }
+
+?>

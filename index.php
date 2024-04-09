@@ -1,6 +1,8 @@
 <?php
 include ("loc.php");
 
+include ("BoutDePages/repondrePost.php");
+
 $AccountStatus = CheckLogin();
 
 include ("BoutDePages/header.php");

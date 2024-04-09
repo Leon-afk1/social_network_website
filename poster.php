@@ -1,7 +1,6 @@
 <?php
 include ("loc.php");
 
-
 $ajouterPost = false;
 if (isset($_POST["submitPost"]) && isset($_FILES["image"])) {
     $ajouterPost = true;
@@ -11,10 +10,7 @@ if (isset($_POST["submitPost"]) && isset($_FILES["image"])) {
         header("Location:./index.php");
         exit();
     }else{
-        echo 
-        "<div class='alert alert-danger' role='alert'>
-            ".$result["ErrorMessage"]."
-            </div>";
+        $erreurPost = $result["ErrorMessage"];
     }
 }
 
