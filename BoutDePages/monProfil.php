@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="styles.css">
-<div class="card outline-secondary">
+<div class="card outline-secondary rounded-3">
     <div class="text-center card-header">
         <h1 class="card-title"><?php 
         if ($Infos["avatar"] != NULL){
@@ -44,7 +44,7 @@
         <div class="form-group text-center">
             <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
                 <input type="hidden" name="modifierProfile" value="true">
-                <button type="submit" class="btn btn-outline-secondary">Modifier profil</button>
+                <button type="submit" class="btn btn-outline-secondary ">Modifier profil</button>
             </form>
             <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
                 <input type="hidden" name="modifierMotDePasse" value="true">

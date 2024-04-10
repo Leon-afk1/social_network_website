@@ -559,26 +559,30 @@ function toggleForm(postId) {
         button.innerHTML = "Afficher le formulaire";
     }
 }
+
+function sendTo(postId) {
+    window.location.href = "./post.php?id=" + postId;
+}
 </script>
 <?php
 function afficherPosts($post, $infos){
-    echo "<div class='card outline-secondary'>";
+    $idPost = $post['id'];
+    echo "<div class='card outline-secondary rounded-3'>";
     echo "<div class='card-header outline-secondary'>";
     echo "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'> 
             <img src='".$infos["avatar"]."' class='avatar avatar-lg'>
             <label for='nom'>". $infos["nom"]." ".$infos["prenom"]."</label>
             </a>";
     echo "</div>";
-    echo "<div class='card-body'>";
+    echo "<div class='card-body' onclick='sendTo($idPost)'>";
     if (!empty($post['image'])) {
         echo "<img src='{$post['image']}' class='img-fluid'>";
     }
     echo "<p class='card-text'>".$post["contenu"]."</p>";
-    
-    // ID du post
-    $idPost = $post['id'];
+    echo "</div>";
+    echo "<div class='card-footer'>";
 
-    // Bouton pour masquer/afficher le formulaire avec ID de post
+    // // Bouton pour masquer/afficher le formulaire avec ID de post
     echo "<button onclick='toggleForm($idPost)' class='btn btn-outline-secondary'>Réagir</button>";
     echo "<br>";
     echo "<br>";
@@ -605,32 +609,6 @@ function afficherPosts($post, $infos){
     echo "<button type='submit' class='btn btn-outline-secondary'>Valider</button>";
     echo "</div>";
     echo "</form>";    
-
-    $reponses = getReponsesCommentaire($post['id']);
-    if (!empty($reponses)) {
-        echo "<div class='reponses-container'>";
-        foreach ($reponses as $reponse) {
-            $query = "SELECT * FROM utilisateur WHERE id_utilisateur = ".$reponse['id_utilisateur'];
-            $result = executeRequete($query);
-            $row = $result->fetch_assoc();
-            echo "<div class='card outline-secondary'>";
-            echo "<div class='card-header outline-secondary'>";
-            echo "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$row["id_utilisateur"]."'> 
-                    <img src='".$row["avatar"]."' class='avatar avatar-lg'>
-                    <label for='nom'>". $row["nom"]." ".$row["prenom"]."</label>
-                    </a>";
-            echo "</div>";
-            echo "<div class='card-body'>";
-            if (!empty($reponse['image'])) {
-                echo "<img src='{$reponse['image']}' class='img-fluid'>";
-            }
-            echo "<p class='card-text'>".$reponse["contenu"]."</p>";
-            echo "</div>";
-            echo "</div>";
-        }
-        echo "</div>";
-        echo "<button onclick='chargerPlusReponses($idPost)'>Charger plus</button>";
-    }
     
     echo "</div>";
     echo "</div>";
@@ -719,6 +697,23 @@ function GetInfos($id){
     $row = $result->fetch_assoc();
 
     return $row;
+}
+
+function GetPostById($id){
+    global $conn;
+
+    $query = "SELECT * FROM post WHERE id_post = $id";
+    $result = executeRequete($query);
+    $row = $result->fetch_assoc();
+    $reponse = [
+        'id' => $row['id_post'],
+        'contenu' => $row['contenu'],
+        'image' => $row['image_path'],
+        'date' => $row['date'],
+        'id_utilisateur' => $row['id_utilisateur']
+    ];
+
+    return $reponse;
 }
 
 ?>
