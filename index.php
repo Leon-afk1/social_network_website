@@ -21,14 +21,14 @@ include ("BoutDePages/header.php");
   
     <main id="mainContent">
         <div class="px-3">
-          <div class="container text-center">
+          <div class="container">
             <?php 
               if ($AccountStatus["loginSuccessful"]){
                 ?>
               <div class="row align-items-start">
                   <div class="col">
                     <div class='card rounded-3 outline-secondary text-bg-secondary ps-10 pe-10'>
-                      <h2 class="card-title">Meilleurs posts du moment :</h2>
+                      <h2 class="card-title text-center">Meilleurs posts du moment :</h2>
                       <br>
                       <?php
                           $allPosts = afficherBestPosts($_COOKIE['user_id']);
@@ -41,7 +41,7 @@ include ("BoutDePages/header.php");
                   </div>
                   <div class="col">
                     <div class='card rounded-3 outline-secondary text-bg-secondary ps-10 pe-10'>
-                      <h2 class="card-title">Post recent que vous suivez :</h2>
+                      <h2 class="card-title text-center">Post recent que vous suivez :</h2>
                       <br>
                       <?php
                           $allPosts = afficherRecentPostsFollowed($_COOKIE['user_id']);

@@ -1,4 +1,4 @@
-<div class="card text-bg-dark border-secondary">
+<div class="card border-secondary">
     <form action="poster.php" method="post" class="mb-4" enctype="multipart/form-data">
         <div class="text-center card-header">
             <h1 class="card-title">Faire un post</h1>

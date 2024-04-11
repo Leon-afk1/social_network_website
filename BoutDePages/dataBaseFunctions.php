@@ -407,7 +407,11 @@ function ajouterNewPost($userId, $parentId = null){
         $ajouterPosttry = true;
         $commentaire = SecurizeString_ForSQL($_POST["commentaire"]);
 
-        $query = "INSERT INTO post (id_utilisateur, contenu, id_parent) VALUES ($userId, '$commentaire', $parentId)";
+        if ($parentId === null) {
+            $query = "INSERT INTO post (id_utilisateur, contenu) VALUES ($userId, '$commentaire')";
+        } else {
+            $query = "INSERT INTO post (id_utilisateur, contenu, id_parent) VALUES ($userId, '$commentaire', $parentId)";
+        }
         if (mysqli_query($conn, $query)) {
             $postId = mysqli_insert_id($conn);
 
@@ -438,17 +442,40 @@ function ajouterNewPost($userId, $parentId = null){
                     $uploadOk = 0;
                 }
                 if ($uploadOk != 0) {
-                    if (move_uploaded_file($image["tmp_name"], $path_filename_ext)) {
-                        $query = "UPDATE post SET image_path = '$imagePathForDB' WHERE id_post = $postId";
-                        if (!mysqli_query($conn, $query)) {
-                            $error = "Erreur lors de la mise à jour du chemin de l'image dans la base de données.";
-                        }else {
+                    if ($ext==='gif'){
+                        if (move_uploaded_file($image["tmp_name"], $path_filename_ext)) {
                             $ajouterPost = true;
+                            $query = "UPDATE post SET image_path = '$imagePathForDB' WHERE id_post = $postId";
+                            if (!mysqli_query($conn, $query)) {
+                                $error = "Erreur lors de la mise à jour du chemin de l'image dans la base de données.";
+                            }
+                        } else {
+                            $error = "Erreur lors de l'upload de l'image.";
                         }
-                    } else {
-                        $error = "Erreur lors de l'upload de l'image.";
+                    }else{
+                        list($width, $height) = getimagesize($image["tmp_name"]);
+                        $goalwidth = 400;
+                        $ratio = $goalwidth / $width;
+                        $newheight = $height * $ratio;
+
+                        $src = imagecreatefromstring(file_get_contents($image["tmp_name"]));
+                        $dst = imagecreatetruecolor($goalwidth, $newheight);
+                        imagecopyresampled($dst, $src, 0, 0, 0, 0, $goalwidth, $newheight, $width, $height);
+                        imagedestroy($src);
+
+                        if (imagejpeg($dst, $path_filename_ext, 150)) {
+                            imagedestroy($dst);
+                            $query = "UPDATE post SET image_path = '$imagePathForDB' WHERE id_post = $postId";
+                            if (!mysqli_query($conn, $query)) {
+                                $error = "Erreur lors de la mise à jour du chemin de l'image dans la base de données.";
+                            }else {
+                                $ajouterPost = true;
+                            }
+                        } else {
+                            $error = "Erreur lors de l'upload de l'image.";
+                        }
                     }
-                }else {
+                }else{
                     $query = "DELETE FROM post WHERE id_post = $postId";
                     if (!mysqli_query($conn, $query)) {
                         $error = "Erreur lors de la suppression du post dans la base de données.";
@@ -563,62 +590,110 @@ function toggleForm(postId) {
 function sendTo(postId) {
     window.location.href = "./post.php?id=" + postId;
 }
+
+function supprimerPost(postId) {
+    <?php supprimerPost($postId); ?>
+}
+
+
 </script>
 <?php
 function afficherPosts($post, $infos){
     $idPost = $post['id'];
     echo "<div class='card outline-secondary rounded-3'>";
-    echo "<div class='card-header outline-secondary'>";
-    echo "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'> 
-            <img src='".$infos["avatar"]."' class='avatar avatar-lg'>
-            <label for='nom'>". $infos["nom"]." ".$infos["prenom"]."</label>
-            </a>";
-    echo "</div>";
-    echo "<div class='card-body' onclick='sendTo($idPost)'>";
+    echo    "<div class='card-header outline-secondary'>";
+    echo        "<div class='row'>";
+    echo            "<div class='col'>";
+    echo                "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'> 
+                            <img src='".$infos["avatar"]."' class='avatar avatar-lg'>
+                            <label for='nom'>". $infos["nom"]." ".$infos["prenom"]."</label>
+                        </a>";
+    echo            "</div>";
+    echo            "<div class='col text-end'>";
+    if ($infos['id_utilisateur'] == $_COOKIE['user_id']){
+        echo               "<button class='btn btn-outline-secondary' id='supprimerPost_".$idPost."' data-bs-toggle='modal' data-bs-target='#supprimerPostModal_".$idPost."'>Supprimer</button>";
+        echo               "<button class='btn btn-outline-secondary' id='modifierPost_".$idPost."'>Modifier</button>";
+    }
+
+    // modal pour supprimer post
+    echo            "<div class='modal fade' id='supprimerPostModal_".$idPost."' tabindex='-1' aria-labelledby='supprimerPostModalLabel_".$idPost."' aria-hidden='true'>";
+    echo                "<div class='modal-dialog modal-dialog-centered'>";
+    echo                    "<div class='modal-content'>";
+    echo                        "<div class='modal-header'>";
+    echo                            "<h5 class='modal-title' id='supprimerPostModalLabel_".$idPost."'>Supprimer le post</h5>";
+    echo                            "<button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>";
+    echo                        "</div>";
+    echo                        "<div class='modal-body text-center'>";
+    echo                            "<p>Êtes-vous sûr de vouloir supprimer ce post?</p>";
+    echo                        "</div>";
+    echo                        "<div class='modal-footer'>";
+    echo                            "<button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Annuler</button>";
+    echo                            "<button type='button' class='btn btn-danger' onclick='supprimerPost($idPost)' id='supprimerButton_".$idPost."'>Supprimer</button>";
+    echo                        "</div>";
+    echo                    "</div>";
+    echo                "</div>";
+    echo            "</div>";
+
+    echo            "</div>";
+    echo        "</div>";
+    echo    "</div>";
+    echo    "<div class='card-body text-center' onclick='sendTo($idPost)'>";
     if (!empty($post['image'])) {
         echo "<img src='{$post['image']}' class='img-fluid'>";
     }
-    echo "<p class='card-text'>".$post["contenu"]."</p>";
-    echo "</div>";
-    echo "<div class='card-footer'>";
+    echo        "<p class='card-text'>".$post["contenu"]."</p>";
+    echo    "</div>";
+    echo    "<div class='card-footer'>";
 
+    echo        "<div class='row'>";
+    echo            "<div class='col'>";
+    
     // // Bouton pour masquer/afficher le formulaire avec ID de post
-    echo "<button onclick='toggleForm($idPost)' class='btn btn-outline-secondary'>Réagir</button>";
-    echo "<br>";
-    echo "<br>";
+    echo                "<button onclick='toggleForm($idPost)' class='btn btn-outline-secondary'>Réagir</button>";
+    echo            "</div>";
+    echo            "<div class='col text-end'>";
+    echo                "<label for='date'>". $post["date"]."</label>";
+    echo            "</div>";
+    echo        "</div>";
+    echo        "<br>";
+    echo        "<br>";
 
     // Formulaire avec ID de post
-    echo "<form id='postForm_{$idPost}' action='#' method='post' class='mb-4' enctype='multipart/form-data' style='display: none;'>";
-    echo "<div class='form-group form-field'>";
+    echo        "<form id='postForm_{$idPost}' action='#' method='post' class='mb-4' enctype='multipart/form-data' style='display: none;'>";
+    echo            "<div class='form-group form-field'>";
     if (isset($erreurPost)) {
-        echo "<div class='alert alert-danger' role='alert'>";
+        echo            "<div class='alert alert-danger' role='alert'>";
         echo $erreurPost;
-        echo "</div>";
+        echo            "</div>";
     }
-    echo "<label for='commentaire'>Commentaire:</label>";
-    echo "<textarea name='commentaire' class='form-control' rows='3'  required></textarea>";
-    echo "</div>";
-    echo "<div class='form-group form-field'>";
-    echo "<label for='image'>Image:</label>";
-    echo "<input type='file' name='image' class='form-control'>";
-    echo "</div>";
-    echo "<div class='form-group text-center'>";
-    echo "<input type='hidden' name='idPost' value='$idPost'>";
-    echo "<input type='hidden' name='submitPost' value='true'>";
-    echo "<br>";
-    echo "<button type='submit' class='btn btn-outline-secondary'>Valider</button>";
-    echo "</div>";
-    echo "</form>";    
+    echo                "<label for='commentaire'>Commentaire:</label>";
+    echo                "<textarea name='commentaire' class='form-control' rows='3'  required></textarea>";
+    echo            "</div>";
+    echo            "<div class='form-group form-field'>";
+    echo                "<label for='image'>Image:</label>";
+    echo                "<input type='file' name='image' class='form-control'>";
+    echo             "</div>";
+    echo            "<div class='form-group text-center'>";
+    echo                "<input type='hidden' name='idPost' value='$idPost'>";
+    echo                "<input type='hidden' name='submitPost' value='true'>";
+    echo                "<br>";
+    echo                "<button type='submit' class='btn btn-outline-secondary'>Valider</button>";
+    echo            "</div>";
+    echo        "</form>";    
     
-    echo "</div>";
+    echo    "</div>";
     echo "</div>";
     echo "<br>";
+}
+
+function supprimerPost($idPost){
+    echo "Post supprimé";
 }
 
 function getReponsesCommentaire($idPost){
     global $conn;
 
-    $query = "SELECT * FROM post WHERE id_parent = $idPost  LIMIT 3";
+    $query = "SELECT * FROM post WHERE id_parent = $idPost";
     $result = executeRequete($query);
 
     $reponses = [];
