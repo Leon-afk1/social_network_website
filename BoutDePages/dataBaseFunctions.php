@@ -591,8 +591,15 @@ function sendTo(postId) {
     window.location.href = "./post.php?id=" + postId;
 }
 
-function supprimerPost(postId) {
-    <?php supprimerPost($postId); ?>
+async function supprimerPost(postId) {
+    var supp = await fetch("./BoutDePages/supprimerPost.php?id=" + postId);
+    var response = await supp.text();
+    if (response == "Post supprimé") {
+        var post = document.getElementById("post_" + postId);
+        post.style.display = "none";
+    } else {
+        alert(response);
+    }
 }
 
 
@@ -600,7 +607,7 @@ function supprimerPost(postId) {
 <?php
 function afficherPosts($post, $infos){
     $idPost = $post['id'];
-    echo "<div class='card outline-secondary rounded-3'>";
+    echo "<div class='card outline-secondary rounded-3' id='post_".$idPost."'>";
     echo    "<div class='card-header outline-secondary'>";
     echo        "<div class='row'>";
     echo            "<div class='col'>";
@@ -610,7 +617,7 @@ function afficherPosts($post, $infos){
                         </a>";
     echo            "</div>";
     echo            "<div class='col text-end'>";
-    if ($infos['id_utilisateur'] == $_COOKIE['user_id']){
+    if (isset($_COOKIE['user_id']) && $infos['id_utilisateur'] == $_COOKIE['user_id']){
         echo               "<button class='btn btn-outline-secondary' id='supprimerPost_".$idPost."' data-bs-toggle='modal' data-bs-target='#supprimerPostModal_".$idPost."'>Supprimer</button>";
         echo               "<button class='btn btn-outline-secondary' id='modifierPost_".$idPost."'>Modifier</button>";
     }
@@ -628,7 +635,7 @@ function afficherPosts($post, $infos){
     echo                        "</div>";
     echo                        "<div class='modal-footer'>";
     echo                            "<button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Annuler</button>";
-    echo                            "<button type='button' class='btn btn-danger' onclick='supprimerPost($idPost)' id='supprimerButton_".$idPost."'>Supprimer</button>";
+    echo                            "<button type='button' class='btn btn-danger' data-bs-dismiss='modal' onclick='supprimerPost($idPost)' id='supprimerButton_".$idPost."'>Supprimer</button>";
     echo                        "</div>";
     echo                    "</div>";
     echo                "</div>";
@@ -684,10 +691,6 @@ function afficherPosts($post, $infos){
     echo    "</div>";
     echo "</div>";
     echo "<br>";
-}
-
-function supprimerPost($idPost){
-    echo "Post supprimé";
 }
 
 function getReponsesCommentaire($idPost){

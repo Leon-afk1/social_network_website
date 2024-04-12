@@ -119,11 +119,11 @@ async function suggestNamesFromInput_fetch(currentText) {
 
   if (currentText != previousText2 && timer2 >= 200 ){
 
-	var AJAXresult = await fetch("./BoutDePages/rechercheCompte.php?var=" + currentText);
-	document.getElementById("suggestions2").innerHTML = await AJAXresult.text();
+    var AJAXresult = await fetch("./BoutDePages/rechercheCompte.php?var=" + currentText);
+    document.getElementById("suggestions2").innerHTML = await AJAXresult.text();
 
-    previousText2 = currentText;
-    timer2 = 0;
+      previousText2 = currentText;
+      timer2 = 0;
   }else {
     document.getElementById("suggestions2").innerHTML = ''; 
   }
