@@ -409,9 +409,17 @@ function ajouterNewPost($userId, $parentId = null){
         $video = SecurizeString_ForSQL($_POST["video"]);
 
         if ($parentId === null) {
-            $query = "INSERT INTO post (id_utilisateur, contenu) VALUES ($userId, '$commentaire')";
+            if ($video != "") {
+                $query = "INSERT INTO post (id_utilisateur, contenu, video_lien) VALUES ($userId, '$commentaire', '$video')";
+            } else {
+                $query = "INSERT INTO post (id_utilisateur, contenu) VALUES ($userId, '$commentaire')";
+            }
         } else {
-            $query = "INSERT INTO post (id_utilisateur, contenu, id_parent) VALUES ($userId, '$commentaire', $parentId)";
+            if ($video != "") {
+                $query = "INSERT INTO post (id_utilisateur, contenu, id_parent, video_lien) VALUES ($userId, '$commentaire', $parentId, '$video')";
+            } else {
+                $query = "INSERT INTO post (id_utilisateur, contenu, id_parent) VALUES ($userId, '$commentaire', $parentId)";
+            }
         }
         if (mysqli_query($conn, $query)) {
             $postId = mysqli_insert_id($conn);

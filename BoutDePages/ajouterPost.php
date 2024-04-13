@@ -10,19 +10,35 @@
                 </div>
             <?php } ?>
             <div class="form-group form-field">
-                <label for="Commentaire">Commentaire:</label>
-                <textarea name="commentaire" class="form-control" rows="3"  require></textarea>
+                <label for="commentaire">Commentaire:</label>
+                <textarea name="commentaire" class="form-control" rows="3" required></textarea>
             </div>
             <div class="form-group form-field">
-                <label for="image">Image:</label>
-                <input type="file" name="image" class="form-control">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="typeMedia" id="imageRadio" value="image" checked>
+                    <label class="form-check-label" for="imageRadio">
+                        Image
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="typeMedia" id="videoRadio" value="video">
+                    <label class="form-check-label" for="videoRadio">
+                        Vidéo
+                    </label>
+                </div>
             </div>
-            <br>
-            <div class="form-group form-field">
-                <label for="video">Lien de la vidéo (youtube):</label>
-                <input type="text" name="video" class="form-control">
+            <div id="imageField">
+                <div class="form-group form-field">
+                    <label for="image">Image:</label>
+                    <input type="file" name="image" class="form-control">
+                </div>
             </div>
-            <br>
+            <div id="videoField" style="display: none;">
+                <div class="form-group form-field">
+                    <label for="video">Lien de la vidéo (YouTube):</label>
+                    <input type="text" name="video" class="form-control">
+                </div>
+            </div>
             <div class="form-group text-center">
                 <input type="hidden" name="submitPost" value="true">
                 <button type="submit" class="btn btn-outline-secondary">Valider</button>
@@ -30,3 +46,22 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var imageRadio = document.getElementById('imageRadio');
+        var videoRadio = document.getElementById('videoRadio');
+        var imageField = document.getElementById('imageField');
+        var videoField = document.getElementById('videoField');
+
+        imageRadio.addEventListener('click', function() {
+            imageField.style.display = 'block';
+            videoField.style.display = 'none';
+        });
+
+        videoRadio.addEventListener('click', function() {
+            imageField.style.display = 'none';
+            videoField.style.display = 'block';
+        });
+    });
+</script>
