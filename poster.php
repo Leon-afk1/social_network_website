@@ -1,9 +1,8 @@
 <?php
 include ("loc.php");
 
-
 $ajouterPost = false;
-if (isset($_POST["submitPost"]) && isset($_FILES["image"])) {
+if (isset($_POST["submitPost"])) {
     $ajouterPost = true;
     $result=ajouterNewPost($_COOKIE['user_id']);
     if ($result["Successful"]){
@@ -11,10 +10,7 @@ if (isset($_POST["submitPost"]) && isset($_FILES["image"])) {
         header("Location:./index.php");
         exit();
     }else{
-        echo 
-        "<div class='alert alert-danger' role='alert'>
-            ".$result["ErrorMessage"]."
-            </div>";
+        $erreurPost = $result["ErrorMessage"];
     }
 }
 
@@ -32,7 +28,7 @@ include ("BoutDePages/header.php");
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My Page</title>
+    <title>Poster</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/fastbootstrap@2.2.0/dist/css/fastbootstrap.min.css" rel="stylesheet" integrity="sha256-V6lu+OdYNKTKTsVFBuQsyIlDiRWiOmtC8VQ8Lzdm2i4=" crossorigin="anonymous">
 

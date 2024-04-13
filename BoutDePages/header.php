@@ -73,7 +73,7 @@
           <li class="nav-item"><button class="nav-link btn btn-link" onclick="window.location.href='./index.php'" aria-current="page">Home</button></li>
           <?php
             if(isset($_COOKIE['user_id'])){
-              echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./logout.php?redirect=$currentURL`' aria-current='page'>Logout</button></li>";
+              echo "<li class='nav-item'><button class='nav-link btn btn-link ' onclick='window.location.href=`./logout.php?redirect=$currentURL`' aria-current='page'>Logout</button></li>";
               echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./profile.php?id=".$_COOKIE['user_id']."`' aria-current='page'>Profile</button></li>";
               echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./poster.php`' aria-current='page'>Poster</button></li>";
               echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='#'>Statistique</a></li>";
@@ -85,13 +85,25 @@
         </ul>
       </div>
       <div class="d-flex navbar-nav">
+        <div id="suggestions2" class></div>     
         <form class="d-flex nav-item" role="search">
-          <input id="suggestField2" class="form-control me-2 shadow" type="search" placeholder="Search" onkeyup="suggestNamesFromInput_fetch(this.value)">
+          <input id="suggestField2" class="form-control me-2 shadow" type="search" placeholder="Search" onkeyup="suggestFromInput_fetch(this.value)">
         </form>
-        <div id="suggestions2"></div>
       </div>
-      
-    </div>
+      <div class="nav-item ">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="recherche" id="rechercheUser" checked>
+            <label class="form-check-label" for="rechercheUser">
+              Utilisateur
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="recherche" id="recherchePost" >
+            <label class="form-check-label" for="recherchePost">
+              Post
+            </label>
+          </div>
+        </div>
   </nav>  
 
   <main class="p-3 d-flex col-md-8 col-lg-8 mx-auto flex-column ">
@@ -115,15 +127,36 @@ function TimerIncrease_fetch() {
 }
 TimerIncrease_fetch();
 
+async function suggestFromInput_fetch(currentText) {
+  if (document.getElementById("rechercheUser").checked){
+    suggestNamesFromInput_fetch(currentText);
+  }else{
+    suggestPostsFromInput_fetch(currentText);
+  }
+}
+
+async function suggestPostsFromInput_fetch(currentText) {
+  autocomplete = document.getElementById('autocomplete');
+  if (currentText != previousText2 && timer2 >= 200 ){
+    var AJAXresult = await fetch("./BoutDePages/recherchePost.php?var=" + currentText);
+    document.getElementById("suggestions2").innerHTML = await AJAXresult.text();
+
+      previousText2 = currentText;
+      timer2 = 0;
+  }else {
+    document.getElementById("suggestions2").innerHTML = ''; 
+  }
+}
+
 async function suggestNamesFromInput_fetch(currentText) {
 
   if (currentText != previousText2 && timer2 >= 200 ){
 
-	var AJAXresult = await fetch("./BoutDePages/rechercheCompte.php?var=" + currentText);
-	document.getElementById("suggestions2").innerHTML = await AJAXresult.text();
+    var AJAXresult = await fetch("./BoutDePages/rechercheCompte.php?var=" + currentText);
+    document.getElementById("suggestions2").innerHTML = await AJAXresult.text();
 
-    previousText2 = currentText;
-    timer2 = 0;
+      previousText2 = currentText;
+      timer2 = 0;
   }else {
     document.getElementById("suggestions2").innerHTML = ''; 
   }
