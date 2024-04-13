@@ -12,7 +12,7 @@ include ("BoutDePages/header.php");
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My Page</title>
+    <title>Y - Accueil</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/fastbootstrap@2.2.0/dist/css/fastbootstrap.min.css" rel="stylesheet" integrity="sha256-V6lu+OdYNKTKTsVFBuQsyIlDiRWiOmtC8VQ8Lzdm2i4=" crossorigin="anonymous">
   </head>

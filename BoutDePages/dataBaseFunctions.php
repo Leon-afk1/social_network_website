@@ -406,6 +406,7 @@ function ajouterNewPost($userId, $parentId = null){
     if ($_POST["submitPost"]){
         $ajouterPosttry = true;
         $commentaire = SecurizeString_ForSQL($_POST["commentaire"]);
+        $video = SecurizeString_ForSQL($_POST["video"]);
 
         if ($parentId === null) {
             $query = "INSERT INTO post (id_utilisateur, contenu) VALUES ($userId, '$commentaire')";
@@ -500,7 +501,7 @@ function ajouterNewPost($userId, $parentId = null){
 function getAllPosts($userId) {
     global $conn;
 
-    $query = "SELECT post.id_post, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom FROM post
+    $query = "SELECT post.id_post, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom, post.video_lien FROM post
               INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur
               WHERE post.id_utilisateur = $userId AND post.id_parent IS NULL
               ORDER BY post.date DESC";
@@ -514,12 +515,64 @@ function getAllPosts($userId) {
             'image' => $row['image_path'],
             'date' => $row['date'],
             'nom_utilisateur' => $row['nom'],
-            'prenom_utilisateur' => $row['prenom']
+            'prenom_utilisateur' => $row['prenom'],
+            'video_lien' => $row['video_lien']
         ];
         $posts[] = $post;
     }
 
     return $posts;
+}
+
+function getPostInfos($postId){ //récupérer les infos d'un post sauf les likes
+    global $conn;
+
+    $query = "SELECT post.id_post, post.contenu, post.image_path, post.date, post.video_link, utilisateur.username FROM post
+              INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur
+              WHERE post.id_post = $postId";
+    $result = executeRequete($query);
+    $row = $result->fetch_assoc();
+    $post = [
+        'id' => $row['id_post'],
+        'contenu' => $row['contenu'],
+        'image' => $row['image_path'],
+        'date' => $row['date'],
+        'auteur' => $row['username'],
+        'lien_video' => $row['video_link']
+    ];
+    //var_dump($post); //pour visualiser le contenu de la variable
+    return $post;
+}
+
+function getNumberLikes($postId){ //fonction qui retourne le nombre de likes d'un post
+    $query= "SELECT COUNT(*) FROM likes WHERE id_post=$postId";
+    $result = executeRequete($query);
+    //var_dump($result); //our visualiser le contenu de la variable
+    $row = [];
+    $row = $result->fetch_assoc();
+    return $row['COUNT(*)'];
+}
+
+function isLiked($userId, $postId){ //fonction pour vérifier si un post est liké par un utilisateur
+    $query = "SELECT * FROM likes WHERE id_utilisateur = $userId AND id_post = $postId";
+    $result = executeRequete($query);
+    if ($result->num_rows > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function likePost($userId, $postId){ //fonction pour liker un post
+    //Dans un premier temps on vérifie le like n'existe pas déjà
+    $verification = isLiked($userId, $postId);
+    if ($verification == false) {
+        $query = "INSERT INTO likes (id_post, id_utilisateur) VALUES ($postId, $userId)";
+        executeRequete($query);
+    } else {
+        $query = "DELETE FROM likes WHERE id_post = $postId AND id_utilisateur = $userId";
+        executeRequete($query);
+    }
 }
 
 function follow($userId, $userIdToFollow){
@@ -572,39 +625,21 @@ function totalFollowing($userId){
     return $result->num_rows;
 }
 
-?>
-<script>
-function toggleForm(postId) {
-    var form = document.getElementById("postForm_" + postId);
-    var button = document.getElementById("toggleFormButton_" + postId);
+function getYoutubeEmbedUrl($url) // https://stackoverflow.com/questions/19050890/find-youtube-link-in-php-string-and-convert-it-into-embed-code
+{
+     $shortUrlRegex = '/youtu.be\/([a-zA-Z0-9_-]+)\??/i';
+     $longUrlRegex = '/youtube.com\/((?:embed)|(?:watch))((?:\?v\=)|(?:\/))([a-zA-Z0-9_-]+)/i';
 
-    if (form.style.display === "none") {
-        form.style.display = "block";
-        button.innerHTML = "Masquer le formulaire";
-    } else {
-        form.style.display = "none";
-        button.innerHTML = "Afficher le formulaire";
+    if (preg_match($longUrlRegex, $url, $matches)) {
+        $youtube_id = $matches[count($matches) - 1];
     }
-}
 
-function sendTo(postId) {
-    window.location.href = "./post.php?id=" + postId;
-}
-
-async function supprimerPost(postId) {
-    var supp = await fetch("./BoutDePages/supprimerPost.php?id=" + postId);
-    var response = await supp.text();
-    if (response == "Post supprimé") {
-        var post = document.getElementById("post_" + postId);
-        post.style.display = "none";
-    } else {
-        alert(response);
+    if (preg_match($shortUrlRegex, $url, $matches)) {
+        $youtube_id = $matches[count($matches) - 1];
     }
+    return 'https://www.youtube.com/embed/' . $youtube_id ;
 }
 
-
-</script>
-<?php
 function afficherPosts($post, $infos){
     $idPost = $post['id'];
     echo "<div class='card outline-secondary rounded-3' id='post_".$idPost."'>";
@@ -649,6 +684,64 @@ function afficherPosts($post, $infos){
         echo "<img src='{$post['image']}' class='img-fluid'>";
     }
     echo        "<p class='card-text'>".$post["contenu"]."</p>";
+    if (!empty($post['video_lien'])) {
+        $videoEmbed = getYoutubeEmbedUrl($post['video_lien']);
+        
+        $videoEmbedDisplay = '<iframe src="'.$videoEmbed.'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+        echo "<p class='card-text'>".$videoEmbedDisplay."</p>";
+        //echo $videoEmbedDisplay;
+        echo "<br>";
+    }
+    echo "<br>";
+    $likesAmount = getNumberLikes($post["id"]); //récupère le nb de likes du post
+    echo "<p class='card-text'>".$likesAmount." likes</p>";
+    echo "<br>";
+    echo "<br>";
+    $estLike = isLiked($_COOKIE['user_id'], $post["id"]); //vérifie si l'utilisateur a liké le post
+    if($estLike == true){
+        echo "post liké";
+    }else{
+        echo "post non liké";
+    }
+    // Intégration du bouton "like" dynamique en JavaScript avec des images
+    if ($estLike) {
+        echo "<img id='likeButton' onclick='toggleLike(this, {$post['id']})' src='./images/like.png' alt='Liked' class='like-button'>";
+    } else {
+        echo "<img id='likeButton' onclick='toggleLike(this, {$post['id']})' src='./images/nolike.png' alt='Not Liked' class='like-button'>";
+    }
+    
+    ?>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    function toggleLike(button, postId) {
+        $.post('like.php', { postId: postId }, function(data) {
+            if (data.success) {
+                // Mettre à jour l'image du bouton en fonction de l'état actuel
+                if (data.liked) {
+                    button.src = 'like.png';
+                    button.alt = 'Liked';
+                } else {
+                    button.src = 'nolike.png';
+                    button.alt = 'Not Liked';
+                }
+                
+                // Mettre à jour le nombre de likes affiché en temps réel
+                var likesCount = document.getElementById('likesCount-' + postId);
+                if (likesCount) {
+                    likesCount.innerText = data.likesCount + " likes";
+                }
+                
+                // Afficher un message de confirmation
+                alert("Post liked successfully!");
+            } else {
+                // Gérez les erreurs de requête ici
+                console.error('Erreur lors de la requête AJAX');
+            }
+        });
+    }
+    </script>
+    <?php
+    echo "<p class='card-text'>".$post["date"]."</p>";
     echo    "</div>";
     echo    "<div class='card-footer'>";
 

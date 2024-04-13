@@ -18,6 +18,11 @@
                 <input type="file" name="image" class="form-control">
             </div>
             <br>
+            <div class="form-group form-field">
+                <label for="video">Lien de la vidéo (youtube):</label>
+                <input type="text" name="video" class="form-control">
+            </div>
+            <br>
             <div class="form-group text-center">
                 <input type="hidden" name="submitPost" value="true">
                 <button type="submit" class="btn btn-outline-secondary">Valider</button>
