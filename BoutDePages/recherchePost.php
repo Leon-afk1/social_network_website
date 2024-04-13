@@ -10,15 +10,16 @@
     echo '<i>';
 
     if ($protectedText != "") {
-        $query = "SELECT id_utilisateur, username, avatar FROM `utilisateur` WHERE LOWER(username) LIKE LOWER('%$protectedText%')";
+        $query =  "SELECT post.id_post, post.id_utilisateur, post.contenu,  utilisateur.username, utilisateur.avatar FROM `post` INNER JOIN `utilisateur` ON post.id_utilisateur = utilisateur.id_utilisateur WHERE LOWER(post.contenu) LIKE LOWER('%$protectedText%')";
         $result = executeRequete($query);
 
         if ($result->num_rows > 0) {
             while( $row = $result->fetch_assoc() ){
                 echo "
-                <a class='nav-link active' aria-current='page' href='./profile.php?id=".$row["id_utilisateur"]."'> 
+                <a class='nav-link active' aria-current='page' href='./post.php?id=".$row["id_post"]."'> 
                     <img src='".$row["avatar"]."' class='avatar avatar-xs'>
                     <label for='nom'>". $row["username"]."</label>
+                    <p>". $row["contenu"]."</p>
                 </a>";
             }
         } else {
