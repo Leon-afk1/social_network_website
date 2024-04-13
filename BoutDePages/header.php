@@ -138,9 +138,6 @@ async function suggestFromInput_fetch(currentText) {
 async function suggestPostsFromInput_fetch(currentText) {
   autocomplete = document.getElementById('autocomplete');
   if (currentText != previousText2 && timer2 >= 200 ){
-    if (currentText != ""){
-      autocomplete.style.display = "block";
-    }
     var AJAXresult = await fetch("./BoutDePages/recherchePost.php?var=" + currentText);
     document.getElementById("suggestions2").innerHTML = await AJAXresult.text();
 

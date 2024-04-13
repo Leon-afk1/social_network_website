@@ -640,6 +640,40 @@ function getYoutubeEmbedUrl($url) // https://stackoverflow.com/questions/1905089
     return 'https://www.youtube.com/embed/' . $youtube_id ;
 }
 
+?>
+<script>
+function toggleForm(postId) {
+    var form = document.getElementById("postForm_" + postId);
+    var button = document.getElementById("toggleFormButton_" + postId);
+
+    if (form.style.display === "none") {
+        form.style.display = "block";
+        button.innerHTML = "Masquer le formulaire";
+    } else {
+        form.style.display = "none";
+        button.innerHTML = "Afficher le formulaire";
+    }
+}
+
+function sendTo(postId) {
+    window.location.href = "./post.php?id=" + postId;
+}
+
+async function supprimerPost(postId) {
+    var supp = await fetch("./BoutDePages/supprimerPost.php?id=" + postId);
+    var response = await supp.text();
+    if (response == "Post supprimé") {
+        var post = document.getElementById("post_" + postId);
+        post.style.display = "none";
+    } else {
+        alert(response);
+    }
+}
+
+
+</script>
+<?php
+
 function afficherPosts($post, $infos){
     $idPost = $post['id'];
     echo "<div class='card outline-secondary rounded-3' id='post_".$idPost."'>";
@@ -697,7 +731,10 @@ function afficherPosts($post, $infos){
     echo "<p class='card-text'>".$likesAmount." likes</p>";
     echo "<br>";
     echo "<br>";
-    $estLike = isLiked($_COOKIE['user_id'], $post["id"]); //vérifie si l'utilisateur a liké le post
+    $estLike = false;
+    if (isset($_COOKIE['user_id'])){
+        $estLike = isLiked($_COOKIE['user_id'], $post["id"]); //vérifie si l'utilisateur a liké le post
+    }
     if($estLike == true){
         echo "post liké";
     }else{
