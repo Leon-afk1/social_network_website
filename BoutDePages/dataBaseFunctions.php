@@ -778,22 +778,25 @@ function afficherPosts($post, $infos){
     }
     </script>
     <?php
-    echo "<p class='card-text'>".$post["date"]."</p>";
-    echo    "</div>";
-    echo    "<div class='card-footer'>";
+    if (isset($_COOKIE['user_id'])){
+        echo "<p class='card-text'>".$post["date"]."</p>";
+        echo    "</div>";
+        echo    "<div class='card-footer'>";
 
-    echo        "<div class='row'>";
-    echo            "<div class='col'>";
+        echo        "<div class='row'>";
+        echo            "<div class='col'>";
+        
+        // // Bouton pour masquer/afficher le formulaire avec ID de post
+        echo                "<button onclick='toggleForm($idPost)' class='btn btn-outline-secondary'>Réagir</button>";
+        echo            "</div>";
+        echo            "<div class='col text-end'>";
+        echo                "<label for='date'>". $post["date"]."</label>";
+        echo            "</div>";
+        echo        "</div>";
+        echo        "<br>";
+        echo        "<br>";
+    }
     
-    // // Bouton pour masquer/afficher le formulaire avec ID de post
-    echo                "<button onclick='toggleForm($idPost)' class='btn btn-outline-secondary'>Réagir</button>";
-    echo            "</div>";
-    echo            "<div class='col text-end'>";
-    echo                "<label for='date'>". $post["date"]."</label>";
-    echo            "</div>";
-    echo        "</div>";
-    echo        "<br>";
-    echo        "<br>";
 
     // Formulaire avec ID de post
     echo        "<form id='postForm_{$idPost}' action='#' method='post' class='mb-4' enctype='multipart/form-data' style='display: none;'>";

@@ -74,7 +74,6 @@
           <?php
             if(isset($_COOKIE['user_id'])){
               echo "<li class='nav-item'><button class='nav-link btn btn-link ' onclick='window.location.href=`./logout.php?redirect=$currentURL`' aria-current='page'>Logout</button></li>";
-              echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./profile.php?id=".$_COOKIE['user_id']."`' aria-current='page'>Profile</button></li>";
               echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./poster.php`' aria-current='page'>Poster</button></li>";
               echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='#'>Statistique</a></li>";
             } else {

@@ -12,10 +12,29 @@
         <?php 
         if ($AccountStatus["loginSuccessful"]){
             if (verifFollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"])){
-                echo "<form action='./profile.php?id=".$InfosCompteExterne["id_utilisateur"]."' method='post'>";
-                echo "<input type='hidden' name='unfollow' value='true'>";
-                echo "<button type='submit' class='btn btn-primary'>Unfollow</button>";
-                echo "</form>";
+                echo "<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#unfollowModal'>Unfollow</button>";
+
+                // modal pour unfollow
+                echo            "<div class='modal fade' id='unfollowModal' tabindex='-1' aria-labelledby='unfollowModal' aria-hidden='true'>";
+                echo                "<div class='modal-dialog modal-dialog-centered'>";
+                echo                    "<div class='modal-content'>";
+                echo                        "<div class='modal-header'>";
+                echo                            "<h5 class='modal-title' id='unfollowModalLabel'>Voulez vous vraiment ne plus suivre ce compte?</h5>";
+                echo                            "<button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>";
+                echo                        "</div>";
+                echo                        "<div class='modal-body text-center'>";
+                echo                            "<p>Êtes-vous sûr de vouloir unfollow ce compte?</p>";
+                echo                        "</div>";
+                echo                        "<div class='modal-footer'>";
+                echo                            "<button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Annuler</button>";
+                echo                            "<form action='./profile.php?id=".$InfosCompteExterne["id_utilisateur"]."' method='post'>";
+                echo                                "<input type='hidden' name='unfollow' value='true'>";
+                echo                                "<button type='submit' class='btn btn-danger'>Unfollow</button>";
+                echo                            "</form>";
+                echo                        "</div>";
+                echo                    "</div>";
+                echo                "</div>";
+                echo            "</div>";
             }else{
                 echo "<form action='./profile.php?id=".$InfosCompteExterne["id_utilisateur"]."' method='post'>";
                 echo "<input type='hidden' name='follow' value='true'>";
