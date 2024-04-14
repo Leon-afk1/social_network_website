@@ -2,7 +2,7 @@
 include ("loc.php");
 
 $ajouterPost = false;
-if (isset($_POST["submitPost"])) {
+if (isset($_POST["submitReponse"])) {
     $ajouterPost = true;
     $result=ajouterNewPost($_COOKIE['user_id']);
     if ($result["Successful"]){

@@ -1,6 +1,6 @@
 <?php
 include ("loc.php");
-
+include ("BoutDePages/repondrePost.php");
 include ("BoutDePages/header.php");
 
 $idPost = $_GET["id"];
@@ -32,20 +32,7 @@ $Infos = GetInfos($post["id_utilisateur"]);
                             $query = "SELECT * FROM utilisateur WHERE id_utilisateur = ".$reponse['id_utilisateur'];
                             $result = executeRequete($query);
                             $row = $result->fetch_assoc();
-                            echo "<div class='card outline-secondary'>";
-                            echo "<div class='card-header outline-secondary'>";
-                            echo "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$row["id_utilisateur"]."'> 
-                                    <img src='".$row["avatar"]."' class='avatar avatar-lg'>
-                                    <label for='nom'>". $row["nom"]." ".$row["prenom"]."</label>
-                                    </a>";
-                            echo "</div>";
-                            echo "<div class='card-body'>";
-                            if (!empty($reponse['image'])) {
-                                echo "<img src='{$reponse['image']}' class='img-fluid'>";
-                            }
-                            echo "<p class='card-text'>".$reponse["contenu"]."</p>";
-                            echo "</div>";
-                            echo "</div>";
+                            afficherPosts($reponse,$row);
                         }
                         echo "</div>";
                         echo "<button onclick='chargerPlusReponses($idPost)'>Charger plus</button>";

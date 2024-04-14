@@ -69,12 +69,14 @@
         <div class="form-group form-field">
             <label for="post">Posts :</label>
             <br>
-            <?php
-                $allPosts = GetAllPosts($InfosCompteExterne["id_utilisateur"]);
-                foreach ($allPosts as $post){
-                    afficherPosts($post,$InfosCompteExterne);
-                }
-            ?>
+            <div id="posts">
+                <?php
+                    $allPosts =  GetNextPosts($InfosCompteExterne["id_utilisateur"],0,5);
+                    foreach ($allPosts as $post){
+                        afficherPosts($post,$InfosCompteExterne);
+                    }
+                ?>
+            </div>
         </div>
     </div>
 </div>

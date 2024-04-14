@@ -1,5 +1,7 @@
 <?php 
 include ("../loc.php");
+include ("BoutDePages/repondrePost.php");
+
 $postId=45;
 
 $postInfos = getPostInfos($postId);

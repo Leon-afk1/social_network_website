@@ -54,12 +54,15 @@
         <div class="form-group form-field">
             <label for="post">Posts :</label>
             <br>
-            <?php
-                $allPosts = GetAllPosts($_COOKIE['user_id']);
-                foreach ($allPosts as $post){
-                    afficherPosts($post,$Infos);
-                }
-            ?>
+            <div id="posts">
+                <?php
+                    $allPosts =  GetNextPosts($_COOKIE['user_id'],0,5);
+                    foreach ($allPosts as $post){
+                        afficherPosts($post,$Infos);
+                    }
+                ?>
+            </div>
         </div>
     </div>
 </div>
+

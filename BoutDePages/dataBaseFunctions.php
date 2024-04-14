@@ -403,7 +403,7 @@ function ajouterNewPost($userId, $parentId = null){
     $error = NULL;
     $imagePathForDB = "";
 
-    if ($_POST["submitPost"]){
+    if ($_POST["submitReponse"]){
         $ajouterPosttry = true;
         $commentaire = SecurizeString_ForSQL($_POST["commentaire"]);
         $video = SecurizeString_ForSQL($_POST["video"]);
@@ -504,7 +504,6 @@ function ajouterNewPost($userId, $parentId = null){
 
     return $resultArray;
 }
-
 
 function getAllPosts($userId) {
     global $conn;
@@ -678,6 +677,24 @@ async function supprimerPost(postId) {
     }
 }
 
+function toggleImageVideo(postId) {
+    var image = document.getElementById("imageField_" + postId);
+    var video = document.getElementById("videoField_" + postId);
+    var imageRadio = document.getElementById("imageRadio_" + postId);
+    var videoRadio = document.getElementById("videoRadio_" + postId);
+
+    if (image.style.display === "none") {
+        image.style.display = "block";
+        video.style.display = "none";
+        imageRadio.checked = true;
+        image.querySelector('input').value = '';
+    } else {
+        image.style.display = "none";
+        video.style.display = "block";
+        videoRadio.checked = true;
+        video.querySelector('input').value = '';
+    }
+}
 
 </script>
 <?php
@@ -690,7 +707,7 @@ function afficherPosts($post, $infos){
     echo            "<div class='col'>";
     echo                "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'> 
                             <img src='".$infos["avatar"]."' class='avatar avatar-lg'>
-                            <label for='nom'>". $infos["nom"]." ".$infos["prenom"]."</label>
+                            <label for='nom'>". $infos["username"]."</label>
                         </a>";
     echo            "</div>";
     echo            "<div class='col text-end'>";
@@ -784,6 +801,8 @@ function afficherPosts($post, $infos){
             }
         });
     }
+
+
     </script>
     <?php
     if (isset($_COOKIE['user_id'])){
@@ -818,21 +837,39 @@ function afficherPosts($post, $infos){
     echo                "<textarea name='commentaire' class='form-control' rows='3'  required></textarea>";
     echo            "</div>";
     echo            "<div class='form-group form-field'>";
-    echo                "<label for='image'>Image:</label>";
-    echo                "<input type='file' name='image' class='form-control'>";
-    echo             "</div>";
+    echo               "<div class='form-check'>";
+    echo                    "<input class='form-check-input' type='radio' name='typeMedia' value='image' id='imageRadio_".$idPost."' onclick='toggleImageVideo($idPost)' checked>";
+    echo                    "<label class='form-check-label' for='imageRadio_".$idPost."'>Image</label>";
+    echo                "</div>";
+    echo                "<div class='form-check'>";
+    echo                    "<input class='form-check-input' type='radio' name='typeMedia' value='video' id='videoRadio_".$idPost."' onclick='toggleImageVideo($idPost)'>";
+    echo                    "<label class='form-check-label' for='videoRadio_".$idPost."'>Vidéo</label>";
+    echo                "</div>";
+    echo            "</div>";
+    echo            "<div class='imageField' id='imageField_".$idPost."'>";
+    echo                "<div class='form-group form-field'>";
+    echo                    "<label for='image'>Image:</label>";
+    echo                    "<input type='file' name='image' class='form-control' accept='image/*' >";
+    echo                "</div>";
+    echo            "</div>";
+    echo            "<div class='videoField' id='videoField_".$idPost."' style='display: none;'>";
+    echo                "<div class='form-group form-field'>";
+    echo                    "<label for='video'>Lien de la vidéo:</label>";
+    echo                    "<input type='text' name='video' class='form-control'>";
+    echo                "</div>";
+    echo            "</div>";
     echo            "<div class='form-group text-center'>";
     echo                "<input type='hidden' name='idPost' value='$idPost'>";
-    echo                "<input type='hidden' name='submitPost' value='true'>";
+    echo                "<input type='hidden' name='submitReponse' value='true'>";
     echo                "<br>";
     echo                "<button type='submit' class='btn btn-outline-secondary'>Valider</button>";
     echo            "</div>";
-    echo        "</form>";    
-    
+    echo        "</form>";  
     echo    "</div>";
     echo "</div>";
     echo "<br>";
 }
+
 
 function getReponsesCommentaire($idPost){
     global $conn;
@@ -847,15 +884,14 @@ function getReponsesCommentaire($idPost){
             'contenu' => $row['contenu'],
             'image' => $row['image_path'],
             'date' => $row['date'],
-            'id_utilisateur' => $row['id_utilisateur']
+            'id_utilisateur' => $row['id_utilisateur'],
+            'video_lien' => $row['video_lien']
         ];
         $reponses[] = $reponse;
     }
 
     return $reponses;
 }
-
-
 
 function afficherBestPosts($userId){
     global $conn;
@@ -933,6 +969,31 @@ function GetPostById($id){
     ];
 
     return $reponse;
+}
+
+function GetNextPosts($userId, $start, $combien){
+
+    $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom FROM post
+              INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur AND post.id_utilisateur = $userId
+              ORDER BY post.date DESC
+              LIMIT  $combien OFFSET $start";
+
+    $result = executeRequete($query);
+    $posts = [];
+    while ($row = $result->fetch_assoc()) {
+        $post = [
+            'id' => $row['id_post'],
+            'id_utilisateur' => $row['id_utilisateur'],
+            'contenu' => $row['contenu'],
+            'image' => $row['image_path'],
+            'date' => $row['date'],
+            'nom_utilisateur' => $row['nom'],
+            'prenom_utilisateur' => $row['prenom']
+        ];
+        $posts[] = $post;
+    }
+
+    return $posts;
 }
 
 ?>

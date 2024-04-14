@@ -1,5 +1,8 @@
 <?php
 include ("loc.php");
+session_start();
+
+include ("BoutDePages/repondrePost.php");
 
 $modifierProfile = false;
 if (isset($_POST["modifierProfile"])) {
@@ -61,6 +64,12 @@ if (isset($_POST["follow"])) {
 
 include ("BoutDePages/header.php");
 
+if ($monCompte){
+    $_SESSION["Infos"]=$Infos;
+}else{
+    $_SESSION["Infos"]=$InfosCompteExterne;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -97,3 +106,35 @@ include ("BoutDePages/header.php");
     <?php include ("BoutDePages/footer.php"); ?>
   </body>
 </html>
+
+
+<script>
+    var page = 2; // Page actuelle des posts
+    var loading = false; // Variable pour empêcher le chargement multiple
+
+    window.addEventListener('scroll', function() {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+            loadMorePosts();
+        }
+    });
+
+    function loadMorePosts() {
+        if (!loading) {
+            loading = true;
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var response = xhr.responseText;
+                    if (response.trim() !== '') {
+                        var postsDiv = document.getElementById('posts');
+                        postsDiv.innerHTML += response;
+                        page++; // Augmente le numéro de page
+                    }
+                    loading = false;
+                }
+            };
+            xhr.open('GET', './BoutDePages/loadMorePosts.php?page=' + page, true);
+            xhr.send();
+        }
+    }
+</script>

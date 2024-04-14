@@ -40,7 +40,7 @@
                 </div>
             </div>
             <div class="form-group text-center">
-                <input type="hidden" name="submitPost" value="true">
+                <input type="hidden" name="submitReponse" value="true">
                 <button type="submit" class="btn btn-outline-secondary">Valider</button>
             </div>
         </div>
@@ -57,11 +57,13 @@
         imageRadio.addEventListener('click', function() {
             imageField.style.display = 'block';
             videoField.style.display = 'none';
+            videoField.querySelector('input').value = '';
         });
 
         videoRadio.addEventListener('click', function() {
             imageField.style.display = 'none';
             videoField.style.display = 'block';
+            imageField.querySelector('input').value = '';
         });
     });
 </script>
