@@ -43,6 +43,21 @@ if (isset($_POST["submitModificationMdp"])) {
     }
 }
 
+$statistiques = false;
+if (isset($_POST["statistiques"])) {
+    $statistiques = true;
+}
+
+$following = false;
+if (isset($_POST["following"])) {
+    $following = true;
+}
+
+$follower = false;
+if (isset($_POST["follower"])) {
+    $follower = true;
+}
+
 $AccountStatus = CheckLogin();
 if (!$AccountStatus["loginSuccessful"]){
     if ($monCompte){
@@ -93,6 +108,12 @@ if ($monCompte){
                         include ("BoutDePages/modifierProfile.php");
                     }else if ($modifierMotDePasse){
                         include ("BoutDePages/modifiermdp.php");
+                    }else if ($following){
+                        include ("BoutDePages/following.php");
+                    }else if ($follower){
+                        include ("BoutDePages/follower.php");
+                    }else if ($statistiques){
+                        include ("BoutDePages/statistiques.php");
                     }else{
                         include ("BoutDePages/monProfil.php");
                     }

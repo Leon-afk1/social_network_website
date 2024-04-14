@@ -8,15 +8,35 @@
          ?>
         </h1>
         <?php echo $Infos["username"]?>
-
         <br>
-        <div class="container text-center">
-            <div class="row align-items-center">
+        <br>
+        <div class="container text-center align-items-center">
+            <div class="row align-items-center ">
                 <div class="col">
-                    <label for="followers">Followers : <?php echo totalFollowers($InfosCompteExterne["id_utilisateur"]) ?></label>
+                    <div class="card outline-secondary rounded-3">
+                        <div class="text-center card-header">
+                            <?php echo totalFollowers($InfosCompteExterne["id_utilisateur"]) ?>
+                        </div>
+                        <div class="card-body">
+                            <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
+                                <input type="hidden" name="follower" value="true">
+                                <button type="submit" class="btn btn-primary">Follower</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
                 <div class="col">
-                    <label for="following">Following : <?php echo totalFollowing($InfosCompteExterne["id_utilisateur"]) ?></label>
+                    <div class="card outline-secondary rounded-3">
+                        <div class="text-center card-header">
+                            <?php echo totalFollowing($InfosCompteExterne["id_utilisateur"]) ?>  
+                        </div>
+                        <div class="card-body">
+                            <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
+                                <input type="hidden" name="following" value="true">
+                                <button type="submit" class="btn btn-primary">Following</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -40,20 +60,32 @@
         <div class="form-group form-field">
             <label for="description"><?php echo $Infos["description"] ?></label>
             <br>
+            <br>
         </div>
         <div class="form-group text-center">
-            <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
-                <input type="hidden" name="modifierProfile" value="true">
-                <button type="submit" class="btn btn-outline-secondary ">Modifier profil</button>
-            </form>
-            <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
-                <input type="hidden" name="modifierMotDePasse" value="true">
-                <button type="submit" class="btn btn-outline-secondary">Changer de mot de passe</button>
-            </form>
+            <div class="row align-items-center">
+                <div class="col">
+                    <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
+                        <input type="hidden" name="modifierProfile" value="true">
+                        <button type="submit" class="btn btn-outline-secondary ">Modifier profil</button>
+                    </form>
+                </div>
+                <div class="col">
+                    <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
+                        <input type="hidden" name="modifierMotDePasse" value="true">
+                        <button type="submit" class="btn btn-outline-secondary">Modifier mot de passe</button>
+                    </form>
+                </div>
+                <div class="col">
+                    <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
+                        <input type="hidden" name="statistiques" value="true">
+                        <button type="submit" class="btn btn-outline-secondary">Statistiques</button>
+                    </form>
+            </div>
         </div>
+        <br>
+
         <div class="form-group form-field">
-            <label for="post">Posts :</label>
-            <br>
             <div id="posts">
                 <?php
                     $allPosts =  GetNextPosts($_COOKIE['user_id'],0,5);

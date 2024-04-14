@@ -704,7 +704,7 @@ function afficherPosts($post, $infos){
     echo "<div class='card outline-secondary rounded-3' id='post_".$idPost."'>";
     echo    "<div class='card-header outline-secondary'>";
     echo        "<div class='row'>";
-    echo            "<div class='col'>";
+    echo            "<div class='col text-start'>";
     echo                "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'> 
                             <img src='".$infos["avatar"]."' class='avatar avatar-lg'>
                             <label for='nom'>". $infos["username"]."</label>
@@ -713,9 +713,8 @@ function afficherPosts($post, $infos){
     echo            "<div class='col text-end'>";
     if (isset($_COOKIE['user_id']) && $infos['id_utilisateur'] == $_COOKIE['user_id']){
         echo               "<button class='btn btn-outline-secondary' id='supprimerPost_".$idPost."' data-bs-toggle='modal' data-bs-target='#supprimerPostModal_".$idPost."'>Supprimer</button>";
-        echo               "<button class='btn btn-outline-secondary' id='modifierPost_".$idPost."'>Modifier</button>";
     }
-
+    echo            "</div>";
     // modal pour supprimer post
     echo            "<div class='modal fade' id='supprimerPostModal_".$idPost."' tabindex='-1' aria-labelledby='supprimerPostModalLabel_".$idPost."' aria-hidden='true'>";
     echo                "<div class='modal-dialog modal-dialog-centered'>";
@@ -733,8 +732,6 @@ function afficherPosts($post, $infos){
     echo                        "</div>";
     echo                    "</div>";
     echo                "</div>";
-    echo            "</div>";
-
     echo            "</div>";
     echo        "</div>";
     echo    "</div>";
@@ -994,6 +991,86 @@ function GetNextPosts($userId, $start, $combien){
     }
 
     return $posts;
+}
+
+function getFollowers($userId){
+
+    $query = "SELECT * FROM utilisateur INNER JOIN follower ON utilisateur.id_utilisateur = follower.id_utilisateur WHERE id_utilisateur_suivi = $userId";
+    $result = executeRequete($query);
+
+    $followers = [];
+    while ($row = $result->fetch_assoc()) {
+        $follower = [
+            'id' => $row['id_utilisateur'],
+            'dateNaissance' => $row['dateNaissance']
+        ];
+        $followers[] = $follower;
+    }
+
+    return $followers;
+}
+
+function getFollowed($userId){
+
+    $query = "SELECT utilisateur.dateNaissance, utilisateur.avatar, utilisateur.username, utilisateur.description, 
+                utilisateur.id_utilisateur FROM utilisateur INNER JOIN follower ON utilisateur.id_utilisateur = follower.id_utilisateur_suivi WHERE follower.id_utilisateur = $userId";
+    $result = executeRequete($query);
+
+    $following = [];
+    while ($row = $result->fetch_assoc()) {
+        $follow = [
+            'dateNaissance' => $row['dateNaissance'],
+            'avatar' => $row['avatar'],
+            'username' => $row['username'],
+            'description' => $row['description'],
+            'id_utilisateur' => $row['id_utilisateur']
+        ];
+        $following[] = $follow;
+    }
+
+    return $following;
+}
+
+function getPosts($userId){
+
+    $query = "SELECT * FROM post WHERE id_utilisateur = $userId";
+    $result = executeRequete($query);
+
+    $posts = [];
+    while ($row = $result->fetch_assoc()) {
+        $post = [
+            'id' => $row['id_post'],
+            'contenu' => $row['contenu'],
+            'image' => $row['image_path'],
+            'date' => $row['date']
+        ];
+        $posts[] = $post;
+    }
+
+    return $posts;
+}
+
+function getAge($dateNaissance){
+    $date = new DateTime($dateNaissance);
+    $now = new DateTime();
+    $interval = $now->diff($date);
+    return $interval->y;
+}
+
+function getNbPostParJour($userId){
+    $moyenne = 0;
+    $query = "SELECT COUNT(*) FROM post WHERE id_utilisateur = $userId";
+    $result = executeRequete($query);
+    $row = $result->fetch_assoc();
+    $nbPost = $row['COUNT(*)'];
+    $query = "SELECT DATEDIFF(NOW(), (SELECT date FROM post WHERE id_utilisateur = $userId ORDER BY date DESC LIMIT 1)) As nbJours";
+    $result = executeRequete($query);
+    $row = $result->fetch_assoc();
+    $nbJours = $row['nbJours'];
+    if ($nbJours != 0){
+        $moyenne = $nbPost / $nbJours;
+    }
+    return $moyenne;
 }
 
 ?>
