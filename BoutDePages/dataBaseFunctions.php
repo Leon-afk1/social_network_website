@@ -806,7 +806,6 @@ function afficherPosts($post, $infos){
     </script>
     <?php
     if (isset($_COOKIE['user_id'])){
-        echo "<p class='card-text'>".$post["date"]."</p>";
         echo    "</div>";
         echo    "<div class='card-footer'>";
 
