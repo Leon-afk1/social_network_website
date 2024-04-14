@@ -972,7 +972,7 @@ function GetPostById($id){
 
 function GetNextPosts($userId, $start, $combien){
 
-    $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom FROM post
+    $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path,post.video_lien, post.date, utilisateur.nom, utilisateur.prenom FROM post
               INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur AND post.id_utilisateur = $userId
               ORDER BY post.date DESC
               LIMIT  $combien OFFSET $start";
@@ -985,6 +985,7 @@ function GetNextPosts($userId, $start, $combien){
             'id_utilisateur' => $row['id_utilisateur'],
             'contenu' => $row['contenu'],
             'image' => $row['image_path'],
+            'video_lien' => $row['video_lien'],
             'date' => $row['date'],
             'nom_utilisateur' => $row['nom'],
             'prenom_utilisateur' => $row['prenom']

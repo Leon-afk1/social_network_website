@@ -39,6 +39,7 @@
                     <input type="text" name="video" class="form-control">
                 </div>
             </div>
+            <br>
             <div class="form-group text-center">
                 <input type="hidden" name="submitReponse" value="true">
                 <button type="submit" class="btn btn-outline-secondary">Valider</button>
