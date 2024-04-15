@@ -995,14 +995,18 @@ function GetNextPosts($userId, $start, $combien){
 
 function getFollowers($userId){
 
-    $query = "SELECT * FROM utilisateur INNER JOIN follower ON utilisateur.id_utilisateur = follower.id_utilisateur WHERE id_utilisateur_suivi = $userId";
+    $query = "SELECT utilisateur.dateNaissance, utilisateur.avatar, utilisateur.username, utilisateur.description, 
+    utilisateur.id_utilisateur FROM utilisateur INNER JOIN follower ON utilisateur.id_utilisateur = follower.id_utilisateur WHERE id_utilisateur_suivi = $userId";
     $result = executeRequete($query);
 
     $followers = [];
     while ($row = $result->fetch_assoc()) {
         $follower = [
-            'id' => $row['id_utilisateur'],
-            'dateNaissance' => $row['dateNaissance']
+            'dateNaissance' => $row['dateNaissance'],
+            'avatar' => $row['avatar'],
+            'username' => $row['username'],
+            'description' => $row['description'],
+            'id_utilisateur' => $row['id_utilisateur']
         ];
         $followers[] = $follower;
     }
