@@ -500,7 +500,8 @@ function ajouterNewPost($userId, $parentId = null){
 
     $resultArray = ['Attempted' => $ajouterPosttry, 
                     'Successful' => $ajouterPost,
-                    'ErrorMessage' => $error];
+                    'ErrorMessage' => $error,
+                    'idPost' => $postId,];
 
     return $resultArray;
 }
@@ -1075,6 +1076,80 @@ function getNbPostParJour($userId){
         $moyenne = $nbPost / $nbJours;
     }
     return $moyenne;
+}
+
+function notifyUnfollow($userId, $userIdToUnfollow){
+    global $conn;
+
+    $query = "Insert into notification (id_utilisateur, id_utilisateur_cible, type, date_notification) VALUES ($userIdToUnfollow, $userId, 'unfollow', NOW())";
+    if (executeRequete($query)){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function notifyFollow($userId, $userIdToFollow){
+    global $conn;
+
+    $query = "Insert into notification (id_utilisateur, id_utilisateur_cible, type, date_notification) VALUES ($userIdToFollow, $userId, 'follow', NOW())";
+    if (executeRequete($query)){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function verifNotificationUnfollow($userId, $userIdToUnfollow){
+    global $conn;
+
+    $query = "SELECT * FROM notification WHERE id_utilisateur = $userIdToUnfollow AND id_utilisateur_cible = $userId AND type = 'unfollow'";
+    $result = executeRequete($query);
+    if ($result->num_rows > 0) {
+        $query = "DELETE FROM notification WHERE id_utilisateur = $userIdToUnfollow AND id_utilisateur_cible = $userId AND type = 'unfollow'";
+        if (executeRequete($query)){
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+function verifNotificationFollow($userId, $userIdToFollow){
+    global $conn;
+
+    $query = "SELECT * FROM notification WHERE id_utilisateur = $userIdToFollow AND id_utilisateur_cible = $userId AND type = 'follow'";
+    $result = executeRequete($query);
+    if ($result->num_rows > 0) {
+        $query = "DELETE FROM notification WHERE id_utilisateur = $userIdToFollow AND id_utilisateur_cible = $userId AND type = 'follow'";
+        if (executeRequete($query)){
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+function notifyPost($userId, $postId){
+    global $conn;
+
+    $query = "SELECT id_utilisateur FROM follower WHERE id_utilisateur_suivi = $userId";
+    $result = executeRequete($query);
+    while ($row = $result->fetch_assoc()) {
+        $query = "Insert into notification (id_utilisateur, id_utilisateur_cible, id_post_cible, type, date_notification) VALUES ({$row['id_utilisateur']}, $userId, $postId, 'post', NOW())";
+        executeRequete($query);
+    }
+}
+
+function getNbNotifications($userId){
+    $query = "SELECT COUNT(*) FROM notification WHERE id_utilisateur = $userId AND bool_lue = 0";
+    $result = executeRequete($query);
+    $row = $result->fetch_assoc();
+    return $row['COUNT(*)'];
 }
 
 ?>

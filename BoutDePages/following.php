@@ -1,5 +1,8 @@
 <?php
 $following = getFollowed($_COOKIE['user_id']);
+
+$_SESSION['user_id'] = $_COOKIE['user_id'];
+
 ?>
 
 <script>
@@ -14,7 +17,7 @@ $following = getFollowed($_COOKIE['user_id']);
         var response = await unfollow.text();
         if (response === "success") {
             var user = document.getElementById(id);
-            user.style.display = 'none';
+            user.remove();
         } else {
             alert(response);
         }

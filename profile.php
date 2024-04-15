@@ -71,10 +71,14 @@ $Infos = GetInfoProfile($protectedID);
 
 if (isset($_POST["unfollow"])) {
     unfollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
+    notifyUnfollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
+    verifNotificationFollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
 }
 
 if (isset($_POST["follow"])) {
     follow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
+    notifyFollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
+    verifNotificationUnfollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
 }
 
 include ("BoutDePages/header.php");

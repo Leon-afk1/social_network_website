@@ -1,5 +1,9 @@
 <?php
 $followers = getFollowers($_COOKIE['user_id']);
+
+
+$_SESSION['user_id'] = $_COOKIE['user_id'];
+
 ?>
 
 <script>
@@ -12,7 +16,7 @@ $followers = getFollowers($_COOKIE['user_id']);
         }).then(response => response.text())
             .then(data => {
                 if (data === "success") {
-                    document.getElementById(id).style.display = "none";
+                    document.getElementById(id).remove();
                 } else {
                     alert("Erreur lors de la suppression du follow");
                 }

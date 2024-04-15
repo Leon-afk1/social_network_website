@@ -266,3 +266,6 @@ body{
     pointer-events: none; 
 }
 
+.custom-badge {
+    top: -5px;
+}

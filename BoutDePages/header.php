@@ -37,10 +37,14 @@
     }
   }
   
-
+  $nbNotifications = 0;
   if(isset($_COOKIE['user_id'])){
     $Infos = GetInfoProfile($_COOKIE['user_id']);
+
+    $nbNotifications = getNbNotifications($_COOKIE['user_id']);
   }
+
+  
 ?>
 
  <head>
@@ -75,7 +79,18 @@
             if(isset($_COOKIE['user_id'])){
               echo "<li class='nav-item'><button class='nav-link btn btn-link ' onclick='window.location.href=`./logout.php?redirect=$currentURL`' aria-current='page'>Logout</button></li>";
               echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./poster.php`' aria-current='page'>Poster</button></li>";
-              echo "<li class='nav-item'><a class='nav-link active' aria-current='page' href='#'>Statistique</a></li>";
+              echo "<li class='nav-item'><form class='nav-item' action='./profile.php?id=".$_COOKIE['user_id']."' method='post'>
+                          <input type='hidden' name='statistiques' value'true'>
+                          <button type='submit' class='nav-link btn btn-link'>Statistiques</button>
+                      </form>
+                    </li>";
+              echo  "<li class='nav-item position-relative'><button class='nav-link btn btn-link' onclick='window.location.href=`./notification.php?id=".$_COOKIE['user_id']."`' aria-current='page'>Notifications
+                    <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger'>
+                    $nbNotifications
+                    <span class='visually-hidden'>unread messages</span>
+                  </span>
+              </button></li>";
+
             } else {
               echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='toggleLoginForm()' aria-current='page'>Login</button></li>";
               echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='toggleNewLoginForm()' aria-current='page'>Sign in</button></li>";

@@ -76,11 +76,6 @@
                         <button type="submit" class="btn btn-outline-secondary">Modifier mot de passe</button>
                     </form>
                 </div>
-                <div class="col">
-                    <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
-                        <input type="hidden" name="statistiques" value="true">
-                        <button type="submit" class="btn btn-outline-secondary">Statistiques</button>
-                    </form>
             </div>
         </div>
         <br>

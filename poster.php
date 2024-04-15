@@ -7,6 +7,7 @@ if (isset($_POST["submitReponse"])) {
     $result=ajouterNewPost($_COOKIE['user_id']);
     if ($result["Successful"]){
         $ajouterPost = false;
+        notifyPost($_COOKIE['user_id'],$result["idPost"]);
         header("Location:./index.php");
         exit();
     }else{

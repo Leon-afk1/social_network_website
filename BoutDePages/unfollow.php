@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 function ConnectToDataBase() {
     $serveur = 'localhost';
     $utilisateur = 'root';
@@ -28,7 +30,7 @@ function unfollow($userId, $userIdToUnfollow){
 ConnectToDataBase();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $result = unfollow($_COOKIE['user_id'], $_POST["idToUnfollow"]);
+    $result = unfollow($_SESSION['user_id'], $_POST['idToUnfollow']);
     if ($result) {
         echo "success";
     } else {
