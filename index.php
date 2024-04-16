@@ -1,9 +1,11 @@
 <?php
+
 include ("loc.php");
 
 include ("BoutDePages/repondrePost.php");
 
-$AccountStatus = CheckLogin();
+// $AccountStatus = CheckLogin();
+
 
 include ("BoutDePages/header.php");
 
@@ -23,7 +25,7 @@ include ("BoutDePages/header.php");
         <div class="px-3">
           <div class="container">
             <?php 
-              if ($AccountStatus["loginSuccessful"]){
+              if ($SQLconn->loginStatus->loginSuccessful){
                 ?>
               <div class="row align-items-start">
                   <div class="col">
@@ -31,10 +33,10 @@ include ("BoutDePages/header.php");
                       <h2 class="card-title text-center">Meilleurs posts du moment :</h2>
                       <br>
                       <?php
-                          $allPosts = afficherBestPosts($_COOKIE['user_id']);
+                          $allPosts = $SQLconn->profile->getBestPosts($SQLconn->loginStatus->userID);
                           foreach ($allPosts as $post){
-                              $infos = GetInfos($post["id_utilisateur"]);
-                              afficherPosts($post,$infos);
+                              $infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
+                              $SQLconn->profile->afficherPosts($post,$infos);
                           }
                       ?>
                     </div>
@@ -44,15 +46,15 @@ include ("BoutDePages/header.php");
                       <h2 class="card-title text-center">Post recent que vous suivez :</h2>
                       <br>
                       <?php
-                          $allPosts = afficherRecentPostsFollowed($_COOKIE['user_id']);
+                          $allPosts = $SQLconn->profile->getRecentPostsFollowed($_COOKIE['user_id']);
                           foreach ($allPosts as $post){
-                              $infos = GetInfos($post["id_utilisateur"]);
-                              afficherPosts($post,$infos);
+                              $infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
+                              $SQLconn->profile->afficherPosts($post,$infos);
                           }
                           if (count($allPosts) == 0){
                               echo "Vous ne suivez personne";
                           }
-                      ?>
+                       ?>
                     </div>
                   </div>
               </div>
@@ -62,10 +64,10 @@ include ("BoutDePages/header.php");
                 <h2 class="card-title">Meilleurs posts du moment :</h2>
                 <br>
                 <?php
-                    $allPosts = afficherBestPosts(0);
+                    $allPosts = $SQLconn->profile->getBestPosts(0);
                     foreach ($allPosts as $post){
-                        $infos = GetInfos($post["id_utilisateur"]);
-                        afficherPosts($post,$infos);
+                        $infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
+                        $SQLconn->profile->afficherPosts($post,$infos);
                     }
                 ?>
                 <?php
@@ -75,6 +77,6 @@ include ("BoutDePages/header.php");
         </div>
         <br>
     </main>
-    <?php include ("BoutDePages/footer.php"); ?>
+    <!-- <?php include ("BoutDePages/footer.php"); ?> -->
   </body>
 </html>

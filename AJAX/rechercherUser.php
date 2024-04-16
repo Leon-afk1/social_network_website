@@ -1,7 +1,7 @@
 <?php
     include ("../loc.php");
 
-    $protectedText = SecurizeString_ForSQL($_GET["var"]);
+    $protectedText = $SQLconn->SecurizeString_ForSQL($_GET["var"]);
 
     if ($protectedText == "") {
         echo "";
@@ -11,7 +11,7 @@
 
     if ($protectedText != "") {
         $query = "SELECT id_utilisateur, username, avatar FROM `utilisateur` WHERE LOWER(username) LIKE LOWER('%$protectedText%')";
-        $result = executeRequete($query);
+        $result = $SQLconn->executeRequete($query);
 
         if ($result->num_rows > 0) {
             while( $row = $result->fetch_assoc() ){

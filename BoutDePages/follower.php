@@ -1,28 +1,9 @@
 <?php
-$followers = getFollowers($_COOKIE['user_id']);
+$followers = $SQLconn->profile->GetFollowers($InfosCompteExterne["id_utilisateur"]);
 
-
-$_SESSION['user_id'] = $_COOKIE['user_id'];
 
 ?>
 
-<script>
-    function supprimerFollowUser(id) {
-        var data = new FormData();
-        data.append('idToUnfollow', id);
-        fetch('./BoutDePages/supprimerFollow.php', {
-            method: 'POST',
-            body: data
-        }).then(response => response.text())
-            .then(data => {
-                if (data === "success") {
-                    document.getElementById(id).remove();
-                } else {
-                    alert("Erreur lors de la suppression du follow");
-                }
-            });
-    }
-</script>
 
 <link rel="stylesheet" href="styles.css">
 
@@ -77,3 +58,5 @@ $_SESSION['user_id'] = $_COOKIE['user_id'];
         ?>
     </div>
 </div>
+
+<script src="./JS/follower_following.js"></script>

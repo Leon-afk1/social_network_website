@@ -15,7 +15,7 @@
                 <div class="col">
                     <div class="card outline-secondary rounded-3">
                         <div class="text-center card-header">
-                            <?php echo totalFollowers($InfosCompteExterne["id_utilisateur"]) ?>
+                            <?php echo $SQLconn->profile->totalFollowers($_COOKIE['user_id']) ?>
                         </div>
                         <div class="card-body">
                             <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
@@ -28,7 +28,7 @@
                 <div class="col">
                     <div class="card outline-secondary rounded-3">
                         <div class="text-center card-header">
-                            <?php echo totalFollowing($InfosCompteExterne["id_utilisateur"]) ?>  
+                            <?php echo $SQLconn->profile->totalFollowing($InfosCompteExterne["id_utilisateur"]) ?>  
                         </div>
                         <div class="card-body">
                             <form action="./profile.php?id=<?php echo $_COOKIE['user_id']?>" method="post">
@@ -83,13 +83,14 @@
         <div class="form-group form-field">
             <div id="posts">
                 <?php
-                    $allPosts =  GetNextPosts($_COOKIE['user_id'],0,5);
+                    $allPosts =  $SQLconn->profile->GetNextPosts($_COOKIE['user_id'],0,5);
                     foreach ($allPosts as $post){
-                        afficherPosts($post,$Infos);
+                        $SQLconn->profile->afficherPosts($post,$Infos);
                     }
                 ?>
             </div>
         </div>
     </div>
 </div>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="JS/monProfile.js"></script>

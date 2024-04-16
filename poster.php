@@ -4,10 +4,10 @@ include ("loc.php");
 $ajouterPost = false;
 if (isset($_POST["submitReponse"])) {
     $ajouterPost = true;
-    $result=ajouterNewPost($_COOKIE['user_id']);
+    $result=$SQLconn->profile->ajouterNewPost($_COOKIE['user_id']);
     if ($result["Successful"]){
         $ajouterPost = false;
-        notifyPost($_COOKIE['user_id'],$result["idPost"]);
+        $SQLconn->notification->notifyPost($_COOKIE['user_id'], $result["idPost"]);
         header("Location:./index.php");
         exit();
     }else{
@@ -16,8 +16,7 @@ if (isset($_POST["submitReponse"])) {
 }
 
 
-$AccountStatus = CheckLogin();
-if (!$AccountStatus["loginSuccessful"]){
+if (!$SQLconn->loginStatus->loginSuccessful) {
     echo "non connecté";
     header("Location:./index.php");
     exit();
@@ -49,6 +48,6 @@ include ("BoutDePages/header.php");
         </div>
         <br>
     </main>
-    <?php include ("BoutDePages/footer.php"); ?>
+    <!-- <?php include ("BoutDePages/footer.php"); ?> -->
   </body>
 </html>

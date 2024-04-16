@@ -1,6 +1,6 @@
 <?php
 include ("loc.php");
-DeleteLoginCookie();
+$SQLconn->loginStatus->logout();
 if (isset($_GET['redirect'])) {
     $redirectURL = $_GET['redirect'];
     header("Location: $redirectURL");

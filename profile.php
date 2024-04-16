@@ -9,23 +9,23 @@ if (isset($_POST["modifierProfile"])) {
     $modifierProfile = true;
 }
 
-$protectedID = SecurizeString_ForSQL($_GET["id"]);
+$protectedID = $SQLconn->SecurizeString_ForSQL($_GET["id"]);
 
 $monCompte = false;
 if (isset($_COOKIE['user_id']) && $_COOKIE['user_id'] == $protectedID){
     $monCompte = true;
 }
-$InfosCompteExterne = GetInfoProfile($protectedID);
+$InfosCompteExterne = $SQLconn->profile->GetInfoProfile($protectedID);
 
 if (isset($_POST["submitModification"]) && isset($_FILES["avatar"]) && !empty($_FILES["avatar"]["name"])) {
-    $resultAvatar=UpdateAvatar($_COOKIE['user_id']);
-    $result=UpdateInfosProfile($_COOKIE['user_id']);
+    $resultAvatar=$SQLconn->profile->UpdateAvatar($_COOKIE['user_id']);
+    $result=$SQLconn->profile->UpdateInfosProfile($_COOKIE['user_id']);
     if ($resultAvatar["Successful"] && $result["Successful"]){
-        $Infos = GetInfoProfile($protectedID);
+        $Infos = $SQLconn->profile->GetInfoProfile($_COOKIE['user_id']);
         $modifierProfile = false;
     }
 }else if (isset($_POST["submitModification"])) {
-    $result=UpdateInfosProfile($_COOKIE['user_id']);
+    $result=$SQLconn->profile->UpdateInfosProfile($_COOKIE['user_id']);
     if ($result["Successful"]){
         $modifierProfile = false;
     }
@@ -37,7 +37,7 @@ if (isset($_POST["modifierMotDePasse"])) {
 }
 
 if (isset($_POST["submitModificationMdp"])) {
-    $result=changermdp($_COOKIE['user_id']);
+    $result=$SQLconn->profile->changermdp($_COOKIE['user_id']);
     if ($result["Successful"]){
         $modifierMotDePasse = false;
     }
@@ -58,8 +58,7 @@ if (isset($_POST["follower"])) {
     $follower = true;
 }
 
-$AccountStatus = CheckLogin();
-if (!$AccountStatus["loginSuccessful"]){
+if (!$SQLconn->loginStatus->loginSuccessful) {
     if ($monCompte){
         echo "non connecté";
         header("Location:".$rootpath."/index.php");
@@ -67,18 +66,18 @@ if (!$AccountStatus["loginSuccessful"]){
     }
 }
 
-$Infos = GetInfoProfile($protectedID);
+$Infos = $SQLconn->profile->GetInfoProfile($_COOKIE['user_id']);
 
 if (isset($_POST["unfollow"])) {
-    unfollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
-    notifyUnfollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
-    verifNotificationFollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
+    $SQLconn->profile->unfollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
+    $SQLconn->notification->notifyUnfollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
+    $SQLconn->notification->verifNotificationFollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
 }
 
 if (isset($_POST["follow"])) {
-    follow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
-    notifyFollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
-    verifNotificationUnfollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
+    $SQLconn->profile->follow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
+    $SQLconn->notification->notifyFollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
+    $SQLconn->notification->verifNotificationUnfollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);
 }
 
 include ("BoutDePages/header.php");
@@ -112,14 +111,14 @@ if ($monCompte){
                         include ("BoutDePages/modifierProfile.php");
                     }else if ($modifierMotDePasse){
                         include ("BoutDePages/modifiermdp.php");
-                    }else if ($following){
-                        include ("BoutDePages/following.php");
+                    // }else if ($following){
+                    //     include ("BoutDePages/following.php");
                     }else if ($follower){
                         include ("BoutDePages/follower.php");
                     }else if ($statistiques){
-                        include ("BoutDePages/statistiques.php");
+                        include ("BoutDePages/statistique.php");
                     }else{
-                        include ("BoutDePages/monProfil.php");
+                        include ("BoutDePages/monProfile.php");
                     }
                   ?>
                 </div>
@@ -128,38 +127,8 @@ if ($monCompte){
         <br>
 
     </main>
-    <?php include ("BoutDePages/footer.php"); ?>
+    <!-- <?php include ("BoutDePages/footer.php"); ?> -->
   </body>
 </html>
+<script src="JS/profile.js"></script>
 
-
-<script>
-    var page = 2; // Page actuelle des posts
-    var loading = false; // Variable pour empêcher le chargement multiple
-
-    window.addEventListener('scroll', function() {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-            loadMorePosts();
-        }
-    });
-
-    function loadMorePosts() {
-        if (!loading) {
-            loading = true;
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    var response = xhr.responseText;
-                    if (response.trim() !== '') {
-                        var postsDiv = document.getElementById('posts');
-                        postsDiv.innerHTML += response;
-                        page++; // Augmente le numéro de page
-                    }
-                    loading = false;
-                }
-            };
-            xhr.open('GET', './BoutDePages/loadMorePosts.php?page=' + page, true);
-            xhr.send();
-        }
-    }
-</script>

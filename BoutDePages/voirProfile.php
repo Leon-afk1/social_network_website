@@ -10,8 +10,8 @@
         <?php echo $InfosCompteExterne["username"] ?>
         <br>
         <?php 
-        if ($AccountStatus["loginSuccessful"]){
-            if (verifFollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"])){
+        if (!$monCompte){
+            if ($SQLconn->profile->verifFollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"])){
                 echo "<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#unfollowModal'>Unfollow</button>";
 
                 // modal pour unfollow
@@ -46,10 +46,10 @@
         <div class="container text-center">
             <div class="row align-items-center">
                 <div class="col">
-                    <label for="followers">Followers : <?php echo totalFollowers($InfosCompteExterne["id_utilisateur"]) ?></label>
+                    <label for="followers">Followers : <?php echo $SQLconn->profile->totalFollowers($InfosCompteExterne["id_utilisateur"]) ?></label>
                 </div>
                 <div class="col">
-                    <label for="following">Following : <?php echo totalFollowing($InfosCompteExterne["id_utilisateur"]) ?></label>
+                    <label for="following">Following : <?php echo $SQLconn->profile->totalFollowing($InfosCompteExterne["id_utilisateur"]) ?></label>
                 </div>
             </div>
         </div>
@@ -71,9 +71,9 @@
             <br>
             <div id="posts">
                 <?php
-                    $allPosts =  GetNextPosts($InfosCompteExterne["id_utilisateur"],0,5);
+                    $allPosts =  $SQLconn->profile->GetNextPosts($InfosCompteExterne["id_utilisateur"],0,5);
                     foreach ($allPosts as $post){
-                        afficherPosts($post,$InfosCompteExterne);
+                        $SQLconn->profile->afficherPosts($post,$InfosCompteExterne);
                     }
                 ?>
             </div>

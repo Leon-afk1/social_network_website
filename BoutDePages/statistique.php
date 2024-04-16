@@ -1,35 +1,17 @@
 <?php
 
-$followers=getFollowers($_COOKIE['user_id']);
-$followed=getFollowed($_COOKIE['user_id']);
-$posts=getPosts($_COOKIE['user_id']);
 
-$nbFollowers=count($followers);
-$nbFollowed=count($followed);
-$nbPosts=count($posts);
+$followers = $SQLconn->statistiques->getFollowers($_COOKIE['user_id']);
+$followed =$SQLconn->statistiques->getFollowed($_COOKIE['user_id']);
+$posts = $SQLconn->statistiques->getPosts($_COOKIE['user_id']);
 
-$moyenneAgeFollower=0;
-foreach ($followers as $follower){
-    $moyenneAgeFollower+=getAge($follower["dateNaissance"]);
-}
-if ($nbFollowers==0){
-    $moyenneAgeFollower=0;
-}else{
-    $moyenneAgeFollower=$moyenneAgeFollower/$nbFollowers;
-}
+$nbFollowers = count($followers);
+$nbFollowed = count($followed);
+$nbPosts = count($posts);
 
-$moyenneAgeFollowed=0;
-foreach ($followed as $follow){
-    $moyenneAgeFollowed+=getAge($follow["dateNaissance"]);
-}
-if  ($nbFollowed==0){
-    $moyenneAgeFollowed=0;
-}else{
-    $moyenneAgeFollowed=$moyenneAgeFollowed/$nbFollowed;
-}
-
-$nbPostParJour=getNbPostParJour($_COOKIE['user_id']);
-
+$moyenneAgeFollower = $SQLconn->statistiques->calculateAverageAge($followers);
+$moyenneAgeFollowed = $SQLconn->statistiques->calculateAverageAge($followed);
+$nbPostParJour = $SQLconn->statistiques->getNbPostParJour($_COOKIE['user_id']);
 ?>
 
 <link rel="stylesheet" href="styles.css">
@@ -42,7 +24,6 @@ $nbPostParJour=getNbPostParJour($_COOKIE['user_id']);
          ?>
         </h1>
         <?php echo $Infos["username"]?>
-
         <br>
     </div>
     <div class="card-body">
@@ -73,4 +54,4 @@ $nbPostParJour=getNbPostParJour($_COOKIE['user_id']);
         </div>
     </div>
 </div>
-    
+<!-- <?php include("BoutDePages/footer.php"); ?> -->

@@ -1,7 +1,7 @@
 <?php
     include ("../loc.php");
 
-    $protectedText = SecurizeString_ForSQL($_GET["var"]);
+    $protectedText = $SQLconn->SecurizeString_ForSQL($_GET["var"]);
 
     if ($protectedText == "") {
         echo "";
@@ -11,7 +11,7 @@
 
     if ($protectedText != "") {
         $query =  "SELECT post.id_post, post.id_utilisateur, post.contenu,  utilisateur.username, utilisateur.avatar FROM `post` INNER JOIN `utilisateur` ON post.id_utilisateur = utilisateur.id_utilisateur WHERE LOWER(post.contenu) LIKE LOWER('%$protectedText%')";
-        $result = executeRequete($query);
+        $result = $SQLconn->executeRequete($query);
 
         if ($result->num_rows > 0) {
             while( $row = $result->fetch_assoc() ){
