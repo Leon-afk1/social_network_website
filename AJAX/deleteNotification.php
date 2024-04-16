@@ -16,13 +16,6 @@ if (isset($_GET["id"])) {
     } else {
         echo "error";
     }
-} else if (isset($_GET["idUser"])) {
-    $result = $SQLconn->notification->supprimerAllNotifications($_GET["idUser"]);
-    if ($result) {
-        echo "success";
-    } else {
-        echo "error all post";
-    }
-}
+} 
 
 ?>

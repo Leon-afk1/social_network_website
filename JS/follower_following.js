@@ -14,3 +14,20 @@ function supprimerFollowUser(id) {
         });
 }
 
+async function unfollowUser(id) {
+    var unfollow = await fetch('./AJAX/unfollow.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'idToUnfollow=' + id,
+    });
+    var response = await unfollow.text();
+    if (response === "success") {
+        var user = document.getElementById(id);
+        user.remove();
+    } else {
+        alert(response);
+    }
+    return response;
+}

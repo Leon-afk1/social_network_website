@@ -111,8 +111,8 @@ if ($monCompte){
                         include ("BoutDePages/modifierProfile.php");
                     }else if ($modifierMotDePasse){
                         include ("BoutDePages/modifiermdp.php");
-                    // }else if ($following){
-                    //     include ("BoutDePages/following.php");
+                    }else if ($following){
+                        include ("BoutDePages/following.php");
                     }else if ($follower){
                         include ("BoutDePages/follower.php");
                     }else if ($statistiques){

@@ -4,9 +4,6 @@ include ("loc.php");
 
 include ("BoutDePages/repondrePost.php");
 
-// $AccountStatus = CheckLogin();
-
-
 include ("BoutDePages/header.php");
 
 
@@ -77,6 +74,8 @@ include ("BoutDePages/header.php");
         </div>
         <br>
     </main>
+    <script src="JS/monProfile.js"></script>
+
     <!-- <?php include ("BoutDePages/footer.php"); ?> -->
   </body>
 </html>

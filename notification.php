@@ -25,7 +25,6 @@ $notifications = $SQLconn->notification->getNotifications($user_id);
 $SQLconn->notification->markNotificationsAsRead($user_id);
 ?>
 
-<script src="JS/notificationHandler.js"></script>
 
 
 <!DOCTYPE html>
@@ -50,39 +49,44 @@ $SQLconn->notification->markNotificationsAsRead($user_id);
                         }
                         ?>
                     </h1>
-                    <?php if (isset($notifications) && count($notifications) > 0) { ?>
-                        <button type='button' class='btn btn-danger' onclick='deleteAllNotifications($Infos["id_utilisateur"])'>Supprimer toutes les notifications</button>
+                    <?php if (isset($notifications) && count($notifications) > 0) { 
+                                echo "<button type='button' class='btn btn-danger' onclick='deleteAllNotifications(". $Infos['id_utilisateur'].")'>Supprimer toutes les notifications</button>";
+                                ?>
                 </div>
                 <div class="card-body">
                     <div class="form-group form-field">
-                        <?php
-                        // Afficher les notifications
-                        foreach ($notifications as $notification) {
-                            echo "<div class='notification card outline-secondary rounded-3 item-center' id='" . $notification["id_notification"] . "'>";
-                            echo "<div class='row'>";
-                            echo "<div class='col text-start'>";
-                            echo "<a class='nav-link active' aria-current='page' href='./profile.php?id=" . $notification["id_utilisateur_cible"] . "'>
-                                    <img src='" . $notification["avatar"] . "' class='avatar avatar-lg'>
-                                    <label for='nom'>" . $notification["username"] . "</label>
-                                    </a>";
-                            echo "</div>";
-                            echo "<div class='col text-center'>";
-                            if ($notification["type"] == "follow") {
-                                echo "Vient de vous follow";
-                            } else if ($notification["type"] == "unfollow") {
-                                echo "Vous a unfollow";
-                            } else if ($notification["type"] == "post") {
-                                echo "A posté le post suivant : <a href='./post.php?id=" . $notification["id_post_cible"] . "'>Voir le post</a>";
+                        <div id="allNotifications">
+                            <?php
+                            // Afficher les notifications
+                            foreach ($notifications as $notification) {
+                                echo "<div class='notification' id='" . $notification["id_notification"] . "'>";
+                                echo "<div class='card outline-secondary rounded-3 item-center'>";
+                                echo "<div class='row'>";
+                                echo "<div class='col text-start'>";
+                                echo "<a class='nav-link active' aria-current='page' href='./profile.php?id=" . $notification["id_utilisateur_cible"] . "'>
+                                        <img src='" . $notification["avatar"] . "' class='avatar avatar-lg'>
+                                        <label for='nom'>" . $notification["username"] . "</label>
+                                        </a>";
+                                echo "</div>";
+                                echo "<div class='col text-center'>";
+                                if ($notification["type"] == "follow") {
+                                    echo "Vient de vous follow";
+                                } else if ($notification["type"] == "unfollow") {
+                                    echo "Vous a unfollow";
+                                } else if ($notification["type"] == "post") {
+                                    echo "A posté le post suivant : <a href='./post.php?id=" . $notification["id_post_cible"] . "'>Voir le post</a>";
+                                }
+                                echo "</div>";
+                                echo "<div class='col text-end'>";
+                                echo "<button type='button' class='btn btn-danger' onclick='deleteNotification(" . $notification["id_notification"] . ")'>Supprimer</button>";
+                                echo "</div>";
+                                echo "</div>";
+                                echo "</div>";
+                                echo "<br>";
+                                echo "</div>";
                             }
-                            echo "</div>";
-                            echo "<div class='col text-end'>";
-                            echo "<button type='button' class='btn btn-danger' onclick='deleteNotification(" . $notification["id_notification"] . ")'>Supprimer</button>";
-                            echo "</div>";
-                            echo "</div>";
-                            echo "</div>";
-                            echo "<br>";
-                        }
-                        ?>
+                            ?>
+                        </div>
                     </div>
                 </div>
                 <?php } else { ?>
@@ -94,6 +98,8 @@ $SQLconn->notification->markNotificationsAsRead($user_id);
         </div>
     </div>
 </main>
+<script src="JS/notificationHandler.js"></script>
+
 <!-- <?php include("BoutDePages/footer.php"); ?> -->
 </body>
 </html>

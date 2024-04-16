@@ -653,6 +653,45 @@ class profile {
         return $following;
     }
 
+    public function GetPostById($id){
+        global $conn;
+    
+        $query = "SELECT * FROM post WHERE id_post = $id";
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $reponse = [
+            'id' => $row['id_post'],
+            'contenu' => $row['contenu'],
+            'image' => $row['image_path'],
+            'date' => $row['date'],
+            'id_utilisateur' => $row['id_utilisateur']
+        ];
+    
+        return $reponse;
+    }
+
+    public function getReponsesCommentaire($idPost){
+        global $conn;
+    
+        $query = "SELECT * FROM post WHERE id_parent = $idPost";
+        $result = $this->SQLconn->executeRequete($query);
+    
+        $reponses = [];
+        while ($row = $result->fetch_assoc()) {
+            $reponse = [
+                'id' => $row['id_post'],
+                'contenu' => $row['contenu'],
+                'image' => $row['image_path'],
+                'date' => $row['date'],
+                'id_utilisateur' => $row['id_utilisateur'],
+                'video_lien' => $row['video_lien']
+            ];
+            $reponses[] = $reponse;
+        }
+    
+        return $reponses;
+    }
+
 }
 
 ?>
