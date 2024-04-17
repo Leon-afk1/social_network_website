@@ -43,7 +43,7 @@ include ("BoutDePages/header.php");
                       <h2 class="card-title text-center">Post recent que vous suivez :</h2>
                       <br>
                       <?php
-                          $allPosts = $SQLconn->profile->getRecentPostsFollowed($_COOKIE['user_id']);
+                          $allPosts = $SQLconn->profile->getRecentPostsFollowed($SQLconn->loginStatus->userID);
                           foreach ($allPosts as $post){
                               $infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
                               $SQLconn->profile->afficherPosts($post,$infos);

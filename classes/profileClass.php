@@ -692,6 +692,36 @@ class profile {
         return $reponses;
     }
 
+    public function deletePost($id){
+
+        $query = "SELECT * FROM `post` WHERE `id_post` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+        if ($result->num_rows == 0){
+            exit();
+        }
+        $result = $result->fetch_assoc();
+    
+    
+        
+    
+        if ($result["id_utilisateur"] != $_COOKIE["user_id"]){
+            exit();
+        }
+    
+        if ($result["image_path"] != ""){
+            unlink("../".$result["image_path"]);
+        }
+    
+        $query = "DELETE FROM `post` WHERE `id_post` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+    
+        if ($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 }
 
 ?>

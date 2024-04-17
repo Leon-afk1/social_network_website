@@ -66,7 +66,7 @@ if (!$SQLconn->loginStatus->loginSuccessful) {
     }
 }
 
-$Infos = $SQLconn->profile->GetInfoProfile($_COOKIE['user_id']);
+$Infos = $SQLconn->profile->GetInfoProfile($protectedID);
 
 if (isset($_POST["unfollow"])) {
     $SQLconn->profile->unfollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"]);

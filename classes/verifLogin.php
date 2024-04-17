@@ -53,7 +53,6 @@ class verifLogin{
         } else {
             header("Location: index.php");
         }
-        exit();
     }
 
     public function CreateLoginCookie($username, $password, $userId) {

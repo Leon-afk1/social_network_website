@@ -16,6 +16,7 @@ if (isset($_POST["usernameLogin"]) && isset($_POST["passwordLogin"])) {
         $erreur = $AccountStatus->errorText;
     }
 }
+
 if (!$SQLconn->loginStatus->loginSuccessful) { 
     $tryNewAccount = false;
     if (isset($_POST["nom"]) && isset($_POST["prenom"]) && isset($_POST["username"]) && isset($_POST["date_naissance"]) && isset($_POST["adresse"]) && isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["password_confirm"])) {

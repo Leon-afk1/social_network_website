@@ -5,6 +5,9 @@
         if ($Infos["avatar"] != NULL){
             echo "<img src='".$Infos["avatar"]."' class='avatar avatar-xxl'>";
         }
+        if ($Infos["admin"] == 1){
+            echo "admin";
+        }
          ?>
         </h1>
         <?php echo $Infos["username"]?>

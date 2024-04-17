@@ -10,7 +10,7 @@
         <?php echo $InfosCompteExterne["username"] ?>
         <br>
         <?php 
-        if (!$monCompte){
+        if ($SQLconn->loginStatus->loginSuccessful){
             if ($SQLconn->profile->verifFollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"])){
                 echo "<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#unfollowModal'>Unfollow</button>";
 
