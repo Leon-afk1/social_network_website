@@ -116,6 +116,24 @@ class Notification {
         }
     }
 
+    public function notifyBan($userId, $userIdToBan){
+        $query = "Insert into notification (id_utilisateur, id_utilisateur_cible, type, date_notification) VALUES ($userIdToBan, $userId, 'ban', NOW())";
+        if ($this->SQLconn->executeRequete($query)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function notifyUnban($userId, $userIdToUnban){
+        $query = "Insert into notification (id_utilisateur, id_utilisateur_cible, type, date_notification) VALUES ($userIdToUnban, $userId, 'unban', NOW())";
+        if ($this->SQLconn->executeRequete($query)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 
 ?>

@@ -2,6 +2,10 @@
 // Inclure les fichiers nécessaires
 include("loc.php");
 
+if (!$SQLconn->loginStatus->loginSuccessful) {
+    header("Location: index.php");
+}
+
 include("BoutDePages/header.php");
 
 $user_id = $_COOKIE['user_id'];
@@ -35,8 +39,12 @@ $SQLconn->notification->markNotificationsAsRead($user_id);
     <title>Y - Notifications</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/fastbootstrap@2.2.0/dist/css/fastbootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
 </head>
 <body class="text-body bg-body" data-bs-theme="dark">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
 <main id="mainContent">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-8">
@@ -75,6 +83,16 @@ $SQLconn->notification->markNotificationsAsRead($user_id);
                                     echo "Vous a unfollow";
                                 } else if ($notification["type"] == "post") {
                                     echo "A posté le post suivant : <a href='./post.php?id=" . $notification["id_post_cible"] . "'>Voir le post</a>";
+                                }else if ($notification["type"]=="ban"){
+                                    $ban = $SQLconn->profile->getJustificationBan($notification["id_utilisateur"]);
+                                    if ($ban["date_fin_ban"] == NULL){
+                                        echo "Vous avez été banni définitivement pour la raison suivante : ";
+                                    }else{
+                                        echo "Vous banni jusqu'au : ".$ban["date_fin_ban"]." pour la raison suivante : ";
+                                    }
+                                    echo $ban["justification_ban"];
+                                }else if ($notification["type"]=="unban"){
+                                    echo "Vous avez été débanni";
                                 }
                                 echo "</div>";
                                 echo "<div class='col text-end'>";

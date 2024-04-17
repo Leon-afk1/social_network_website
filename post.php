@@ -2,12 +2,22 @@
 
 include ("loc.php");
 include ("BoutDePages/repondrePost.php");
-include ("BoutDePages/header.php");
+
 
 $idPost = $_GET["id"];
 
 $post = $SQLconn->profile->GetPostById($idPost);
 $Infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
+
+if (isset($_COOKIE['user_id'])){
+  $ban = $SQLconn->profile->checkBan($_COOKIE['user_id']);
+  if ($ban){
+      echo "Vous êtes banni définitivement";
+      header("Location:profile.php?id=". $_COOKIE['user_id']);
+    }
+}
+
+include ("BoutDePages/header.php");
 
 ?>
 
@@ -17,6 +27,7 @@ $Infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
     <title>My Page</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/fastbootstrap@2.2.0/dist/css/fastbootstrap.min.css" rel="stylesheet" integrity="sha256-V6lu+OdYNKTKTsVFBuQsyIlDiRWiOmtC8VQ8Lzdm2i4=" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
   </head>
   <body class="text-body bg-body" data-bs-theme="dark">

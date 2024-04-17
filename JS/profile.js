@@ -27,3 +27,4 @@ function loadMorePosts() {
         xhr.send();
     }
 }
+

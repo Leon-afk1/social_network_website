@@ -67,9 +67,24 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
                 }
             }
           ?>
-          <li class="nav-item"><button class="nav-link btn btn-link" onclick="window.location.href='./index.php'" aria-current="page">Home</button></li>
           <?php
             if(isset($_COOKIE['user_id'])){
+              $ban = $SQLconn->profile->checkBan($_COOKIE['user_id']);
+              if ($ban){
+                echo "<li class='nav-item'><button class='nav-link btn btn-link ' onclick='window.location.href=`./logout.php?redirect=$currentURL`' aria-current='page'>Logout</button></li>";
+                echo "<li class='nav-item'><form class='nav-item' action='./profile.php?id=".$_COOKIE['user_id']."' method='post'>
+                          <input type='hidden' name='statistiques' value'true'>
+                          <button type='submit' class='nav-link btn btn-link'>Statistiques</button>
+                      </form>
+                    </li>";
+                echo  "<li class='nav-item position-relative'><button class='nav-link btn btn-link' onclick='window.location.href=`./notification.php?id=".$_COOKIE['user_id']."`' aria-current='page'>Notifications
+                        <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger'>
+                        $nbNotifications
+                        <span class='visually-hidden'>unread messages</span>
+                      </span>
+                    </button></li>";
+              } else {
+              echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./index.php`' aria-current='page'>Home</button></li>";
               echo "<li class='nav-item'><button class='nav-link btn btn-link ' onclick='window.location.href=`./logout.php?redirect=$currentURL`' aria-current='page'>Logout</button></li>";
               echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./poster.php`' aria-current='page'>Poster</button></li>";
               echo "<li class='nav-item'><form class='nav-item' action='./profile.php?id=".$_COOKIE['user_id']."' method='post'>
@@ -83,14 +98,20 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
                     <span class='visually-hidden'>unread messages</span>
                   </span>
               </button></li>";
-
+              }
             } else {
+              echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./index.php`' aria-current='page'>Home</button></li>";
               echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='toggleLoginForm()' aria-current='page'>Login</button></li>";
               echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='toggleNewLoginForm()' aria-current='page'>Sign in</button></li>";
             }
           ?>
         </ul>
       </div>
+      <?php 
+
+        if ((isset($_COOKIE['user_id']) && !$ban) || !isset($_COOKIE['user_id'])){         
+
+      ?>
       <div class="d-flex navbar-nav">
         <div id="suggestions2" class></div>     
         <form class="d-flex nav-item" role="search">
@@ -111,6 +132,7 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
             </label>
           </div>
         </div>
+      <?php } ?>
 </nav>
 
 <main class="p-3 d-flex col-md-8 col-lg-8 mx-auto flex-column ">

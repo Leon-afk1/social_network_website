@@ -311,12 +311,24 @@ class profile {
         echo            "<div class='col text-start'>";
         echo                "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'> 
                                 <img src='".$infos["avatar"]."' class='avatar avatar-lg'>
-                                <label for='nom'>". $infos["username"]."</label>
-                            </a>";
+                                <label for='nom'>". $infos["username"]."</label>";
+                                if ($infos['admin'] == 1){
+                                    echo "<img src='./images/admin.jpg' class='avatar avatar-xs'>";
+                                }
+                                if ($infos['ban'] == 1){
+                                    echo "<img src='./images/ban.png' class='avatar avatar-xs'>";
+                                }
+
+        echo                  " </a>";
         echo            "</div>";
         echo            "<div class='col text-end'>";
-        if (isset($_COOKIE['user_id']) && $infos['id_utilisateur'] == $_COOKIE['user_id']){
-            echo               "<button class='btn btn-outline-secondary' id='supprimerPost_".$idPost."' data-bs-toggle='modal' data-bs-target='#supprimerPostModal_".$idPost."'>Supprimer</button>";
+        if (isset($_COOKIE['user_id'])){
+            $infoUser = $this->GetInfoProfile($_COOKIE['user_id']);
+            if ($infoUser['admin'] == 1){
+                echo           "<button class='btn btn-outline-secondary' id='supprimerPost_".$idPost."' data-bs-toggle='modal' data-bs-target='#supprimerPostModal_".$idPost."'>Supprimer</button>";
+            }else if ($infos['id_utilisateur'] == $_COOKIE['user_id']){
+                echo           "<button class='btn btn-outline-secondary' id='supprimerPost_".$idPost."' data-bs-toggle='modal' data-bs-target='#supprimerPostModal_".$idPost."'>Supprimer</button>";
+            }
         }
         echo            "</div>";
         // modal pour supprimer post
@@ -702,11 +714,13 @@ class profile {
         $result = $result->fetch_assoc();
     
     
+        $infoUser = $this->GetInfoProfile($_COOKIE['user_id']);
+        if ($infoUser['admin'] == 0){
+            if ($result["id_utilisateur"] != $_COOKIE["user_id"]){
+                return false;
+            }
+        }  
         
-    
-        if ($result["id_utilisateur"] != $_COOKIE["user_id"]){
-            exit();
-        }
     
         if ($result["image_path"] != ""){
             unlink("../".$result["image_path"]);
@@ -720,6 +734,136 @@ class profile {
         }else{
             return false;
         }
+    }
+
+    public function banDef($id, $raison){   
+        $query = "SELECT * FROM `utilisateur` WHERE `id_utilisateur` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+        if ($result->num_rows == 0){
+            exit();
+        }
+        $result = $result->fetch_assoc();
+    
+        if ($result["admin"] == 1){
+            return false;
+        }
+    
+        $query = "UPDATE `utilisateur` SET `ban` = 1, `date_fin_ban` = NULL , `justification_ban` = '$raison' WHERE `id_utilisateur` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+    
+        if ($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function checkBan($id){ //Vérifie si l'utilisateur est banni et enlève le ban si la date de fin est passée
+        $query = "SELECT * FROM `utilisateur` WHERE `id_utilisateur` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+        if ($result->num_rows == 0){
+            exit();
+        }
+        $result = $result->fetch_assoc();
+    
+        if ($result["ban"] == 1){
+            if ($result["date_fin_ban"] == NULL){
+                return true;
+            }
+            if ($result["date_fin_ban"] < date("Y-m-d H:i:s")){
+                $query = "UPDATE `utilisateur` SET `ban` = 0, `date_fin_ban` = NULL , `justification_ban` = NULL WHERE `id_utilisateur` = $id";
+                $this->SQLconn->executeRequete($query);
+                return false;
+            }else{
+                return true;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    public function checkAdmin($id){
+        $query = "SELECT * FROM `utilisateur` WHERE `id_utilisateur` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+        if ($result->num_rows == 0){
+            exit();
+        }
+        $result = $result->fetch_assoc();
+    
+        if ($result["admin"] == 1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function banTemp($id, $time, $raison){
+        $query = "SELECT * FROM `utilisateur` WHERE `id_utilisateur` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+        if ($result->num_rows == 0){
+            exit();
+        }
+        $result = $result->fetch_assoc();
+    
+        if ($result["admin"] == 1){
+            return false;
+        }
+    
+        $query = "UPDATE `utilisateur` SET `ban` = 1, `date_fin_ban` = '$time', `justification_ban` = '$raison' WHERE `id_utilisateur` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+    
+        if ($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function getDateBan($id){
+        $query = "SELECT * FROM `utilisateur` WHERE `id_utilisateur` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+        if ($result->num_rows == 0){
+            exit();
+        }
+        $result = $result->fetch_assoc();
+    
+        if ($result["ban"] == 1){
+            return $result["date_fin_ban"];
+        }else{
+            return false;
+        }
+    }
+
+    public function unban($id){
+        $query = "SELECT * FROM `utilisateur` WHERE `id_utilisateur` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+        if ($result->num_rows == 0){
+            exit();
+        }
+        $result = $result->fetch_assoc();
+    
+        if ($result["admin"] == 1){
+            return false;
+        }
+    
+        $query = "UPDATE `utilisateur` SET `ban` = 0, `date_fin_ban` = NULL, `justification_ban` = NULL WHERE `id_utilisateur` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+    
+        if ($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function getJustificationBan($id){
+        $query = "SELECT * FROM `utilisateur` WHERE `id_utilisateur` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+        if ($result->num_rows == 0){
+            exit();
+        }
+        $result = $result->fetch_assoc();
+        return $result;
     }
 
 }

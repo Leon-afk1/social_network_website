@@ -5,13 +5,34 @@
         if ($Infos["avatar"] != NULL){
             echo "<img src='".$Infos["avatar"]."' class='avatar avatar-xxl'>";
         }
-        if ($Infos["admin"] == 1){
-            echo "admin";
-        }
          ?>
         </h1>
-        <?php echo $Infos["username"]?>
+        <?php echo "".$Infos["username"]."  ";
+        if ($Infos['admin'] == 1){
+            echo "<img src='./images/admin.jpg' class='avatar avatar-xs'>";
+        }
+        $ban = $SQLconn->profile->checkBan($_COOKIE['user_id']);
+        if ($ban){
+            echo "<img src='./images/ban.png' class='avatar avatar-xs'>";
+        }
+        ?>
         <br>
+        <br>
+        <?php
+        
+        if ($ban){
+            $dateBan = $SQLconn->profile->getDateBan($_COOKIE['user_id']);
+            if ($dateBan){
+                echo "<div class='alert alert-danger' role='alert'>";
+                echo "Vous êtes banni jusqu'au ".$dateBan;
+                echo "</div>";
+            }else{
+                echo "<div class='alert alert-danger' role='alert'>";
+                echo "Vous êtes banni définitivement";
+                echo "</div>";
+            }
+        }
+        ?>
         <br>
         <div class="container text-center align-items-center">
             <div class="row align-items-center ">
