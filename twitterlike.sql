@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 17 avr. 2024 à 19:27
+-- Généré le : jeu. 18 avr. 2024 à 13:00
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -38,11 +38,50 @@ CREATE TABLE `follower` (
 --
 
 INSERT INTO `follower` (`id_follower`, `id_utilisateur`, `id_utilisateur_suivi`) VALUES
-(59, 30, 27),
 (61, 30, 31),
 (60, 31, 27),
 (62, 31, 32),
 (63, 32, 27);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `likes`
+--
+
+CREATE TABLE `likes` (
+  `id_likes` bigint(11) NOT NULL,
+  `id_utilisateur` bigint(11) NOT NULL,
+  `id_post` bigint(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `notification`
+--
+
+CREATE TABLE `notification` (
+  `id_notification` bigint(20) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `bool_lue` tinyint(1) DEFAULT 0,
+  `id_utilisateur` bigint(20) NOT NULL,
+  `date_notification` datetime NOT NULL,
+  `id_post_cible` bigint(20) DEFAULT NULL,
+  `id_utilisateur_cible` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `notification`
+--
+
+INSERT INTO `notification` (`id_notification`, `type`, `bool_lue`, `id_utilisateur`, `date_notification`, `id_post_cible`, `id_utilisateur_cible`) VALUES
+(46, 'follow', 0, 32, '2024-04-17 01:18:27', NULL, 27),
+(56, 'unban', 1, 30, '2024-04-17 19:18:20', NULL, 27),
+(57, 'ban', 1, 30, '2024-04-17 19:18:30', NULL, 27),
+(64, 'unban', 0, 31, '2024-04-17 21:08:39', NULL, 27),
+(65, 'ban', 0, 31, '2024-04-17 21:08:52', NULL, 27),
+(66, 'ban', 0, 31, '2024-04-18 11:58:42', NULL, 27);
 
 -- --------------------------------------------------------
 
@@ -86,8 +125,7 @@ INSERT INTO `post` (`id_post`, `id_utilisateur`, `id_parent`, `contenu`, `date`,
 (157, 30, NULL, 'test notifications', '2024-04-15 17:23:56', NULL, NULL),
 (158, 30, NULL, 'test notifications', '2024-04-15 17:24:36', NULL, NULL),
 (159, 30, NULL, 'test notifications', '2024-04-15 17:25:12', NULL, NULL),
-(161, 31, NULL, 'test notif 3', '2024-04-15 17:26:39', NULL, NULL),
-(162, 31, NULL, 'test notif', '2024-04-15 22:12:50', NULL, NULL);
+(161, 31, NULL, 'test notif 3', '2024-04-15 17:26:39', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -142,6 +180,23 @@ ALTER TABLE `follower`
   ADD KEY `id_utilisateur_suivi` (`id_utilisateur_suivi`) USING BTREE;
 
 --
+-- Index pour la table `likes`
+--
+ALTER TABLE `likes`
+  ADD PRIMARY KEY (`id_likes`) USING BTREE,
+  ADD KEY `id_utilisateur` (`id_utilisateur`),
+  ADD KEY `id_post` (`id_post`);
+
+--
+-- Index pour la table `notification`
+--
+ALTER TABLE `notification`
+  ADD PRIMARY KEY (`id_notification`),
+  ADD KEY `notif_fk_id_utilisateur_cible` (`id_utilisateur_cible`),
+  ADD KEY `notif_fk_id_utilisateur` (`id_utilisateur`),
+  ADD KEY `notif_fk_id_post_cible` (`id_post_cible`);
+
+--
 -- Index pour la table `post`
 --
 ALTER TABLE `post`
@@ -165,6 +220,18 @@ ALTER TABLE `follower`
   MODIFY `id_follower` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
+-- AUTO_INCREMENT pour la table `likes`
+--
+ALTER TABLE `likes`
+  MODIFY `id_likes` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `notification`
+--
+ALTER TABLE `notification`
+  MODIFY `id_notification` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+
+--
 -- AUTO_INCREMENT pour la table `post`
 --
 ALTER TABLE `post`
@@ -186,6 +253,21 @@ ALTER TABLE `utilisateur`
 ALTER TABLE `follower`
   ADD CONSTRAINT `follower_ibfk_1` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `follower_ibfk_2` FOREIGN KEY (`id_utilisateur_suivi`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `likes`
+--
+ALTER TABLE `likes`
+  ADD CONSTRAINT `likes_ibfk_1` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `likes_ibfk_2` FOREIGN KEY (`id_post`) REFERENCES `post` (`id_post`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `notification`
+--
+ALTER TABLE `notification`
+  ADD CONSTRAINT `notif_fk_id_post_cible` FOREIGN KEY (`id_post_cible`) REFERENCES `post` (`id_post`) ON DELETE CASCADE,
+  ADD CONSTRAINT `notif_fk_id_utilisateur` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `notif_fk_id_utilisateur_cible` FOREIGN KEY (`id_utilisateur_cible`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `post`
