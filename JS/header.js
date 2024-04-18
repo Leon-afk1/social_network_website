@@ -115,4 +115,15 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+function updateNotificationDisplay(nbNotifications) {
+  var notifElement = document.getElementById("notif");
+  if (nbNotifications === 0) {
+      notifElement.style.display = "none";
+  } else {
+      notifElement.style.display = "block";
+  }
+}
+
+
+
 

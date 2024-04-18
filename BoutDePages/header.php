@@ -41,6 +41,8 @@ $executeToggleLoginFormIfNeeded = $erreur !== "";
 $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAccountStatus["Successful"];
 ?>
 
+
+
 <head>
     <link rel="stylesheet" href="./CSS/header.css">
     <link rel="shortcut icon" type="image/x-icon" href="./images/favicon.ico" />
@@ -78,7 +80,7 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
                       </form>
                     </li>";
                 echo  "<li class='nav-item position-relative'><button class='nav-link btn btn-link' onclick='window.location.href=`./notification.php?id=".$_COOKIE['user_id']."`' aria-current='page'>Notifications
-                        <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger'>
+                        <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger' id='notif'>
                         $nbNotifications
                         <span class='visually-hidden'>unread messages</span>
                       </span>
@@ -92,8 +94,8 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
                           <button type='submit' class='nav-link btn btn-link'>Statistiques</button>
                       </form>
                     </li>";
-              echo  "<li class='nav-item position-relative'><button class='nav-link btn btn-link' onclick='window.location.href=`./notification.php?id=".$_COOKIE['user_id']."`' aria-current='page'>Notifications
-                    <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger'>
+              echo  "<li class='nav-item position-relative' ><button class='nav-link btn btn-link' onclick='window.location.href=`./notification.php?id=".$_COOKIE['user_id']."`' aria-current='page'>Notifications
+                    <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger' id='notif'>
                     $nbNotifications
                     <span class='visually-hidden'>unread messages</span>
                   </span>
@@ -133,6 +135,7 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
           </div>
         </div>
       <?php } ?>
+      
 </nav>
 
 <main class="p-3 d-flex col-md-8 col-lg-8 mx-auto flex-column ">
@@ -144,11 +147,13 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
     </div>
 </main>
 
+
+<script src="./JS/header.js"></script>
 <script>
 var executeToggleLoginFormIfNeeded = <?php echo $executeToggleLoginFormIfNeeded ? 'true' : 'false'; ?>;
 var executeToggleNewLoginFormIfNeeded = <?php echo $executeToggleNewLoginFormIfNeeded ? 'true' : 'false'; ?>;
+var nbNotifications = <?php echo $nbNotifications; ?>;
+updateNotificationDisplay(nbNotifications);
 </script>
-
-<script src="./JS/header.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
