@@ -1,8 +1,7 @@
 <?php
-$rootpath = "localhost/social_network_website/";
+    define ("__ROOT__", dirname(__FILE__));
 
-include ("BoutDePages/dataBaseFunctions.php");
+    require_once(__ROOT__.'/classes/connexionBDD.php');
 
-ConnectToDataBase();
-
+    $SQLconn = new ConnexionBDD();
 ?>

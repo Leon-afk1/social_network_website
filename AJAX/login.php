@@ -5,7 +5,7 @@
                 <h1 class="card-title">Se connecter</h1>
             </div>
             <div class="card-body">
-                <?php if (isset($erreur)) { ?>
+                <?php if ($erreur !== "") { ?>
                     <div class="alert alert-danger" role="alert">
                         <?php echo $erreur; ?>
                     </div>
