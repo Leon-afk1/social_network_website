@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 18 avr. 2024 à 13:00
+-- Généré le : ven. 19 avr. 2024 à 16:30
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -68,20 +68,19 @@ CREATE TABLE `notification` (
   `id_utilisateur` bigint(20) NOT NULL,
   `date_notification` datetime NOT NULL,
   `id_post_cible` bigint(20) DEFAULT NULL,
-  `id_utilisateur_cible` bigint(20) DEFAULT NULL
+  `id_utilisateur_cible` bigint(20) DEFAULT NULL,
+  `message_notification` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `notification`
 --
 
-INSERT INTO `notification` (`id_notification`, `type`, `bool_lue`, `id_utilisateur`, `date_notification`, `id_post_cible`, `id_utilisateur_cible`) VALUES
-(46, 'follow', 0, 32, '2024-04-17 01:18:27', NULL, 27),
-(56, 'unban', 1, 30, '2024-04-17 19:18:20', NULL, 27),
-(57, 'ban', 1, 30, '2024-04-17 19:18:30', NULL, 27),
-(64, 'unban', 0, 31, '2024-04-17 21:08:39', NULL, 27),
-(65, 'ban', 0, 31, '2024-04-17 21:08:52', NULL, 27),
-(66, 'ban', 0, 31, '2024-04-18 11:58:42', NULL, 27);
+INSERT INTO `notification` (`id_notification`, `type`, `bool_lue`, `id_utilisateur`, `date_notification`, `id_post_cible`, `id_utilisateur_cible`, `message_notification`) VALUES
+(46, 'follow', 0, 32, '2024-04-17 01:18:27', NULL, 27, NULL),
+(64, 'unban', 0, 31, '2024-04-17 21:08:39', NULL, 27, NULL),
+(65, 'ban', 0, 31, '2024-04-17 21:08:52', NULL, 27, NULL),
+(66, 'ban', 0, 31, '2024-04-18 11:58:42', NULL, 27, NULL);
 
 -- --------------------------------------------------------
 
@@ -96,36 +95,24 @@ CREATE TABLE `post` (
   `contenu` varchar(520) NOT NULL,
   `date` datetime NOT NULL DEFAULT current_timestamp(),
   `image_path` varchar(255) DEFAULT NULL,
-  `video_lien` varchar(200) DEFAULT NULL
+  `video_lien` varchar(200) DEFAULT NULL,
+  `visibilite` varchar(255) DEFAULT 'public'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `post`
 --
 
-INSERT INTO `post` (`id_post`, `id_utilisateur`, `id_parent`, `contenu`, `date`, `image_path`, `video_lien`) VALUES
-(47, 30, NULL, 'test', '2024-04-04 00:00:00', NULL, NULL),
-(48, 30, NULL, 'test', '2024-04-04 00:00:00', './images/48.jpg', NULL),
-(52, 32, NULL, 'test', '2024-04-04 00:00:00', NULL, NULL),
-(53, 32, NULL, 'test heure', '2024-04-05 16:14:58', NULL, NULL),
-(54, 32, NULL, 'test min', '2024-04-05 16:25:21', NULL, NULL),
-(115, 27, 54, 'jrgjrbht', '2024-04-11 19:35:11', './images/115.gif', NULL),
-(116, 27, 54, 'tredhtydddjf', '2024-04-12 19:05:38', NULL, NULL),
-(120, 27, NULL, 'test', '2024-04-12 19:56:19', NULL, NULL),
-(124, 27, NULL, 'test', '2024-04-13 18:10:41', './images/124.png', NULL),
-(125, 27, NULL, 'test', '2024-04-13 18:10:58', NULL, NULL),
-(126, 27, NULL, 'test', '2024-04-13 18:18:30', NULL, 'https://www.youtube.com/watch?v=L9ZyryHc304'),
-(128, 27, NULL, 'test sans rien', '2024-04-13 18:42:17', NULL, NULL),
-(129, 27, NULL, 'test image', '2024-04-13 18:42:38', './images/129.gif', NULL),
-(130, 27, NULL, 'test video', '2024-04-13 18:42:51', NULL, 'https://www.youtube.com/watch?v=L9ZyryHc304'),
-(151, 30, NULL, 'test1', '2024-04-14 18:01:16', NULL, NULL),
-(152, 30, NULL, 'test2', '2024-04-14 18:01:22', NULL, NULL),
-(153, 30, NULL, 'test3', '2024-04-14 18:01:30', NULL, NULL),
-(154, 30, NULL, 'test4', '2024-04-14 18:01:40', NULL, NULL),
-(157, 30, NULL, 'test notifications', '2024-04-15 17:23:56', NULL, NULL),
-(158, 30, NULL, 'test notifications', '2024-04-15 17:24:36', NULL, NULL),
-(159, 30, NULL, 'test notifications', '2024-04-15 17:25:12', NULL, NULL),
-(161, 31, NULL, 'test notif 3', '2024-04-15 17:26:39', NULL, NULL);
+INSERT INTO `post` (`id_post`, `id_utilisateur`, `id_parent`, `contenu`, `date`, `image_path`, `video_lien`, `visibilite`) VALUES
+(47, 30, NULL, 'test', '2024-04-04 00:00:00', NULL, NULL, 'public'),
+(48, 30, NULL, 'test', '2024-04-04 00:00:00', './images/48.jpg', NULL, 'public'),
+(52, 32, NULL, 'test', '2024-04-04 00:00:00', NULL, NULL, 'public'),
+(53, 32, NULL, 'test heure', '2024-04-05 16:14:58', NULL, NULL, 'public'),
+(54, 32, NULL, 'test min', '2024-04-05 16:25:21', NULL, NULL, 'public'),
+(115, 27, 54, 'jrgjrbht', '2024-04-11 19:35:11', './images/115.gif', NULL, 'sensible'),
+(120, 27, NULL, 'test', '2024-04-12 19:56:19', NULL, NULL, 'offensant'),
+(151, 30, NULL, 'test1', '2024-04-14 18:01:16', NULL, NULL, 'public'),
+(152, 30, NULL, 'test2', '2024-04-14 18:01:22', NULL, NULL, 'offensant');
 
 -- --------------------------------------------------------
 
@@ -156,7 +143,7 @@ CREATE TABLE `utilisateur` (
 
 INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `prenom`, `email`, `mdp`, `description`, `dateNaissance`, `username`, `avatar`, `adresse`, `admin`, `ban`, `date_fin_ban`, `justification_ban`) VALUES
 (27, 'morales', 'Léon', 'leon.morales@utbm.fr', '$2y$10$EGrUAgKkF7qd/xwvouCfrexqMcfSHu8J3WE1eMKliir6AJ.v.b1v2', 'Je suis Léon', '2003-08-19', 'Léon', './avatar/27.jpg', 'testt', 1, 0, NULL, NULL),
-(30, 'test', 'test', 'test@test.fr', '$2y$10$xwgwQA65kXeUlB4eya/zYOxaFch//wFwvj1OGE60WbXnrWu3e3FqW', 'pourquoi pas', '2014-03-14', 'test', './avatar/30.jpg', 'testt', 0, 1, '2222-01-01 00:00:00', 'Contenue inapproprié'),
+(30, 'test', 'test', 'test@test.fr', '$2y$10$xwgwQA65kXeUlB4eya/zYOxaFch//wFwvj1OGE60WbXnrWu3e3FqW', 'pourquoi pas', '2014-03-14', 'test', './avatar/30.jpg', 'testt', 0, 0, NULL, NULL),
 (31, 'test', 'test', 'test2@test.fr', '$2y$10$.dfn.bTEPbsxyq2BZP9rN.7P6lDputsy.mrHLX09rWlc04/kbMzR6', '', '2016-03-13', 'test2', './avatar/defaultAvatar.jpg', 'testt', 0, 1, NULL, 'Contenue inapproprié'),
 (32, 'test', 'test', 'test.morales@utbm.fr', '$2y$10$xAQH4UGrnPSnUJaczlBuCeUyLKDKA2QVVGmdUDnVQ7VPJbHIJSnDy', NULL, '2024-04-12', 'test3', './avatar/32.jpg', '36 rue du Neufeld', 0, 0, NULL, NULL),
 (40, 'Morales', 'Léon', 'sgefffs.morales@utbm.fr', '$2y$10$xquP3E.LqPEbKzFp6SK1POf.gTjkHcufpUMwfa/2FTIVs33quxVD2', NULL, '2024-04-19', 'wrg', './avatar/defaultAvatar.jpg', '35 rue du Neufeld', 0, 0, NULL, NULL),
@@ -229,7 +216,7 @@ ALTER TABLE `likes`
 -- AUTO_INCREMENT pour la table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id_notification` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `id_notification` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT pour la table `post`

@@ -16,7 +16,7 @@ function sendTo(postId) {
 }
 
 async function supprimerPost(postId) {
-    var supp = await fetch("./BoutDePages/supprimerPost.php?id=" + postId);
+    var supp = await fetch("./AJAX/supprimerPost.php?id=" + postId);
     var response = await supp.text();
     if (response == "Post supprimé") {
         var post = document.getElementById("post_" + postId);
@@ -70,4 +70,57 @@ function toggleLike(button, postId) {
             console.error('Erreur lors de la requête AJAX');
         }
     });
+}
+
+function sendAvertissement(postId) {
+    var avertissement = prompt("Veuillez saisir un avertissement à envoyer à l'utilisateur :", "Vous avez reçu un avertissement pour comportement inapproprié");
+    if (avertissement != null) {
+        $.post('./AJAX/avertir.php', { postId: postId, avertissement: avertissement }, function(data) {
+            if (data  == "Avertissement envoyé") {
+                alert("Avertissement envoyé avec succès!");
+            } else {
+                alert(data);
+                console.error('Erreur lors de la requête AJAX');
+            }
+        });
+    }
+}
+
+function marquerSensible(postId){
+    var message = prompt("Veuillez saisir un message à afficher à l'utilisateur :", "Ce contenu a été marqué comme sensible car offensant");
+    if (message != null) {
+        $.post('./AJAX/marquerSensible.php', { postId: postId, message: message }, function(data) {
+            if (data  == "Post marqué comme sensible") {
+                alert("Post marqué comme sensible avec succès!");
+            } else {
+                alert(data);
+                console.error('Erreur lors de la requête AJAX');
+            }
+        });
+    }
+}
+
+function toggleVisibilitePostSensible(postId) {
+    var visibilite = document.getElementById("postSensible_" + postId);
+
+    if (visibilite.style.filter === "blur(0px)") {
+        visibilite.style.filter = "blur(15px)";
+    } else {
+        visibilite.style.filter = "blur(0px)";
+    }
+}
+
+function retirerPost(postId) {
+    var message = prompt("Veuillez saisir un message à afficher à l'utilisateur :", "Ce contenu a été retiré car il ne respecte pas les règles de la communauté");
+    if (message != null) {
+        $.post('./AJAX/retirerPost.php', { postId: postId, message: message }, function(data) {
+            if (data  == "Post retiré") {
+                alert("Post retiré avec succès!");
+            } else {
+                alert(data);
+                console.error('Erreur lors de la requête AJAX');
+            }
+        });
+    }
+
 }

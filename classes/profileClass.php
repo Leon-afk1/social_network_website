@@ -246,7 +246,7 @@ class profile {
 
     public function GetNextPosts($userId, $start, $combien){
 
-        $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path,post.video_lien, post.date, utilisateur.nom, utilisateur.prenom FROM post
+        $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path,post.video_lien, post.date, post.visibilite, utilisateur.nom, utilisateur.prenom FROM post
                   INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur AND post.id_utilisateur = $userId
                   ORDER BY post.date DESC
                   LIMIT  $combien OFFSET $start";
@@ -262,7 +262,8 @@ class profile {
                 'video_lien' => $row['video_lien'],
                 'date' => $row['date'],
                 'nom_utilisateur' => $row['nom'],
-                'prenom_utilisateur' => $row['prenom']
+                'prenom_utilisateur' => $row['prenom'],
+                'visibilite' => $row['visibilite']
             ];
             $posts[] = $post;
         }
@@ -305,148 +306,181 @@ class profile {
 
     public function afficherPosts($post, $infos){
         $idPost = $post['id'];
-        echo "<div class='card outline-secondary rounded-3' id='post_".$idPost."'>";
-        echo    "<div class='card-header outline-secondary'>";
-        echo        "<div class='row'>";
-        echo            "<div class='col text-start'>";
-        echo                "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'> 
-                                <img src='".$infos["avatar"]."' class='avatar avatar-lg'>
-                                <label for='nom'>". $infos["username"]."</label>";
-                                if ($infos['admin'] == 1){
-                                    echo "<img src='./images/admin.jpg' class='avatar avatar-xs'>";
-                                }
-                                if ($infos['ban'] == 1){
-                                    echo "<img src='./images/ban.png' class='avatar avatar-xs'>";
-                                }
-
-        echo                  " </a>";
-        echo            "</div>";
-        echo            "<div class='col text-end'>";
         if (isset($_COOKIE['user_id'])){
-            $infoUser = $this->GetInfoProfile($_COOKIE['user_id']);
-            if ($infoUser['admin'] == 1){
-                echo           "<button class='btn btn-outline-secondary' id='supprimerPost_".$idPost."' data-bs-toggle='modal' data-bs-target='#supprimerPostModal_".$idPost."'>Supprimer</button>";
-            }else if ($infos['id_utilisateur'] == $_COOKIE['user_id']){
-                echo           "<button class='btn btn-outline-secondary' id='supprimerPost_".$idPost."' data-bs-toggle='modal' data-bs-target='#supprimerPostModal_".$idPost."'>Supprimer</button>";
-            }
+            $infoUser1 = $this->GetInfoProfile($_COOKIE['user_id']);
         }
-        echo            "</div>";
-        // modal pour supprimer post
-        echo            "<div class='modal fade' id='supprimerPostModal_".$idPost."' tabindex='-1' aria-labelledby='supprimerPostModalLabel_".$idPost."' aria-hidden='true'>";
-        echo                "<div class='modal-dialog modal-dialog-centered'>";
-        echo                    "<div class='modal-content'>";
-        echo                        "<div class='modal-header'>";
-        echo                            "<h5 class='modal-title' id='supprimerPostModalLabel_".$idPost."'>Supprimer le post</h5>";
-        echo                            "<button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>";
-        echo                        "</div>";
-        echo                        "<div class='modal-body text-center'>";
-        echo                            "<p>Êtes-vous sûr de vouloir supprimer ce post?</p>";
-        echo                        "</div>";
-        echo                        "<div class='modal-footer'>";
-        echo                            "<button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Annuler</button>";
-        echo                            "<button type='button' class='btn btn-danger' data-bs-dismiss='modal' onclick='supprimerPost($idPost)' id='supprimerButton_".$idPost."'>Supprimer</button>";
-        echo                        "</div>";
-        echo                    "</div>";
-        echo                "</div>";
-        echo            "</div>";
-        echo        "</div>";
-        echo    "</div>";
-        echo    "<div class='card-body text-center' onclick='sendTo($idPost)'>";
-        if (!empty($post['image'])) {
-            echo "<img src='{$post['image']}' class='img-fluid'>";
-        }
-        echo        "<p class='card-text'>".$post["contenu"]."</p>";
-        if (!empty($post['video_lien'])) {
-            $videoEmbed = $this->getYoutubeEmbedUrl($post['video_lien']);
+        if ($post['visibilite']!="offensant" || (isset($_COOKIE['user_id']) && $infos['id_utilisateur'] == $_COOKIE['user_id']) || (isset($infoUser1) && $infoUser1['admin'] == 1)){
             
-            $videoEmbedDisplay = '<iframe src="'.$videoEmbed.'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-            echo "<p class='card-text'>".$videoEmbedDisplay."</p>";
-            //echo $videoEmbedDisplay;
-            echo "<br>";
-        }
-        echo "<br>";
-        $likesAmount = $this->getNumberLikes($post["id"]); //récupère le nb de likes du post
-        echo "<p class='card-text'>".$likesAmount." likes</p>";
-        echo "<br>";
-        echo "<br>";
-        $estLike = false;
-        if (isset($_COOKIE['user_id'])){
-            $estLike = $this->isLiked($_COOKIE['user_id'], $post["id"]); //vérifie si l'utilisateur a liké le post
-        }
-        if($estLike == true){
-            echo "post liké";
-        }else{
-            echo "post non liké";
-        }
-        // Intégration du bouton "like" dynamique en JavaScript avec des images
-        if ($estLike) {
-            echo "<img id='likeButton' onclick='toggleLike(this, {$post['id']})' src='./images/like.png' alt='Liked' class='like-button'>";
-        } else {
-            echo "<img id='likeButton' onclick='toggleLike(this, {$post['id']})' src='./images/nolike.png' alt='Not Liked' class='like-button'>";
-        }
-        
-        if (isset($_COOKIE['user_id'])){
-            echo    "</div>";
-            echo    "<div class='card-footer'>";
-    
+            echo "<div class='card outline-secondary rounded-3' id='post_".$idPost."'>";
+            echo    "<div class='card-header outline-secondary'>";
             echo        "<div class='row'>";
-            echo            "<div class='col'>";
-            
-            // // Bouton pour masquer/afficher le formulaire avec ID de post
-            echo                "<button onclick='toggleForm($idPost)' class='btn btn-outline-secondary'>Réagir</button>";
+            echo            "<div class='col text-start'>";
+            echo                "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'> 
+                                    <img src='".$infos["avatar"]."' class='avatar avatar-lg'>
+                                    <label for='nom'>". $infos["username"]."</label>";
+                                    if ($infos['admin'] == 1){
+                                        echo "<img src='./images/admin.jpg' class='avatar avatar-xs'>";
+                                    }
+                                    if ($infos['ban'] == 1){
+                                        echo "<img src='./images/ban.png' class='avatar avatar-xs'>";
+                                    }
+
+            echo                  " </a>";
             echo            "</div>";
             echo            "<div class='col text-end'>";
-            echo                "<label for='date'>". $post["date"]."</label>";
+            if (isset($_COOKIE['user_id'])){
+                $infoUser = $this->GetInfoProfile($_COOKIE['user_id']);
+                if ($infoUser['admin'] == 1){
+                    echo "<div class='dropdown'>
+                            <button class='btn btn-secondary dropdown-toggle' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                                Menu admin
+                            </button>
+                            <ul class='dropdown-menu'>
+                                <li><button class='dropdown-item' id='retirerPost_".$idPost."' onclick='retirerPost($idPost)'>Retirer Post</button></li>
+                                <li><button class='dropdown-item' id='sendAvertissement_".$idPost."' onclick='sendAvertissement($idPost)'>Envoyer un avertissement</button></li>
+                                <li><button class='dropdown-item' id='marquerSensible".$idPost."' onclick='marquerSensible($idPost)'>Marquer comme sensible</button></li>
+                            </ul>
+                        </div>";
+                }
+                if ($infos['id_utilisateur'] == $_COOKIE['user_id']){
+                    echo           "<button class='btn btn-outline-secondary' id='supprimerPost_".$idPost."' data-bs-toggle='modal' data-bs-target='#supprimerPostModal_".$idPost."'>Supprimer</button>";
+                }
+            }
+            
+            echo            "</div>";
+            // modal pour supprimer post
+            echo            "<div class='modal fade' id='supprimerPostModal_".$idPost."' tabindex='-1' aria-labelledby='supprimerPostModalLabel_".$idPost."' aria-hidden='true'>";
+            echo                "<div class='modal-dialog modal-dialog-centered'>";
+            echo                    "<div class='modal-content'>";
+            echo                        "<div class='modal-header'>";
+            echo                            "<h5 class='modal-title' id='supprimerPostModalLabel_".$idPost."'>Supprimer le post</h5>";
+            echo                            "<button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>";
+            echo                        "</div>";
+            echo                        "<div class='modal-body text-center'>";
+            echo                            "<p>Êtes-vous sûr de vouloir supprimer ce post?</p>";
+            echo                        "</div>";
+            echo                        "<div class='modal-footer'>";
+            echo                            "<button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Annuler</button>";
+            echo                            "<button type='button' class='btn btn-danger' data-bs-dismiss='modal' onclick='supprimerPost($idPost)' id='supprimerButton_".$idPost."'>Supprimer</button>";
+            echo                        "</div>";
+            echo                    "</div>";
+            echo                "</div>";
             echo            "</div>";
             echo        "</div>";
-            echo        "<br>";
-            echo        "<br>";
-        }
+            echo    "</div>";
+
+            // Affichage du post
+
+            //Si post sensible, on affiche un bouton pour le rendre visible
+            if ($post['visibilite']=="sensible"){
+                echo "<p>Ce post a été classé comme sensible, voulez vous le voir malgré tout?</p>";
+                echo "<button class='btn btn-outline-secondary' id='voirSensible".$idPost."' onclick='toggleVisibilitePostSensible($idPost)'>Voir</button>";
+                echo    "<div class='card-body text-center' onclick='sendTo($idPost)' id='postSensible_".$idPost."' style = 'filter: blur(15px);'>";
+            }else{
+                echo    "<div class='card-body text-center' onclick='sendTo($idPost)'>";
+            }
+            if ($post['visibilite']=="offensant"){
+                echo "<div class='alert alert-danger' role='alert'>";
+                echo "<p>Post classé comme offensant et a été supprimer</p>";
+                echo "</div>";
+            }
+
+            // Affichage de l'image si elle existe
+            if (!empty($post['image'])) {
+                echo "<img src='{$post['image']}' class='img-fluid'>";
+            }
+            echo        "<p class='card-text'>".$post["contenu"]."</p>";
+            if (!empty($post['video_lien'])) {
+                $videoEmbed = $this->getYoutubeEmbedUrl($post['video_lien']);
+                
+                $videoEmbedDisplay = '<iframe src="'.$videoEmbed.'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+                echo "<p class='card-text'>".$videoEmbedDisplay."</p>";
+                echo "<br>";
+            }
+            echo "<br>";
+            $likesAmount = $this->getNumberLikes($post["id"]); //récupère le nb de likes du post
+            echo "<p class='card-text'>".$likesAmount." likes</p>";
+            echo "<br>";
+            echo "<br>";
+            $estLike = false;
+            if (isset($_COOKIE['user_id'])){
+                $estLike = $this->isLiked($_COOKIE['user_id'], $post["id"]); //vérifie si l'utilisateur a liké le post
+            }
+            if($estLike == true){
+                echo "post liké";
+            }else{
+                echo "post non liké";
+            }
+            // Intégration du bouton "like" dynamique en JavaScript avec des images
+            if ($estLike) {
+                echo "<img id='likeButton' onclick='toggleLike(this, {$post['id']})' src='./images/like.png' alt='Liked' class='like-button'>";
+            } else {
+                echo "<img id='likeButton' onclick='toggleLike(this, {$post['id']})' src='./images/nolike.png' alt='Not Liked' class='like-button'>";
+            }
+            
+            if (isset($_COOKIE['user_id'])){
+                echo    "</div>";
+                echo    "<div class='card-footer'>";
         
-    
-        // Formulaire avec ID de post
-        echo        "<form id='postForm_{$idPost}' action='#' method='post' class='mb-4' enctype='multipart/form-data' style='display: none;'>";
-        echo            "<div class='form-group form-field'>";
-        if (isset($erreurPost)) {
-            echo            "<div class='alert alert-danger' role='alert'>";
-            echo $erreurPost;
+                echo        "<div class='row'>";
+                echo            "<div class='col'>";
+                
+                // // Bouton pour masquer/afficher le formulaire avec ID de post
+                echo                "<button onclick='toggleForm($idPost)' class='btn btn-outline-secondary'>Réagir</button>";
+                echo            "</div>";
+                echo            "<div class='col text-end'>";
+                echo                "<label for='date'>". $post["date"]."</label>";
+                echo            "</div>";
+                echo        "</div>";
+                echo        "<br>";
+                echo        "<br>";
+            }
+            
+        
+            // Formulaire avec ID de post
+            echo        "<form id='postForm_{$idPost}' action='#' method='post' class='mb-4' enctype='multipart/form-data' style='display: none;'>";
+            echo            "<div class='form-group form-field'>";
+            if (isset($erreurPost)) {
+                echo            "<div class='alert alert-danger' role='alert'>";
+                echo $erreurPost;
+                echo            "</div>";
+            }
+            echo                "<label for='commentaire'>Commentaire:</label>";
+            echo                "<textarea name='commentaire' class='form-control' rows='3'  required></textarea>";
             echo            "</div>";
+            echo            "<div class='form-group form-field'>";
+            echo               "<div class='form-check'>";
+            echo                    "<input class='form-check-input' type='radio' name='typeMedia' value='image' id='imageRadio_".$idPost."' onclick='toggleImageVideo($idPost)' checked>";
+            echo                    "<label class='form-check-label' for='imageRadio_".$idPost."'>Image</label>";
+            echo                "</div>";
+            echo                "<div class='form-check'>";
+            echo                    "<input class='form-check-input' type='radio' name='typeMedia' value='video' id='videoRadio_".$idPost."' onclick='toggleImageVideo($idPost)'>";
+            echo                    "<label class='form-check-label' for='videoRadio_".$idPost."'>Vidéo</label>";
+            echo                "</div>";
+            echo            "</div>";
+            echo            "<div class='imageField' id='imageField_".$idPost."'>";
+            echo                "<div class='form-group form-field'>";
+            echo                    "<label for='image'>Image:</label>";
+            echo                    "<input type='file' name='image' class='form-control' accept='image/*' >";
+            echo                "</div>";
+            echo            "</div>";
+            echo            "<div class='videoField' id='videoField_".$idPost."' style='display: none;'>";
+            echo                "<div class='form-group form-field'>";
+            echo                    "<label for='video'>Lien de la vidéo:</label>";
+            echo                    "<input type='text' name='video' class='form-control'>";
+            echo                "</div>";
+            echo            "</div>";
+            echo            "<div class='form-group text-center'>";
+            echo                "<input type='hidden' name='idPost' value='$idPost'>";
+            echo                "<input type='hidden' name='submitReponse' value='true'>";
+            echo                "<br>";
+            echo                "<button type='submit' class='btn btn-outline-secondary'>Valider</button>";
+            echo            "</div>";
+            echo        "</form>";  
+            echo    "</div>";
+            echo "</div>";
+            echo "<br>";
         }
-        echo                "<label for='commentaire'>Commentaire:</label>";
-        echo                "<textarea name='commentaire' class='form-control' rows='3'  required></textarea>";
-        echo            "</div>";
-        echo            "<div class='form-group form-field'>";
-        echo               "<div class='form-check'>";
-        echo                    "<input class='form-check-input' type='radio' name='typeMedia' value='image' id='imageRadio_".$idPost."' onclick='toggleImageVideo($idPost)' checked>";
-        echo                    "<label class='form-check-label' for='imageRadio_".$idPost."'>Image</label>";
-        echo                "</div>";
-        echo                "<div class='form-check'>";
-        echo                    "<input class='form-check-input' type='radio' name='typeMedia' value='video' id='videoRadio_".$idPost."' onclick='toggleImageVideo($idPost)'>";
-        echo                    "<label class='form-check-label' for='videoRadio_".$idPost."'>Vidéo</label>";
-        echo                "</div>";
-        echo            "</div>";
-        echo            "<div class='imageField' id='imageField_".$idPost."'>";
-        echo                "<div class='form-group form-field'>";
-        echo                    "<label for='image'>Image:</label>";
-        echo                    "<input type='file' name='image' class='form-control' accept='image/*' >";
-        echo                "</div>";
-        echo            "</div>";
-        echo            "<div class='videoField' id='videoField_".$idPost."' style='display: none;'>";
-        echo                "<div class='form-group form-field'>";
-        echo                    "<label for='video'>Lien de la vidéo:</label>";
-        echo                    "<input type='text' name='video' class='form-control'>";
-        echo                "</div>";
-        echo            "</div>";
-        echo            "<div class='form-group text-center'>";
-        echo                "<input type='hidden' name='idPost' value='$idPost'>";
-        echo                "<input type='hidden' name='submitReponse' value='true'>";
-        echo                "<br>";
-        echo                "<button type='submit' class='btn btn-outline-secondary'>Valider</button>";
-        echo            "</div>";
-        echo        "</form>";  
-        echo    "</div>";
-        echo "</div>";
-        echo "<br>";
     }
 
     public function ajouterNewPost($userId, $parentId = null){
@@ -563,7 +597,7 @@ class profile {
     public function getBestPosts($userId){
         global $conn;
     
-        $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom FROM post
+        $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, post.visibilite, utilisateur.nom, utilisateur.prenom FROM post
                   INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur AND post.id_utilisateur != $userId
                   ORDER BY post.date DESC";
         $result = $this->SQLconn->executeRequete($query);
@@ -577,7 +611,8 @@ class profile {
                 'image' => $row['image_path'],
                 'date' => $row['date'],
                 'nom_utilisateur' => $row['nom'],
-                'prenom_utilisateur' => $row['prenom']
+                'prenom_utilisateur' => $row['prenom'],
+                'visibilite' => $row['visibilite']
             ];
             $posts[] = $post;
         }
@@ -588,7 +623,7 @@ class profile {
     public function getRecentPostsFollowed($userId){
         global $conn;
     
-        $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, utilisateur.nom, utilisateur.prenom FROM post
+        $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, post.visibilite, utilisateur.nom, utilisateur.prenom FROM post
                   INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur
                   WHERE post.id_utilisateur IN (SELECT id_utilisateur_suivi FROM follower WHERE id_utilisateur = $userId)
                   ORDER BY post.date DESC";
@@ -603,7 +638,8 @@ class profile {
                 'image' => $row['image_path'],
                 'date' => $row['date'],
                 'nom_utilisateur' => $row['nom'],
-                'prenom_utilisateur' => $row['prenom']
+                'prenom_utilisateur' => $row['prenom'],
+                'visibilite' => $row['visibilite']
             ];
             $posts[] = $post;
         }
@@ -666,7 +702,6 @@ class profile {
     }
 
     public function GetPostById($id){
-        global $conn;
     
         $query = "SELECT * FROM post WHERE id_post = $id";
         $result = $this->SQLconn->executeRequete($query);
@@ -676,7 +711,9 @@ class profile {
             'contenu' => $row['contenu'],
             'image' => $row['image_path'],
             'date' => $row['date'],
-            'id_utilisateur' => $row['id_utilisateur']
+            'id_utilisateur' => $row['id_utilisateur'],
+            'video_lien' => $row['video_lien'],
+            'visibilite' => $row['visibilite']
         ];
     
         return $reponse;
@@ -696,7 +733,8 @@ class profile {
                 'image' => $row['image_path'],
                 'date' => $row['date'],
                 'id_utilisateur' => $row['id_utilisateur'],
-                'video_lien' => $row['video_lien']
+                'video_lien' => $row['video_lien'],
+                'visibilite' => $row['visibilite']
             ];
             $reponses[] = $reponse;
         }
@@ -864,6 +902,42 @@ class profile {
         }
         $result = $result->fetch_assoc();
         return $result;
+    }
+
+    public function marquerSensible($id){
+        $query = "SELECT * FROM `post` WHERE `id_post` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+        if ($result->num_rows == 0){
+            exit();
+        }
+        $result = $result->fetch_assoc();
+    
+        $query = "UPDATE `post` SET `visibilite` = 'sensible' WHERE `id_post` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+    
+        if ($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function retirerPost($id){
+        $query = "SELECT * FROM `post` WHERE `id_post` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+        if ($result->num_rows == 0){
+            exit();
+        }
+        $result = $result->fetch_assoc();
+    
+        $query = "UPDATE `post` SET `visibilite` = 'offensant' WHERE `id_post` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+
+        if ($result){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

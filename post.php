@@ -31,7 +31,6 @@ include ("BoutDePages/header.php");
 
   </head>
   <body class="text-body bg-body" data-bs-theme="dark">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <main id="mainContent">
         <div class="container mt-5" id="sign_in">
             <div class="row justify-content-center">
@@ -57,6 +56,9 @@ include ("BoutDePages/header.php");
 
     </main>
     <script src="JS/monProfile.js"></script>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <!-- <?php include ("BoutDePages/footer.php"); ?> -->
   </body>

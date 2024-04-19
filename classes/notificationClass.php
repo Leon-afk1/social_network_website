@@ -96,7 +96,7 @@ class Notification {
 
     function getNotifications($userId){
         $query = "SELECT notification.id_notification, notification.type, notification.id_utilisateur, notification.date_notification, notification.bool_lue, 
-                    notification.id_utilisateur_cible, notification.id_post_cible, utilisateur.username, utilisateur.avatar 
+                    notification.id_utilisateur_cible, notification.id_post_cible, notification.message_notification, utilisateur.username, utilisateur.avatar 
                     FROM notification INNER JOIN utilisateur ON notification.id_utilisateur_cible = utilisateur.id_utilisateur
                     WHERE notification.id_utilisateur = '$userId'";        
         $result = $this->SQLconn->executeRequete($query);
@@ -107,7 +107,7 @@ class Notification {
         return $notifications;
     }
 
-    function markNotificationsAsRead($userId){
+    public function markNotificationsAsRead($userId){
         $query = "UPDATE notification SET bool_lue = 1 WHERE id_utilisateur = $userId";
         if ($this->SQLconn->executeRequete($query)){
             return true;
@@ -127,6 +127,51 @@ class Notification {
 
     public function notifyUnban($userId, $userIdToUnban){
         $query = "Insert into notification (id_utilisateur, id_utilisateur_cible, type, date_notification) VALUES ($userIdToUnban, $userId, 'unban', NOW())";
+        if ($this->SQLconn->executeRequete($query)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function avertissement( $postId, $raison){
+        $query = "SELECT id_utilisateur FROM post WHERE id_post = $postId";
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $userIdToAvertir = $row['id_utilisateur'];
+        $userId = $_COOKIE['user_id'];
+
+        $query = "Insert into notification (id_utilisateur, id_utilisateur_cible, type, date_notification, id_post_cible, message_notification) VALUES ($userIdToAvertir, $userId, 'avertissement', NOW(), $postId, '$raison')";
+        if ($this->SQLconn->executeRequete($query)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function notifMarquerSensible($postId, $message){
+        $query = "SELECT id_utilisateur FROM post WHERE id_post = $postId";
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $userIdToAvertir = $row['id_utilisateur'];
+        $userId = $_COOKIE['user_id'];
+
+        $query = "Insert into notification (id_utilisateur, id_utilisateur_cible, type, date_notification, id_post_cible, message_notification) VALUES ($userIdToAvertir, $userId, 'sensible', NOW(), $postId, '$message')";
+        if ($this->SQLconn->executeRequete($query)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function notificationRetirerPost($postId, $message){
+        $query = "SELECT id_utilisateur FROM post WHERE id_post = $postId";
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $userIdToAvertir = $row['id_utilisateur'];
+        $userId = $_COOKIE['user_id'];
+
+        $query = "Insert into notification (id_utilisateur, id_utilisateur_cible, type, date_notification, id_post_cible, message_notification) VALUES ($userIdToAvertir, $userId, 'retirerPost', NOW(), $postId, '$message')";
         if ($this->SQLconn->executeRequete($query)){
             return true;
         } else {

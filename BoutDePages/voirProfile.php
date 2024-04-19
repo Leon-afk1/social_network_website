@@ -66,7 +66,6 @@
                                 <div class="card card-body">
                                     <form action='./profile.php?id=<?php echo $InfosCompteExterne["id_utilisateur"] ?>' method='post'>
                                         <input type='datetime-local' name='dateFin' value='2022-01-01T00:00' required>
-                                        <!-- <input type='text' name='raison' placeholder='Raison du ban' value='Contenue inapproprié'> -->
                                         <textarea name="raison" placeholder='Raison du ban' rows="3">Contenue inapproprié</textarea>
 
                                         <input type='hidden' name='banTemp' value='true'>

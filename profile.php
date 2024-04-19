@@ -149,7 +149,6 @@ include ("BoutDePages/header.php");
 
   </head>
   <body class="text-body bg-body" data-bs-theme="dark">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <main id="mainContent">
         <div class="container mt-5" id="sign_in">
             <div class="row justify-content-center">
@@ -180,7 +179,11 @@ include ("BoutDePages/header.php");
 
     </main>
     <!-- <?php include ("BoutDePages/footer.php"); ?> -->
+    <script src="JS/profile.js"></script>
+    <script src="JS/monProfile.js"></script>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   </body>
 </html>
-<script src="JS/profile.js"></script>
 

@@ -43,7 +43,6 @@ $SQLconn->notification->markNotificationsAsRead($user_id);
 
 </head>
 <body class="text-body bg-body" data-bs-theme="dark">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
 <main id="mainContent">
     <div class="row justify-content-center">
@@ -93,6 +92,18 @@ $SQLconn->notification->markNotificationsAsRead($user_id);
                                     echo $ban["justification_ban"];
                                 }else if ($notification["type"]=="unban"){
                                     echo "Vous avez été débanni";
+                                }else if ($notification["type"]=="avertissement"){
+                                    echo $notification["message_notification"];
+                                    echo "<br>";
+                                    echo "Avertissement en lien avec le post suivant : <a href='./post.php?id=" . $notification["id_post_cible"] . "'>Voir le post</a>";
+                                }else if ($notification["type"]=="sensible"){
+                                    echo $notification["message_notification"];
+                                    echo "<br>";
+                                    echo "Avertissement en lien avec le post suivant : <a href='./post.php?id=" . $notification["id_post_cible"] . "'>Voir le post</a>";
+                                }else if ($notification["type"]=="retirerPost"){
+                                    echo $notification["message_notification"];
+                                    echo "<br>";
+                                    echo "Avertissement en lien avec le post suivant : <a href='./post.php?id=" . $notification["id_post_cible"] . "'>Voir le post</a>";
                                 }
                                 echo "</div>";
                                 echo "<div class='col text-end'>";
@@ -117,6 +128,9 @@ $SQLconn->notification->markNotificationsAsRead($user_id);
     </div>
 </main>
 <script src="JS/notificationHandler.js"></script>
+<script src="https://code.jquery.com/jquery.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 <!-- <?php include("BoutDePages/footer.php"); ?> -->
 </body>
