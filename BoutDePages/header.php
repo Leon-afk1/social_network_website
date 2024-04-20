@@ -87,7 +87,6 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
                     </button></li>";
               } else {
               echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./index.php`' aria-current='page'>Home</button></li>";
-              echo "<li class='nav-item'><button class='nav-link btn btn-link ' onclick='window.location.href=`./logout.php?redirect=$currentURL`' aria-current='page'>Logout</button></li>";
               echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./poster.php`' aria-current='page'>Poster</button></li>";
               echo "<li class='nav-item'><form class='nav-item' action='./profile.php?id=".$_COOKIE['user_id']."' method='post'>
                           <input type='hidden' name='statistiques' value'true'>
@@ -115,10 +114,14 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
 
       ?>
       <div class="d-flex navbar-nav">
-        <div id="suggestions2" class></div>     
-        <form class="d-flex nav-item" role="search">
+        <?php if(isset($_COOKIE['user_id'])){ ?>
+        <div id="logOut" class="nav-item">
+          <li class='nav-item'><button class='nav-link btn btn-link ' onclick='window.location.href=`./logout.php?redirect=<?php echo $currentURL; ?>`' aria-current='page'>Logout</button></li>
+        </div>
+        <?php } ?>
+        <form class="d-flex nav-item position-relative" role="search">
           <input id="suggestField2" class="form-control me-2 shadow" type="search" placeholder="Search" onkeyup="suggestFromInput_fetch(this.value)">
-        </form>
+          <div class="position-absolute top-100 start-50 translate-middle-x overflow-auto" style="max-height: 200px; background-color: black; left: 50%; transform: translateX(-50%); top: calc(100%); width: 100%;" id="suggestions2"></div>      </form>
       </div>
       <div class="nav-item ">
           <div class="form-check">

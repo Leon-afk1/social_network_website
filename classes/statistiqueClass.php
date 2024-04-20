@@ -71,6 +71,13 @@ class Statistiques {
         }
     }
 
+    public function getNbPost($userId){
+        $query = "SELECT COUNT(*) FROM post WHERE id_utilisateur = $userId";
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        return $row['COUNT(*)'];
+    }
+
     public function getNbPostParJour($userId){
         $moyenne = 0;
         $query = "SELECT COUNT(*) FROM post WHERE id_utilisateur = $userId";
@@ -83,6 +90,38 @@ class Statistiques {
         $nbJours = $row['nbJours'];
         if ($nbJours != 0){
             $moyenne = $nbPost / $nbJours;
+        }
+        return $moyenne;
+    }
+
+    public function getNbPostParSemaine($userId){
+        $moyenne = 0;
+        $query = "SELECT COUNT(*) FROM post WHERE id_utilisateur = $userId";
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $nbPost = $row['COUNT(*)'];
+        $query = "SELECT DATEDIFF(NOW(), (SELECT date FROM post WHERE id_utilisateur = $userId ORDER BY date DESC LIMIT 1)) As nbJours";
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $nbJours = $row['nbJours'];
+        if ($nbJours != 0){
+            $moyenne = $nbPost / ($nbJours / 7);
+        }
+        return $moyenne;
+    }
+
+    public function getNbPostParMois($userId){
+        $moyenne = 0;
+        $query = "SELECT COUNT(*) FROM post WHERE id_utilisateur = $userId";
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $nbPost = $row['COUNT(*)'];
+        $query = "SELECT DATEDIFF(NOW(), (SELECT date FROM post WHERE id_utilisateur = $userId ORDER BY date DESC LIMIT 1)) As nbJours";
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $nbJours = $row['nbJours'];
+        if ($nbJours != 0){
+            $moyenne = $nbPost / ($nbJours / 30);
         }
         return $moyenne;
     }

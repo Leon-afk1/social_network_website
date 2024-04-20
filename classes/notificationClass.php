@@ -98,7 +98,7 @@ class Notification {
         $query = "SELECT notification.id_notification, notification.type, notification.id_utilisateur, notification.date_notification, notification.bool_lue, 
                     notification.id_utilisateur_cible, notification.id_post_cible, notification.message_notification, utilisateur.username, utilisateur.avatar 
                     FROM notification INNER JOIN utilisateur ON notification.id_utilisateur_cible = utilisateur.id_utilisateur
-                    WHERE notification.id_utilisateur = '$userId'";        
+                    WHERE notification.id_utilisateur = '$userId' ORDER BY notification.date_notification DESC";      
         $result = $this->SQLconn->executeRequete($query);
         $notifications = array();
         while ($row = $result->fetch_assoc()) {

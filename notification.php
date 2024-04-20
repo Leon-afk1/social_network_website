@@ -67,7 +67,11 @@ $SQLconn->notification->markNotificationsAsRead($user_id);
                             // Afficher les notifications
                             foreach ($notifications as $notification) {
                                 echo "<div class='notification' id='" . $notification["id_notification"] . "'>";
-                                echo "<div class='card outline-secondary rounded-3 item-center'>";
+                                if ($notification["bool_lue"] == 0) {
+                                    echo "<div class='card outline-secondary rounded-3 item-center text-bg-secondary'>";
+                                } else {
+                                    echo "<div class='card outline-secondary rounded-3 item-center '>";
+                                }
                                 echo "<div class='row'>";
                                 echo "<div class='col text-start'>";
                                 echo "<a class='nav-link active' aria-current='page' href='./profile.php?id=" . $notification["id_utilisateur_cible"] . "'>
