@@ -124,3 +124,25 @@ function retirerPost(postId) {
     }
 
 }
+
+function marquerNonSensible(postId) {
+    $.post('./AJAX/marquerNonSensible.php', { postId: postId }, function(data) {
+        if (data  == "Post marqué comme non sensible") {
+            alert("Post marqué comme non sensible avec succès!");
+        } else {
+            alert(data);
+            console.error('Erreur lors de la requête AJAX');
+        }
+    });
+}
+
+function marquerNonOffensant(postId) {
+    $.post('./AJAX/marquerNonOffensant.php', { postId: postId }, function(data) {
+        if (data  == "Post marqué comme non offensant") {
+            alert("Post marqué comme non offensant avec succès!");
+        } else {
+            alert(data);
+            console.error('Erreur lors de la requête AJAX');
+        }
+    });
+}

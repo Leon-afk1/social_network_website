@@ -179,6 +179,36 @@ class Notification {
         }
     }
 
+    public function notificationNonSensible($postId){
+        $query = "SELECT id_utilisateur FROM post WHERE id_post = $postId";
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $userIdToAvertir = $row['id_utilisateur'];
+        $userId = $_COOKIE['user_id'];
+
+        $query = "Insert into notification (id_utilisateur, id_utilisateur_cible, type, date_notification, id_post_cible) VALUES ($userIdToAvertir, $userId, 'nonSensible', NOW(), $postId)";
+        if ($this->SQLconn->executeRequete($query)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function notificationRemettrePost($postId){
+        $query = "SELECT id_utilisateur FROM post WHERE id_post = $postId";
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $userIdToAvertir = $row['id_utilisateur'];
+        $userId = $_COOKIE['user_id'];
+
+        $query = "Insert into notification (id_utilisateur, id_utilisateur_cible, type, date_notification, id_post_cible) VALUES ($userIdToAvertir, $userId, 'remettrePost', NOW(), $postId)";
+        if ($this->SQLconn->executeRequete($query)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 
 ?>

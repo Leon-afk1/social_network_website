@@ -336,11 +336,24 @@ class profile {
                                 Menu admin
                             </button>
                             <ul class='dropdown-menu'>
-                                <li><button class='dropdown-item' id='retirerPost_".$idPost."' onclick='retirerPost($idPost)'>Retirer Post</button></li>
                                 <li><button class='dropdown-item' id='sendAvertissement_".$idPost."' onclick='sendAvertissement($idPost)'>Envoyer un avertissement</button></li>
+                            ";
+                    if ($post['visibilite']=="public"){
+
+                    echo       "<li><button class='dropdown-item' id='retirerPost_".$idPost."' onclick='retirerPost($idPost)'>Retirer Post</button></li>
                                 <li><button class='dropdown-item' id='marquerSensible".$idPost."' onclick='marquerSensible($idPost)'>Marquer comme sensible</button></li>
                             </ul>
                         </div>";
+                    }else if ($post['visibilite']=="sensible"){
+                        echo       "<li><button class='dropdown-item' id='retirerPost_".$idPost."' onclick='retirerPost($idPost)'>Retirer Post</button></li>
+                                <li><button class='dropdown-item' id='marquerNonSensible".$idPost."' onclick='marquerNonSensible($idPost)'>Marquer comme non sensible</button></li>
+                            </ul>
+                        </div>";
+                    }else if ($post['visibilite']=="offensant"){
+                        echo       "<li><button class='dropdown-item' id='marquerNonOffensant".$idPost."' onclick='marquerNonOffensant($idPost)'>Marquer comme non offensant</button></li>
+                            </ul>
+                        </div>";
+                    }
                 }
                 if ($infos['id_utilisateur'] == $_COOKIE['user_id']){
                     echo           "<button class='btn btn-outline-secondary' id='supprimerPost_".$idPost."' data-bs-toggle='modal' data-bs-target='#supprimerPostModal_".$idPost."'>Supprimer</button>";
@@ -931,6 +944,42 @@ class profile {
         $result = $result->fetch_assoc();
     
         $query = "UPDATE `post` SET `visibilite` = 'offensant' WHERE `id_post` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+
+        if ($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function remettrePost($id){
+        $query = "SELECT * FROM `post` WHERE `id_post` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+        if ($result->num_rows == 0){
+            exit();
+        }
+        $result = $result->fetch_assoc();
+    
+        $query = "UPDATE `post` SET `visibilite` = 'public' WHERE `id_post` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+
+        if ($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function enleverMarqueSensible($id){
+        $query = "SELECT * FROM `post` WHERE `id_post` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+        if ($result->num_rows == 0){
+            exit();
+        }
+        $result = $result->fetch_assoc();
+    
+        $query = "UPDATE `post` SET `visibilite` = 'public' WHERE `id_post` = $id";
         $result = $this->SQLconn->executeRequete($query);
 
         if ($result){
