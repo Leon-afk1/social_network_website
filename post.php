@@ -35,27 +35,32 @@ include ("BoutDePages/header.php");
         <div class="container mt-5" id="sign_in">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-8">
-                  <?php $SQLconn->profile->afficherPosts($post,$Infos);
-                    $reponses = $SQLconn->profile->getReponsesCommentaire($post['id']);
-                    if (!empty($reponses)) {
-                        echo "<div class='reponses-container'>";
-                        foreach ($reponses as $reponse) {
-                            $query = "SELECT * FROM utilisateur WHERE id_utilisateur = ".$reponse['id_utilisateur'];
-                            $result = $SQLconn->executeRequete($query);
-                            $row = $result->fetch_assoc();
-                            $SQLconn->profile->afficherPosts($reponse,$row);
-                        }
-                        echo "</div>";
-                        echo "<button onclick='chargerPlusReponses($idPost)'>Charger plus</button>";
-                    }
+                  <div class='reponses-container'  id="reponses-container">
+                    <?php
+                      $SQLconn->profile->afficherPosts($post,$Infos);
+                      $allPosts =  $SQLconn->profile->GetNextReponse($idPost, 0, 5);
+                      foreach ($allPosts as $post){
+                          $InfosUser = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
+                          $SQLconn->profile->afficherPosts($post,$InfosUser);
+                      }
                     ?>
-                </div>
-            </div>
-        </div>
-        <br>
-
+                  </div>
+              </div>
+          </div>
+      </div>
+      <br>
     </main>
     <script src="JS/monProfile.js"></script>
+    <script src="JS/post.js"></script>
+
+    <script>
+      window.addEventListener('scroll', function() {
+          if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+              loadMorePosts(<?php echo $idPost; ?>);
+          }
+      });
+    </script>
+
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

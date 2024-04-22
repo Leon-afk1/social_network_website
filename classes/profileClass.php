@@ -271,6 +271,32 @@ class profile {
         return $posts;
     }
 
+    public function GetNextReponse($postId, $start, $combien){
+        $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path,post.video_lien, post.date, post.visibilite, utilisateur.nom, utilisateur.prenom FROM post
+                  INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur AND post.id_parent = $postId
+                  ORDER BY post.date DESC
+                  LIMIT  $combien OFFSET $start";
+    
+        $result = $this->SQLconn->executeRequete($query);
+        $posts = [];
+        while ($row = $result->fetch_assoc()) {
+            $post = [
+                'id' => $row['id_post'],
+                'id_utilisateur' => $row['id_utilisateur'],
+                'contenu' => $row['contenu'],
+                'image' => $row['image_path'],
+                'video_lien' => $row['video_lien'],
+                'date' => $row['date'],
+                'nom_utilisateur' => $row['nom'],
+                'prenom_utilisateur' => $row['prenom'],
+                'visibilite' => $row['visibilite']
+            ];
+            $posts[] = $post;
+        }
+    
+        return $posts;
+    }
+
     public function getYoutubeEmbedUrl($url){ // https://stackoverflow.com/questions/19050890/find-youtube-link-in-php-string-and-convert-it-into-embed-code
          $shortUrlRegex = '/youtu.be\/([a-zA-Z0-9_-]+)\??/i';
          $longUrlRegex = '/youtube.com\/((?:embed)|(?:watch))((?:\?v\=)|(?:\/))([a-zA-Z0-9_-]+)/i';
@@ -436,10 +462,12 @@ class profile {
                 echo    "<div class='card-footer'>";
         
                 echo        "<div class='row'>";
-                echo            "<div class='col'>";
+                echo            "<div class='col' onclick='toggleForm($idPost)'>";
                 
                 // // Bouton pour masquer/afficher le formulaire avec ID de post
-                echo                "<button onclick='toggleForm($idPost)' class='btn btn-outline-secondary'>Réagir</button>";
+                echo                "<img src='./images/comment.png' alt='Comment' class='like-button'  style='max-width: 1em; max-height: 2em;'>";
+                $nbCommentaires = $this->getNombreCommentaires($idPost);
+                echo               "<label for='commentaire'>". $nbCommentaires." commentaires</label>";
                 echo            "</div>";
                 echo            "<div class='col text-end'>";
                 echo                "<label for='date'>". $post["date"]."</label>";
@@ -494,6 +522,13 @@ class profile {
             echo "</div>";
             echo "<br>";
         }
+    }
+
+    public function getNombreCommentaires($postId){
+        $query = "SELECT COUNT(*) FROM post WHERE id_parent = $postId";
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        return $row['COUNT(*)'];
     }
 
     public function ajouterNewPost($userId, $parentId = null){

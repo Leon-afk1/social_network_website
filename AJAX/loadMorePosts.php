@@ -2,7 +2,6 @@
 session_start(); 
 
 include("../loc.php");
-// include("repondrePost.php");
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = intval($_GET['page']);
