@@ -9,7 +9,6 @@ if (isset($_GET['page']) && is_numeric($_GET['page']) && isset($_GET['postId']))
     $postId = intval($_GET['postId']);
     $start = ($page - 1) * 5; 
 
-    $Infos = $_SESSION['Infos'];
     
     // Récupérer les 5 prochains posts à partir de la base de données
     $morePosts = $SQLconn->profile->GetNextReponse($postId, $start, 5);

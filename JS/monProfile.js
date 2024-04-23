@@ -3,10 +3,10 @@ function toggleForm(postId) {
     var button = document.getElementById("toggleFormButton_" + postId);
 
     if (form.style.display === "none") {
-        form.style.display = "block";
+        $("#postForm_"+postId).slideToggle();
         button.innerHTML = "Masquer le formulaire";
     } else {
-        form.style.display = "none";
+        $("#postForm_"+postId).slideToggle();
         button.innerHTML = "Afficher le formulaire";
     }
 }
