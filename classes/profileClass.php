@@ -3,10 +3,12 @@
 class profile {
     private $SQLconn;
 
+    // Constructeur de la classe
     public function __construct(ConnexionBDD $SQLconn) {
         $this->SQLconn = $SQLconn;
     }
 
+    // Méthode pour obtenir les informations de profil
     public function GetInfoProfile($userId) {
         $query = "SELECT * FROM utilisateur WHERE id_utilisateur = $userId";
         $result = $this->SQLconn->executeRequete($query);
@@ -15,6 +17,7 @@ class profile {
         return $row;
     }
     
+    // Méthode pour mettre à jour les informations de profil
     public function UpdateInfosProfile($userId){
         global $conn;
     
@@ -25,29 +28,32 @@ class profile {
         if ($_POST["submitModification"]){
             $updateAttempted = true;
     
+            // Validation des champs de formulaire
             if (strlen($_POST["nom"]) < 2){
                 $error = "Nom trop court";
             }
+            // Vérification de la longueur du prénom
             else if (strlen($_POST["prenom"]) < 2){
                 $error = "Prénom trop court";
             }
+            // Vérification de la longueur du nom d'utilisateur
             else if (strlen($_POST["username"]) < 2){
                 $error = "Nom d'utilisateur trop court";
             }
+            // Vérification de la longueur de l'e-mail
             else if (strlen($_POST["email"]) < 2){
                 $error = "Email trop court";
             }
+            // Validation de l'e-mail
             else if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)){
                 $error = "Email invalide";
             }
+            // Vérification de la longueur de l'adresse
             else if (strlen($_POST["adresse"]) < 5){
                 $error = "Adresse trop courte";
             }
-    
-            // else if (!checkAge($_POST["date_naissance"])){
-            //     $error = "Vous devez avoir au moins 18 ans pour vous inscrire";
-            // }       
             else {
+                // Vérification si le nom d'utilisateur et l'e-mail sont déjà utilisés
                 $query1 = "SELECT * FROM utilisateur WHERE username = '" . $this->SQLconn->SecurizeString_ForSQL($_POST["username"]) . "'";
                 $result1 = $this->SQLconn->executeRequete($query1);
                 $query2 = "SELECT * FROM utilisateur WHERE email = '" . $this->SQLconn->SecurizeString_ForSQL($_POST["email"]) . "'";
@@ -83,6 +89,7 @@ class profile {
                     $description = $this->SQLconn->SecurizeString_ForSQL($_POST["description"]);
                     $adresse = $this->SQLconn->SecurizeString_ForSQL($_POST["adresse"]);
     
+                    // Mise à jour des informations de l'utilisateur dans la base de données
                     $query = "UPDATE utilisateur SET nom = '$nom', prenom = '$prenom', username = '$username', dateNaissance = '$dateNaissance', email = '$email' , description= '$description', adresse='$adresse' WHERE id_utilisateur = $userId";
                     $result = $this->SQLconn->executeRequete($query);
                     if ($result === TRUE) {
@@ -94,6 +101,7 @@ class profile {
                 }
                 
             }
+            // Retourner le résultat de la tentative de mise à jour du profil
             $resultArray = ['Attempted' => $updateAttempted, 
                             'Successful' => $updateSuccessful, 
                             'ErrorMessage' => $error];
@@ -102,6 +110,7 @@ class profile {
         }
     }
 
+    // Méthode pour mettre à jour l'avatar de l'utilisateur
     public function UpdateAvatar($userId){
         global $conn;
     
@@ -112,6 +121,7 @@ class profile {
         if ($_POST["submitModification"]){
             $updateAttempted = true;
     
+            // Vérification si un fichier est téléchargé
             if ($_FILES['avatar']["size"] == 0){
                 $error = "Veuillez choisir une image";
             }
@@ -120,6 +130,7 @@ class profile {
                 $avatarPath = "./avatar/" . $userId . ".jpg";
                 $avatarPath = $this->SQLconn->SecurizeString_ForSQL($avatarPath);
     
+                // Mise à jour du chemin de l'avatar dans la base de données
                 $query = "UPDATE utilisateur SET avatar = '$avatarPath' WHERE id_utilisateur = $userId";
                 $result = $this->SQLconn->executeRequete($query);
                 if ($result === TRUE) {
@@ -156,6 +167,7 @@ class profile {
             }
         }
     
+        // Retourner le résultat de la tentative de mise à jour de l'avatar
         $resultArray = ['Attempted' => $updateAttempted, 
                         'Successful' => $updateSuccessful,
                         'ErrorMessage' => $error];
@@ -164,6 +176,7 @@ class profile {
     
     }
 
+    // Méthode pour changer le mot de passe de l'utilisateur
     public function changermdp($userId){
         global $conn;
     
@@ -174,21 +187,26 @@ class profile {
         if ($_POST["submitModificationMdp"]){
             $updateAttempted = true;
     
+            // Récupération du mot de passe hashé de l'utilisateur
             $query = "SELECT * FROM utilisateur WHERE id_utilisateur = $userId";
             $result = $this->SQLconn->executeRequete($query);
             $row = $result->fetch_assoc();
             $passwordHash = $row['mdp'];
     
+            // Vérification si le mot de passe actuel correspond
             if (!password_verify($_POST["mdp"], $passwordHash)){
                 $error = "Mot de passe incorrect";
             }
+            // Vérification si les nouveaux mots de passe correspondent
             else if ($_POST["newmdp1"] != $_POST["newmdp2"]){
                 $error = "Les nouveaux mots de passe ne correspondent pas";
             }
+            // Vérification de la longueur du nouveau mot de passe
             else if (strlen($_POST["newmdp1"]) < 2){
                 $error = "Mot de passe trop court";
             }
             else {
+                // Hashage du nouveau mot de passe et mise à jour dans la base de données
                 $newPassword = password_hash($_POST["newmdp1"], PASSWORD_DEFAULT);
                 $query = "UPDATE utilisateur SET mdp = '$newPassword' WHERE id_utilisateur = $userId";
                 $result = $this->SQLconn->executeRequete($query);
@@ -201,6 +219,7 @@ class profile {
             }
         }
     
+        // Retourner le résultat de la tentative de changement de mot de passe
         $resultArray = ['Attempted' => $updateAttempted, 
                         'Successful' => $updateSuccessful, 
                         'ErrorMessage' => $error];
@@ -208,6 +227,7 @@ class profile {
         return $resultArray;
     }
 
+    // Méthode pour suivre un utilisateur
     public function follow($userId, $userIdToFollow){
     
         $query = "INSERT INTO follower (id_utilisateur, id_utilisateur_suivi) VALUES ($userId, $userIdToFollow)";
@@ -218,6 +238,7 @@ class profile {
         }
     }
     
+    // Méthode pour ne plus suivre un utilisateur
     public function unfollow($userId, $userIdToUnfollow){
     
         $query = "DELETE FROM follower WHERE id_utilisateur = $userId AND id_utilisateur_suivi = $userIdToUnfollow";
@@ -228,6 +249,7 @@ class profile {
         }
     }
 
+    // Méthode pour obtenir le nombre total d'abonnés
     public function totalFollowers($userId){
         global $conn;
     
@@ -236,6 +258,7 @@ class profile {
         return $result->num_rows;
     }
 
+    // Méthode pour obtenir le nombre total d'abonnements
     public function totalFollowing($userId){
         global $conn;
     
@@ -244,6 +267,7 @@ class profile {
         return $result->num_rows;
     }
 
+    // Méthode pour obtenir les prochains post de l'utilisateur
     public function GetNextPosts($userId, $start, $combien){
 
         $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path,post.video_lien, post.date, post.visibilite, utilisateur.nom, utilisateur.prenom FROM post
@@ -271,14 +295,22 @@ class profile {
         return $posts;
     }
 
+    // Récupère les prochaines réponses d'un post spécifique
     public function GetNextReponse($postId, $start, $combien){
-        $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path,post.video_lien, post.date, post.visibilite, utilisateur.nom, utilisateur.prenom FROM post
+        // Requête SQL pour récupérer les informations des réponses
+        $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.video_lien, post.date, post.visibilite, utilisateur.nom, utilisateur.prenom 
+                  FROM post
                   INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur AND post.id_parent = $postId
                   ORDER BY post.date DESC
                   LIMIT  $combien OFFSET $start";
-    
+        
+        // Exécution de la requête SQL
         $result = $this->SQLconn->executeRequete($query);
+        
+        // Initialisation du tableau pour stocker les réponses
         $posts = [];
+        
+        // Parcours des résultats de la requête et construction du tableau de réponses
         while ($row = $result->fetch_assoc()) {
             $post = [
                 'id' => $row['id_post'],
@@ -291,16 +323,21 @@ class profile {
                 'prenom_utilisateur' => $row['prenom'],
                 'visibilite' => $row['visibilite']
             ];
+            // Ajout de chaque réponse au tableau
             $posts[] = $post;
         }
-    
+        
+        // Retourne le tableau contenant les réponses
         return $posts;
     }
 
-    public function getYoutubeEmbedUrl($url){ // https://stackoverflow.com/questions/19050890/find-youtube-link-in-php-string-and-convert-it-into-embed-code
-         $shortUrlRegex = '/youtu.be\/([a-zA-Z0-9_-]+)\??/i';
-         $longUrlRegex = '/youtube.com\/((?:embed)|(?:watch))((?:\?v\=)|(?:\/))([a-zA-Z0-9_-]+)/i';
+    // Convertit une URL YouTube en URL d'intégration pour afficher la vidéo
+    public function getYoutubeEmbedUrl($url){
+        // Expression régulière pour correspondre aux URL courtes et longues de YouTube
+        $shortUrlRegex = '/youtu.be\/([a-zA-Z0-9_-]+)\??/i';
+        $longUrlRegex = '/youtube.com\/((?:embed)|(?:watch))((?:\?v\=)|(?:\/))([a-zA-Z0-9_-]+)/i';
     
+        // Recherche de l'ID de la vidéo dans l'URL
         if (preg_match($longUrlRegex, $url, $matches)) {
             $youtube_id = $matches[count($matches) - 1];
         }
@@ -308,86 +345,103 @@ class profile {
         if (preg_match($shortUrlRegex, $url, $matches)) {
             $youtube_id = $matches[count($matches) - 1];
         }
+        
+        // Construction de l'URL d'intégration avec l'ID de la vidéo
         return 'https://www.youtube.com/embed/' . $youtube_id ;
     }
 
-    public function isLiked($userId, $postId){ //fonction pour vérifier si un post est liké par un utilisateur
+    // Vérifie si un post est aimé par un utilisateur donné
+    public function isLiked($userId, $postId){
+        // Requête SQL pour vérifier si un post est aimé par un utilisateur
         $query = "SELECT * FROM likes WHERE id_utilisateur = $userId AND id_post = $postId";
         $result = $this->SQLconn->executeRequete($query);
+        
+        // Vérification du nombre de lignes retournées
         if ($result->num_rows > 0) {
-            return true;
+            return true; // Le post est aimé par l'utilisateur
         } else {
-            return false;
+            return false; // Le post n'est pas aimé par l'utilisateur
         }
     }
 
-    public function getNumberLikes($postId){ //fonction qui retourne le nombre de likes d'un post
+    // Retourne le nombre de likes d'un post spécifique
+    public function getNumberLikes($postId){
+        // Requête SQL pour compter le nombre de likes d'un post
         $query= "SELECT COUNT(*) FROM likes WHERE id_post=$postId";
         $result = $this->SQLconn->executeRequete($query);
-        //var_dump($result); //pour visualiser le contenu de la variable
-        $row = [];
+        
+        // Extraction du résultat
         $row = $result->fetch_assoc();
+        
+        // Retourne le nombre de likes
         return $row['COUNT(*)'];
     }
 
+    // Affiche un post avec ses détails, y compris les boutons d'interaction, les commentaires et les options de modération pour les administrateurs.
     public function afficherPosts($post, $infos){
         $idPost = $post['id'];
+        // Vérifie si l'utilisateur est connecté et récupère ses informations
         if (isset($_COOKIE['user_id'])){
             $infoUser1 = $this->GetInfoProfile($_COOKIE['user_id']);
         }
+        // Vérifie la visibilité du post et les permissions d'affichage pour l'utilisateur
         if ($post['visibilite']!="offensant" || (isset($_COOKIE['user_id']) && $infos['id_utilisateur'] == $_COOKIE['user_id']) || (isset($infoUser1) && $infoUser1['admin'] == 1)){
             
             echo "<div class='card outline-secondary rounded-3' id='post_".$idPost."'>";
             echo    "<div class='card-header outline-secondary'>";
             echo        "<div class='row'>";
             echo            "<div class='col text-start'>";
+            // Lien vers le profil de l'utilisateur qui a publié le post
             echo                "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'> 
                                     <img src='".$infos["avatar"]."' class='avatar avatar-lg'>
                                     <label for='nom'>". $infos["username"]."</label>";
+                                    // Affiche une icône admin si l'utilisateur est un administrateur
                                     if ($infos['admin'] == 1){
                                         echo "<img src='./images/admin.jpg' class='avatar avatar-xs'>";
                                     }
+                                    // Affiche une icône de bannissement si l'utilisateur est banni
                                     if ($infos['ban'] == 1){
                                         echo "<img src='./images/ban.png' class='avatar avatar-xs'>";
                                     }
-
+    
             echo                  " </a>";
             echo            "</div>";
             echo            "<div class='col text-end'>";
             if (isset($_COOKIE['user_id'])){
                 $infoUser = $this->GetInfoProfile($_COOKIE['user_id']);
+                // Affiche un menu d'administration pour les administrateurs
                 if ($infoUser['admin'] == 1){
                     echo "<div class='dropdown'>
                             <button class='btn btn-secondary dropdown-toggle' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
                                 Menu admin
                             </button>
                             <ul class='dropdown-menu'>
-                                <li><button class='dropdown-item' id='sendAvertissement_".$idPost."' onclick='sendAvertissement($idPost)'>Envoyer un avertissement</button></li>
-                            ";
+                                <li><button class='dropdown-item' id='sendAvertissement_".$idPost."' onclick='sendAvertissement($idPost)'>Envoyer un avertissement</button></li>";
+                    // Affiche les options de modération en fonction de la visibilité du post
                     if ($post['visibilite']=="public"){
-
-                    echo       "<li><button class='dropdown-item' id='retirerPost_".$idPost."' onclick='retirerPost($idPost)'>Retirer Post</button></li>
-                                <li><button class='dropdown-item' id='marquerSensible".$idPost."' onclick='marquerSensible($idPost)'>Marquer comme sensible</button></li>
-                            </ul>
-                        </div>";
-                    }else if ($post['visibilite']=="sensible"){
                         echo       "<li><button class='dropdown-item' id='retirerPost_".$idPost."' onclick='retirerPost($idPost)'>Retirer Post</button></li>
-                                <li><button class='dropdown-item' id='marquerNonSensible".$idPost."' onclick='marquerNonSensible($idPost)'>Marquer comme non sensible</button></li>
+                                    <li><button class='dropdown-item' id='marquerSensible".$idPost."' onclick='marquerSensible($idPost)'>Marquer comme sensible</button></li>
                             </ul>
                         </div>";
-                    }else if ($post['visibilite']=="offensant"){
+                    } else if ($post['visibilite']=="sensible"){
+                        echo       "<li><button class='dropdown-item' id='retirerPost_".$idPost."' onclick='retirerPost($idPost)'>Retirer Post</button></li>
+                                    <li><button class='dropdown-item' id='marquerNonSensible".$idPost."' onclick='marquerNonSensible($idPost)'>Marquer comme non sensible</button></li>
+                            </ul>
+                        </div>";
+                    } else if ($post['visibilite']=="offensant"){
                         echo       "<li><button class='dropdown-item' id='marquerNonOffensant".$idPost."' onclick='marquerNonOffensant($idPost)'>Marquer comme non offensant</button></li>
                             </ul>
                         </div>";
                     }
                 }
+                // Affiche le bouton de suppression pour l'utilisateur qui a publié le post
                 if ($infos['id_utilisateur'] == $_COOKIE['user_id']){
                     echo           "<button class='btn btn-outline-secondary' id='supprimerPost_".$idPost."' data-bs-toggle='modal' data-bs-target='#supprimerPostModal_".$idPost."'>Supprimer</button>";
                 }
             }
             
             echo            "</div>";
-            // modal pour supprimer post
+            // Modal de confirmation de suppression du post
             echo            "<div class='modal fade' id='supprimerPostModal_".$idPost."' tabindex='-1' aria-labelledby='supprimerPostModalLabel_".$idPost."' aria-hidden='true'>";
             echo                "<div class='modal-dialog modal-dialog-centered'>";
             echo                    "<div class='modal-content'>";
@@ -407,30 +461,31 @@ class profile {
             echo            "</div>";
             echo        "</div>";
             echo    "</div>";
-
-            // Affichage du post
-
-            //Si post sensible, on affiche un bouton pour le rendre visible
+    
+            // Affichage du contenu du post
             if ($post['visibilite']=="sensible"){
+                // Affiche un bouton pour afficher un post sensible
                 echo "<div class='text-center'>";
                 echo "<p>Ce post a été classé comme sensible, voulez vous le voir malgré tout?</p>";
                 echo "</div>";
                 echo "<button class='btn btn-outline-secondary' id='voirSensible".$idPost."' onclick='toggleVisibilitePostSensible($idPost)'>Voir</button>";
                 echo    "<div class='card-body text-center' onclick='sendTo($idPost)' id='postSensible_".$idPost."' style = 'filter: blur(15px);'>";
-            }else{
+            } else {
                 echo    "<div class='card-body text-center' onclick='sendTo($idPost)'>";
             }
             if ($post['visibilite']=="offensant"){
+                // Affiche un message pour un post classé comme offensant et supprimé
                 echo "<div class='alert alert-danger' role='alert'>";
                 echo "<p>Post classé comme offensant et a été supprimer</p>";
                 echo "</div>";
             }
-
-            // Affichage de l'image si elle existe
+    
+            // Affiche l'image du post s'il en existe une
             if (!empty($post['image'])) {
                 echo "<img src='{$post['image']}' class='img-fluid'>";
             }
             echo        "<p class='card-text'>".$post["contenu"]."</p>";
+            // Affiche la vidéo du post si elle existe
             if (!empty($post['video_lien'])) {
                 $videoEmbed = $this->getYoutubeEmbedUrl($post['video_lien']);
                 
@@ -439,6 +494,7 @@ class profile {
                 echo "<br>";
             }
             echo "<br>";
+            // Affiche le nombre de likes du post
             $likesAmount = $this->getNumberLikes($post["id"]); //récupère le nb de likes du post
             echo "<p class='card-text'>".$likesAmount." likes</p>";
             echo "<br>";
@@ -447,6 +503,7 @@ class profile {
             if (isset($_COOKIE['user_id'])){
                 $estLike = $this->isLiked($_COOKIE['user_id'], $post["id"]); //vérifie si l'utilisateur a liké le post
             }
+            // Affiche si le post est liké ou non par l'utilisateur connecté
             if($estLike == true){
                 echo "post liké";
             }else{
@@ -466,7 +523,7 @@ class profile {
                 echo        "<div class='row'>";
                 echo            "<div class='col' onclick='toggleForm($idPost)'>";
                 
-                // // Bouton pour masquer/afficher le formulaire avec ID de post
+                // Bouton pour masquer/afficher le formulaire avec ID de post
                 echo                "<img src='./images/comment.png' alt='Comment' class='like-button'  style='max-width: 1em; max-height: 6em;'>";
                 $nbCommentaires = $this->getNombreCommentaires($idPost);
                 echo               "<label for='commentaire'>". $nbCommentaires."</label>";
@@ -526,13 +583,15 @@ class profile {
         }
     }
 
+    // Récupère le nombre de commentaires pour un post donné.
     public function getNombreCommentaires($postId){
         $query = "SELECT COUNT(*) FROM post WHERE id_parent = $postId";
         $result = $this->SQLconn->executeRequete($query);
         $row = $result->fetch_assoc();
         return $row['COUNT(*)'];
     }
-
+    
+    // Ajoute un nouveau post dans la base de données, y compris le traitement des données envoyées par le formulaire
     public function ajouterNewPost($userId, $parentId = null){
         global $conn;
     
@@ -541,11 +600,14 @@ class profile {
         $error = NULL;
         $imagePathForDB = "";
     
+        // Vérifie si le formulaire de réponse a été soumis
         if ($_POST["submitReponse"]){
             $ajouterPosttry = true;
+            // Récupère et sécurise les données du formulaire
             $commentaire = $this->SQLconn->SecurizeString_ForSQL($_POST["commentaire"]);
             $video = $this->SQLconn->SecurizeString_ForSQL($_POST["video"]);
     
+            // Construit la requête d'insertion en fonction de la présence d'un post parent et d'une vidéo
             if ($parentId === null) {
                 if ($video != "") {
                     $query = "INSERT INTO post (id_utilisateur, contenu, video_lien) VALUES ($userId, '$commentaire', '$video')";
@@ -559,9 +621,11 @@ class profile {
                     $query = "INSERT INTO post (id_utilisateur, contenu, id_parent) VALUES ($userId, '$commentaire', $parentId)";
                 }
             }
+            // Exécute la requête d'insertion dans la base de données
             if (mysqli_query($conn, $query)) {
                 $postId = mysqli_insert_id($conn);
     
+                // Gère le téléchargement et le traitement des images
                 if ($_FILES['image']["size"] > 0){
                     $image = $_FILES["image"];
     
@@ -636,6 +700,7 @@ class profile {
             }
         }
     
+        // Renvoie un  tableau de valeur
         $resultArray = ['Attempted' => $ajouterPosttry, 
                         'Successful' => $ajouterPost,
                         'ErrorMessage' => $error,
@@ -644,9 +709,11 @@ class profile {
         return $resultArray;
     }
 
+    // Récupère les meilleurs posts (posts publiés par d'autres utilisateurs) pour un utilisateur donné.
     public function getBestPosts($userId){
         global $conn;
     
+        // Requête pour récupérer les meilleurs posts publiés par d'autres utilisateurs, triés par date décroissante
         $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, post.visibilite, utilisateur.nom, utilisateur.prenom FROM post
                   INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur AND post.id_utilisateur != $userId
                   ORDER BY post.date DESC";
@@ -654,6 +721,7 @@ class profile {
     
         $posts = [];
         while ($row = $result->fetch_assoc()) {
+            // Crée un tableau pour chaque post avec ses informations
             $post = [
                 'id' => $row['id_post'],
                 'id_utilisateur' => $row['id_utilisateur'],
@@ -664,15 +732,18 @@ class profile {
                 'prenom_utilisateur' => $row['prenom'],
                 'visibilite' => $row['visibilite']
             ];
+            // Ajoute le post au tableau des meilleurs posts
             $posts[] = $post;
         }
     
         return $posts;
     }
 
+    // Récupère les posts récents des utilisateurs suivis par un utilisateur donné.
     public function getRecentPostsFollowed($userId){
         global $conn;
     
+        // Requête pour récupérer les posts récents des utilisateurs suivis par l'utilisateur spécifié, triés par date décroissante
         $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, post.visibilite, utilisateur.nom, utilisateur.prenom FROM post
                   INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur
                   WHERE post.id_utilisateur IN (SELECT id_utilisateur_suivi FROM follower WHERE id_utilisateur = $userId)
@@ -681,6 +752,7 @@ class profile {
     
         $posts = [];
         while ($row = $result->fetch_assoc()) {
+            // Crée un tableau pour chaque post avec ses informations
             $post = [
                 'id' => $row['id_post'],
                 'id_utilisateur' => $row['id_utilisateur'],
@@ -691,15 +763,18 @@ class profile {
                 'prenom_utilisateur' => $row['prenom'],
                 'visibilite' => $row['visibilite']
             ];
+            // Ajoute le post au tableau des posts récents des utilisateurs suivis
             $posts[] = $post;
         }
     
         return $posts;
     }
 
+    // Vérifie si un utilisateur suit un autre utilisateur
     public function verifFollow($userId, $userIdToFollow){
         global $conn;
     
+        // Requête pour vérifier si l'utilisateur suit l'autre utilisateur
         $query = "SELECT * FROM follower WHERE id_utilisateur = $userId AND id_utilisateur_suivi = $userIdToFollow";
         $result = $this->SQLconn->executeRequete($query);
         if ($result->num_rows > 0) {
@@ -709,14 +784,16 @@ class profile {
         }
     }
 
+    // Récupère les followers d'un utilisateur donné
     public function getFollowers($userId){
-
+        // Requête pour récupérer les followers d'un utilisateur
         $query = "SELECT utilisateur.dateNaissance, utilisateur.avatar, utilisateur.username, utilisateur.description, 
         utilisateur.id_utilisateur FROM utilisateur INNER JOIN follower ON utilisateur.id_utilisateur = follower.id_utilisateur WHERE id_utilisateur_suivi = $userId";
         $result = $this->SQLconn->executeRequete($query);
     
         $followers = [];
         while ($row = $result->fetch_assoc()) {
+            // Crée un tableau pour chaque follower avec ses informations
             $follower = [
                 'dateNaissance' => $row['dateNaissance'],
                 'avatar' => $row['avatar'],
@@ -724,20 +801,23 @@ class profile {
                 'description' => $row['description'],
                 'id_utilisateur' => $row['id_utilisateur']
             ];
+            // Ajoute le follower au tableau des followers
             $followers[] = $follower;
         }
     
         return $followers;
     }
     
+    // Récupère les utilisateurs suivis par un utilisateur donné
     public function getFollowed($userId){
-    
+        // Requête pour récupérer les utilisateurs suivis par un utilisateur
         $query = "SELECT utilisateur.dateNaissance, utilisateur.avatar, utilisateur.username, utilisateur.description, 
                     utilisateur.id_utilisateur FROM utilisateur INNER JOIN follower ON utilisateur.id_utilisateur = follower.id_utilisateur_suivi WHERE follower.id_utilisateur = $userId";
         $result = $this->SQLconn->executeRequete($query);
     
         $following = [];
         while ($row = $result->fetch_assoc()) {
+            // Crée un tableau pour chaque utilisateur suivi avec ses informations
             $follow = [
                 'dateNaissance' => $row['dateNaissance'],
                 'avatar' => $row['avatar'],
@@ -745,14 +825,17 @@ class profile {
                 'description' => $row['description'],
                 'id_utilisateur' => $row['id_utilisateur']
             ];
+            // Ajoute l'utilisateur suivi au tableau des utilisateurs suivis
             $following[] = $follow;
         }
     
         return $following;
     }
 
+    // Récupère un post à partir de son identifiant
     public function GetPostById($id){
     
+        // Requête pour récupérer un post à partir de son identifiant
         $query = "SELECT * FROM post WHERE id_post = $id";
         $result = $this->SQLconn->executeRequete($query);
         $row = $result->fetch_assoc();
@@ -769,14 +852,17 @@ class profile {
         return $reponse;
     }
 
+    // Récupère les réponses à un commentaire donné
     public function getReponsesCommentaire($idPost){
         global $conn;
     
+        // Requête pour récupérer les réponses à un commentaire donné
         $query = "SELECT * FROM post WHERE id_parent = $idPost";
         $result = $this->SQLconn->executeRequete($query);
     
         $reponses = [];
         while ($row = $result->fetch_assoc()) {
+            // Crée un tableau pour chaque réponse avec ses informations
             $reponse = [
                 'id' => $row['id_post'],
                 'contenu' => $row['contenu'],
@@ -786,14 +872,17 @@ class profile {
                 'video_lien' => $row['video_lien'],
                 'visibilite' => $row['visibilite']
             ];
+            // Ajoute la réponse au tableau des réponses au commentaire
             $reponses[] = $reponse;
         }
     
         return $reponses;
     }
 
+    // Supprime un post donné
     public function deletePost($id){
 
+        // Requête pour vérifier l'existence du post à supprimer
         $query = "SELECT * FROM `post` WHERE `id_post` = $id";
         $result = $this->SQLconn->executeRequete($query);
         if ($result->num_rows == 0){
@@ -801,22 +890,24 @@ class profile {
         }
         $result = $result->fetch_assoc();
     
-    
+        // Vérification des autorisations de suppression du post
         $infoUser = $this->GetInfoProfile($_COOKIE['user_id']);
         if ($infoUser['admin'] == 0){
             if ($result["id_utilisateur"] != $_COOKIE["user_id"]){
                 return false;
             }
         }  
-        
     
+        // Suppression de l'image associée au post s'il en existe une
         if ($result["image_path"] != ""){
             unlink("../".$result["image_path"]);
         }
     
+        // Requête pour supprimer le post
         $query = "DELETE FROM `post` WHERE `id_post` = $id";
         $result = $this->SQLconn->executeRequete($query);
     
+        // Retourne true si la suppression est réussie, sinon false
         if ($result){
             return true;
         }else{
@@ -824,7 +915,9 @@ class profile {
         }
     }
 
+    // Bannit un utilisateur donné
     public function banDef($id, $raison){   
+        // Requête pour vérifier l'existence de l'utilisateur à bannir
         $query = "SELECT * FROM `utilisateur` WHERE `id_utilisateur` = $id";
         $result = $this->SQLconn->executeRequete($query);
         if ($result->num_rows == 0){
@@ -832,13 +925,16 @@ class profile {
         }
         $result = $result->fetch_assoc();
     
+        // Vérification des autorisations de bannissement de l'utilisateur
         if ($result["admin"] == 1){
             return false;
         }
     
+        // Requête pour bannir l'utilisateur
         $query = "UPDATE `utilisateur` SET `ban` = 1, `date_fin_ban` = NULL , `justification_ban` = '$raison' WHERE `id_utilisateur` = $id";
         $result = $this->SQLconn->executeRequete($query);
     
+        // Retourne true si le bannissement est réussi, sinon false
         if ($result){
             return true;
         }else{
@@ -846,7 +942,9 @@ class profile {
         }
     }
 
-    public function checkBan($id){ //Vérifie si l'utilisateur est banni et enlève le ban si la date de fin est passée
+    // Vérifie si l'utilisateur est banni et enlève le ban si la date de fin est passée
+    public function checkBan($id){ 
+        // Requête pour vérifier si l'utilisateur est banni
         $query = "SELECT * FROM `utilisateur` WHERE `id_utilisateur` = $id";
         $result = $this->SQLconn->executeRequete($query);
         if ($result->num_rows == 0){
@@ -854,11 +952,14 @@ class profile {
         }
         $result = $result->fetch_assoc();
     
+        // Vérifie si l'utilisateur est banni en fonction de la valeur de la colonne "ban"
         if ($result["ban"] == 1){
+            // Si l'utilisateur est banni de façon temporaire, vérifie si la date de fin du bannissement est dépassée
             if ($result["date_fin_ban"] == NULL){
                 return true;
             }
             if ($result["date_fin_ban"] < date("Y-m-d H:i:s")){
+                // Si la date de fin est dépassée, lève le bannissement
                 $query = "UPDATE `utilisateur` SET `ban` = 0, `date_fin_ban` = NULL , `justification_ban` = NULL WHERE `id_utilisateur` = $id";
                 $this->SQLconn->executeRequete($query);
                 return false;
@@ -870,7 +971,9 @@ class profile {
         }
     }
 
+    // Vérifie si un utilisateur est administrateur
     public function checkAdmin($id){
+        // Requête pour vérifier si l'utilisateur est administrateur
         $query = "SELECT * FROM `utilisateur` WHERE `id_utilisateur` = $id";
         $result = $this->SQLconn->executeRequete($query);
         if ($result->num_rows == 0){
@@ -878,6 +981,7 @@ class profile {
         }
         $result = $result->fetch_assoc();
     
+        // Vérifie si l'utilisateur est administrateur en fonction de la valeur de la colonne "admin"
         if ($result["admin"] == 1){
             return true;
         }else{
@@ -885,7 +989,9 @@ class profile {
         }
     }
 
+    // Bannit temporairement un utilisateur
     public function banTemp($id, $time, $raison){
+        // Requête pour vérifier l'existence de l'utilisateur à bannir
         $query = "SELECT * FROM `utilisateur` WHERE `id_utilisateur` = $id";
         $result = $this->SQLconn->executeRequete($query);
         if ($result->num_rows == 0){
@@ -893,13 +999,16 @@ class profile {
         }
         $result = $result->fetch_assoc();
     
+        // Vérification des autorisations de bannissement temporaire de l'utilisateur
         if ($result["admin"] == 1){
             return false;
         }
     
+        // Requête pour bannir temporairement l'utilisateur
         $query = "UPDATE `utilisateur` SET `ban` = 1, `date_fin_ban` = '$time', `justification_ban` = '$raison' WHERE `id_utilisateur` = $id";
         $result = $this->SQLconn->executeRequete($query);
     
+        // Retourne true si le bannissement temporaire est réussi, sinon false
         if ($result){
             return true;
         }else{
@@ -907,7 +1016,9 @@ class profile {
         }
     }
 
+    // Obtient la date de fin du bannissement d'un utilisateur
     public function getDateBan($id){
+        // Requête pour obtenir les informations de l'utilisateur
         $query = "SELECT * FROM `utilisateur` WHERE `id_utilisateur` = $id";
         $result = $this->SQLconn->executeRequete($query);
         if ($result->num_rows == 0){
@@ -915,6 +1026,7 @@ class profile {
         }
         $result = $result->fetch_assoc();
     
+        // Vérifie si l'utilisateur est banni et retourne la date de fin du bannissement le cas échéant
         if ($result["ban"] == 1){
             return $result["date_fin_ban"];
         }else{
@@ -922,7 +1034,9 @@ class profile {
         }
     }
 
+    // Débannit un utilisateur
     public function unban($id){
+        // Requête pour obtenir les informations de l'utilisateur
         $query = "SELECT * FROM `utilisateur` WHERE `id_utilisateur` = $id";
         $result = $this->SQLconn->executeRequete($query);
         if ($result->num_rows == 0){
@@ -930,13 +1044,16 @@ class profile {
         }
         $result = $result->fetch_assoc();
     
+        // Vérifie si l'utilisateur est administrateur avant de le débannir
         if ($result["admin"] == 1){
             return false;
         }
     
+        // Requête pour débannir l'utilisateur
         $query = "UPDATE `utilisateur` SET `ban` = 0, `date_fin_ban` = NULL, `justification_ban` = NULL WHERE `id_utilisateur` = $id";
         $result = $this->SQLconn->executeRequete($query);
     
+        // Retourne true si l'utilisateur est débanni avec succès, sinon false
         if ($result){
             return true;
         }else{
@@ -944,7 +1061,9 @@ class profile {
         }
     }
 
+    // Obtient la justification du bannissement d'un utilisateur
     public function getJustificationBan($id){
+        // Requête pour obtenir les informations de l'utilisateur
         $query = "SELECT * FROM `utilisateur` WHERE `id_utilisateur` = $id";
         $result = $this->SQLconn->executeRequete($query);
         if ($result->num_rows == 0){
@@ -954,7 +1073,9 @@ class profile {
         return $result;
     }
 
+    // Marque un post comme sensible
     public function marquerSensible($id){
+        // Requête pour obtenir les informations du post
         $query = "SELECT * FROM `post` WHERE `id_post` = $id";
         $result = $this->SQLconn->executeRequete($query);
         if ($result->num_rows == 0){
@@ -962,9 +1083,11 @@ class profile {
         }
         $result = $result->fetch_assoc();
     
+        // Requête pour marquer le post comme sensible
         $query = "UPDATE `post` SET `visibilite` = 'sensible' WHERE `id_post` = $id";
         $result = $this->SQLconn->executeRequete($query);
     
+        // Retourne true si le post est marqué comme sensible avec succès, sinon false
         if ($result){
             return true;
         }else{
@@ -972,7 +1095,9 @@ class profile {
         }
     }
 
+    // Marque un post offensant
     public function retirerPost($id){
+        // Requête pour obtenir les informations du post
         $query = "SELECT * FROM `post` WHERE `id_post` = $id";
         $result = $this->SQLconn->executeRequete($query);
         if ($result->num_rows == 0){
@@ -980,9 +1105,11 @@ class profile {
         }
         $result = $result->fetch_assoc();
     
+        // Requete pour marquer le post offensant
         $query = "UPDATE `post` SET `visibilite` = 'offensant' WHERE `id_post` = $id";
         $result = $this->SQLconn->executeRequete($query);
-
+    
+        // Retourne true si le post est marqué offensant, sinon false
         if ($result){
             return true;
         }else{
@@ -990,7 +1117,9 @@ class profile {
         }
     }
 
+    // Remet un post dans le statut public après avoir été marqué comme offensant
     public function remettrePost($id){
+        // Requête pour obtenir les informations du post
         $query = "SELECT * FROM `post` WHERE `id_post` = $id";
         $result = $this->SQLconn->executeRequete($query);
         if ($result->num_rows == 0){
@@ -998,9 +1127,11 @@ class profile {
         }
         $result = $result->fetch_assoc();
     
+        // Requête pour remettre le post dans le statut public
         $query = "UPDATE `post` SET `visibilite` = 'public' WHERE `id_post` = $id";
         $result = $this->SQLconn->executeRequete($query);
-
+    
+        // Retourne true si le post est remis dans le statut public avec succès, sinon false
         if ($result){
             return true;
         }else{
@@ -1008,7 +1139,9 @@ class profile {
         }
     }
 
+    // Enlève le statut de sensible d'un post
     public function enleverMarqueSensible($id){
+        // Requête pour obtenir les informations du post
         $query = "SELECT * FROM `post` WHERE `id_post` = $id";
         $result = $this->SQLconn->executeRequete($query);
         if ($result->num_rows == 0){
@@ -1016,9 +1149,11 @@ class profile {
         }
         $result = $result->fetch_assoc();
     
+        // Requête pour enlever le statut de sensible du post
         $query = "UPDATE `post` SET `visibilite` = 'public' WHERE `id_post` = $id";
         $result = $this->SQLconn->executeRequete($query);
-
+    
+        // Retourne true si le statut de sensible est enlevé avec succès, sinon false
         if ($result){
             return true;
         }else{
