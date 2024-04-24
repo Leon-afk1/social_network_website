@@ -412,7 +412,9 @@ class profile {
 
             //Si post sensible, on affiche un bouton pour le rendre visible
             if ($post['visibilite']=="sensible"){
+                echo "<div class='text-center'>";
                 echo "<p>Ce post a été classé comme sensible, voulez vous le voir malgré tout?</p>";
+                echo "</div>";
                 echo "<button class='btn btn-outline-secondary' id='voirSensible".$idPost."' onclick='toggleVisibilitePostSensible($idPost)'>Voir</button>";
                 echo    "<div class='card-body text-center' onclick='sendTo($idPost)' id='postSensible_".$idPost."' style = 'filter: blur(15px);'>";
             }else{
@@ -465,9 +467,9 @@ class profile {
                 echo            "<div class='col' onclick='toggleForm($idPost)'>";
                 
                 // // Bouton pour masquer/afficher le formulaire avec ID de post
-                echo                "<img src='./images/comment.png' alt='Comment' class='like-button'  style='max-width: 1em; max-height: 2em;'>";
+                echo                "<img src='./images/comment.png' alt='Comment' class='like-button'  style='max-width: 1em; max-height: 6em;'>";
                 $nbCommentaires = $this->getNombreCommentaires($idPost);
-                echo               "<label for='commentaire'>". $nbCommentaires." commentaires</label>";
+                echo               "<label for='commentaire'>". $nbCommentaires."</label>";
                 echo            "</div>";
                 echo            "<div class='col text-end'>";
                 echo                "<label for='date'>". $post["date"]."</label>";

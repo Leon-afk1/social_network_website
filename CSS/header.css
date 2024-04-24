@@ -9,6 +9,7 @@
     display: none; 
 }
 
+/* Filtre pour le login et le register form */
 .blur {
     filter: blur(5px); 
     pointer-events: none; 

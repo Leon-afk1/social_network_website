@@ -1,25 +1,26 @@
-
+// Fonction asynchrone pour supprimer une notification spécifique
 async function deleteNotification(id) {
-  var ajax = await fetch("./AJAX/deleteNotification.php?id=" + id);
-  var response = await ajax.text();
+  var ajax = await fetch("./AJAX/deleteNotification.php?id=" + id); // Effectuer la requête de suppression de la notification
+  var response = await ajax.text(); // Récupérer la réponse de la requête
+
   if (response === "success") {
       var notification = document.getElementById(id);
-      notification.remove();
+      notification.remove(); // Supprimer la notification de l'interface utilisateur
   } else {
-      alert(response);
+      alert(response); // Afficher une alerte en cas d'erreur
   }
 }
 
+// Fonction asynchrone pour supprimer toutes les notifications d'un utilisateur
 async function deleteAllNotifications(id) {
-  var ajax = await fetch("./AJAX/deleteAllNotifications.php?idUser=" + id);
-  var response = await ajax.text();
+  var ajax = await fetch("./AJAX/deleteAllNotifications.php?idUser=" + id); // Effectuer la requête de suppression de toutes les notifications
+  var response = await ajax.text(); // Récupérer la réponse de la requête
+
   if (response === "success") {
-      console.log("Suppression réussie !");
+      console.log("Suppression réussie !"); // Afficher un message de confirmation dans la console
       var notif = document.getElementById("allNotifications");
-      console.log(notif);
-      notif.style.display = "none";
+      notif.style.display = "none"; // Masquer l'élément contenant toutes les notifications
   } else {
-      alert(response);
+      alert(response); // Afficher une alerte en cas d'erreur
   }
 }
-

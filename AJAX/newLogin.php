@@ -1,3 +1,4 @@
+<!-- Le formulaire pour se créer un compte -->
 <div class="row justify-content-center ">
     <div class="card new-login-card w-50 outline-secondary position-absolute top-50 start-50 translate-middle" id="newLoginForm" style="display: none;">
         <form action="index.php" method="post" class="mb-4">
