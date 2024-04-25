@@ -62,7 +62,7 @@ $SQLconn->notification->markNotificationsAsRead($user_id);
                         // Bouton pour supprimer toutes les notifications s'il y en a
                         if (isset($notifications) && count($notifications) > 0) {
                             echo "<button type='button' class='btn btn-danger' onclick='deleteAllNotifications(" . $Infos['id_utilisateur'] . ")'>Supprimer toutes les notifications</button>";
-                        }
+                        
                         ?>
                     </div>
                     <div class="card-body">
@@ -135,6 +135,11 @@ $SQLconn->notification->markNotificationsAsRead($user_id);
                             </div>
                         </div>
                     </div>
+                    <?php } else { ?>
+                    <div class="text-center">
+                        <h2 class="card-body">Aucune notification</h2>
+                    </div>
+                <?php } ?>
                 </div>
             </div>
         </div>

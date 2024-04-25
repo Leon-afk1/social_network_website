@@ -2,7 +2,8 @@
 async function deleteNotification(id) {
   var ajax = await fetch("./AJAX/deleteNotification.php?id=" + id); // Effectuer la requête de suppression de la notification
   var response = await ajax.text(); // Récupérer la réponse de la requête
-
+  // Supprimer les espaces blancs et les retours à la ligne supplémentaires de la réponse
+  response = response.trim();
   if (response === "success") {
       var notification = document.getElementById(id);
       notification.remove(); // Supprimer la notification de l'interface utilisateur
@@ -15,7 +16,7 @@ async function deleteNotification(id) {
 async function deleteAllNotifications(id) {
   var ajax = await fetch("./AJAX/deleteAllNotifications.php?idUser=" + id); // Effectuer la requête de suppression de toutes les notifications
   var response = await ajax.text(); // Récupérer la réponse de la requête
-
+  response = response.trim();
   if (response === "success") {
       console.log("Suppression réussie !"); // Afficher un message de confirmation dans la console
       var notif = document.getElementById("allNotifications");

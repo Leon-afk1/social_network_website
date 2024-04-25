@@ -58,6 +58,8 @@
                 <div class="form-group text-center">
                     <button type="submit" class="btn btn-outline-secondary">S'inscrire</button>
                 </div>
+                <br>
+                <p class="text-center">Déjà inscrit ? Connectez-vous <a href="#" onclick="toggleLoginForm()">ici</a>.</p>
             </div>
         </form> 
     </div>

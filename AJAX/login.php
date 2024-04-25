@@ -18,9 +18,13 @@
                     <label for="password">Mot de passe :</label>
                     <input type="password" name="passwordLogin" id="passwordLogin" class="form-control" required>
                 </div>
+                <br>
                 <div class="form-group text-center">
-                    <input type="submit" value="Se connecter" class="btn btn-primary">
+                    <input type="submit" value="Se connecter" class="btn btn-outline-secondary">
                 </div>
+                <br>
+                <p class="text-center">Pas encore inscrit ? Faites-le <a href="#" onclick="toggleNewLoginForm()">ici</a>.</p>
+
             </div>
         </form>
     </div>

@@ -91,39 +91,56 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
                         $ban = $SQLconn->profile->checkBan($_COOKIE['user_id']);
                         if ($ban) {
                             // Si l'utilisateur est banni, afficher les liens de déconnexion et de notification
-                            echo "<li class='nav-item'><button class='nav-link btn btn-link ' onclick='window.location.href=`./logout.php?redirect=$currentURL`' aria-current='page'>Logout</button></li>";
-                            echo "<li class='nav-item'><form class='nav-item' action='./profile.php?id=" . $_COOKIE['user_id'] . "' method='post'>
-                                    <input type='hidden' name='statistiques' value'true'>
-                                    <button type='submit' class='nav-link btn btn-link'>Statistiques</button>
-                                </form>
+                            echo "<li class='nav-item'>
+                                        <form class='nav-item' action='./profile.php?id=" . $_COOKIE['user_id'] . "' method='post' id='statistiquesForm'>
+                                            <input type='hidden' name='statistiques' value='true'>
+                                            <a href='#' onclick='submitForm()'>
+                                                <img src='./icon/statistics.png' alt='Statistiques' width='30' height='30' title='Statistiques'>
+                                            </a>
+                                        </form>
+                                    </li>";
+                            echo "<li class='nav-item position-relative'><a class='nav-link' href='./notification.php?id=" . $_COOKIE['user_id'] . "' aria-current='page'>
+                                    <img src='./icon/bell.png' alt='Notification' width='auto' height='30' class='ms-2'> 
+                                    <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger' id='notif'>
+                                        $nbNotifications
+                                        <span class='visually-hidden'>unread messages</span>
+                                    </span>
+                                </a>
                             </li>";
-                            echo  "<li class='nav-item position-relative'><button class='nav-link btn btn-link' onclick='window.location.href=`./notification.php?id=" . $_COOKIE['user_id'] . "`' aria-current='page'>Notifications
-                                        <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger' id='notif'>
-                                            $nbNotifications
-                                            <span class='visually-hidden'>unread messages</span>
-                                        </span>
-                                    </button></li>";
                         } else {
                             // Si l'utilisateur n'est pas banni, afficher les liens de navigation normaux
-                            echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./index.php`' aria-current='page'>Home</button></li>";
-                            echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./poster.php`' aria-current='page'>Poster</button></li>";
-                            echo "<li class='nav-item'><form class='nav-item' action='./profile.php?id=" . $_COOKIE['user_id'] . "' method='post'>
-                                    <input type='hidden' name='statistiques' value'true'>
-                                    <button type='submit' class='nav-link btn btn-link'>Statistiques</button>
-                                </form>
+                            echo "<li class='nav-item'><a class='nav-link' href='./index.php' aria-current='page'><img src='./icon/home.png' alt='Home' width='30' height='30'></a></li>";
+                            echo "<li class='nav-item'><a class='nav-link' href='./poster.php' aria-current='page'><img src='./icon/poster.png' alt='Poster' width='30' height='30'></a></li>";
+                            echo "<li class='nav-item'>
+                                        <form class='nav-item' action='./profile.php?id=" . $_COOKIE['user_id'] . "' method='post' id='statistiquesForm'>
+                                            <input type='hidden' name='statistiques' value='true'>
+                                            <a href='#' onclick='submitForm()'>
+                                                <img src='./icon/statistics.png' alt='Statistiques' width='30' height='30' title='Statistiques'>
+                                            </a>
+                                        </form>
+                                    </li>";
+                            echo "<li class='nav-item position-relative'><a class='nav-link' href='./notification.php?id=" . $_COOKIE['user_id'] . "' aria-current='page'>
+                                    <img src='./icon/bell.png' alt='Notification' width='auto' height='30' class='ms-2'> 
+                                    <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger' id='notif'>
+                                        $nbNotifications
+                                        <span class='visually-hidden'>unread messages</span>
+                                    </span>
+                                </a>
                             </li>";
-                            echo  "<li class='nav-item position-relative' ><button class='nav-link btn btn-link' onclick='window.location.href=`./notification.php?id=" . $_COOKIE['user_id'] . "`' aria-current='page'>Notifications
-                                        <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger' id='notif'>
-                                            $nbNotifications
-                                            <span class='visually-hidden'>unread messages</span>
-                                        </span>
-                                    </button></li>";
+                            
                         }
                     } else {
                         // Si l'utilisateur n'est pas connecté, afficher les liens de navigation pour la page d'accueil, la connexion et l'inscription
-                        echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='window.location.href=`./index.php`' aria-current='page'>Home</button></li>";
-                        echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='toggleLoginForm()' aria-current='page'>Login</button></li>";
-                        echo "<li class='nav-item'><button class='nav-link btn btn-link' onclick='toggleNewLoginForm()' aria-current='page'>Sign in</button></li>";
+                        echo "<li class='nav-item'><a class='nav-link' href='./index.php' aria-current='page'><img src='./icon/home.png' alt='Home' width='30' height='30'></a></li>";
+                        echo "<li class='nav-item'>
+                                    <a class='nav-link' aria-current='page'>
+                                        <img src='./icon/account.png' alt='Login' width='30' height='30' onclick='toggleLoginForm()' aria-current='page'>
+                                    </a>
+                                    </li>
+                                <li class='nav-item'>
+                                    <img src='./icon/register.png' alt='Sign in' width='30' height='30' onclick='toggleNewLoginForm()' aria-current='page'>
+                                </li>";
+
                     }
                     ?>
                 </ul>
@@ -136,7 +153,11 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
                 <div class="d-flex navbar-nav">
                     <?php if (isset($_COOKIE['user_id'])) { ?>
                         <div id="logOut" class="nav-item">
-                            <li class='nav-item'><button class='nav-link btn btn-link ' onclick='window.location.href=`./logout.php?redirect=<?php echo $currentURL; ?>`' aria-current='page'>Logout</button></li>
+                            <li class='nav-item'>
+                                <a href='./logout.php?redirect=<?php echo $currentURL; ?>' class='nav-link'>
+                                    <img src='./icon/logout.png' alt='Déconnexion' width='auto' height='30' class='me-2'>
+                                </a>
+                            </li>
                         </div>
                     <?php } ?>
                     <!-- Formulaire de recherche -->
@@ -161,8 +182,29 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
                         </label>
                     </div>
                 </div>
-            <?php } ?>
 
+            <?php }else{
+                ?>
+                    <div class="d-flex navbar-nav">
+                    <?php if (isset($_COOKIE['user_id'])) { ?>
+                        <div id="logOut" class="nav-item">
+                            <li class='nav-item'>
+                                <a href='./logout.php?redirect=<?php echo $currentURL; ?>' class='nav-link'>
+                                    <img src='./icon/logout.png' alt='Déconnexion' width='auto' height='30' class='me-2'>
+                                </a>
+                            </li>
+                        </div>
+                    <?php } ?>
+                    </div>
+                <?php
+            } ?>
+            <div class="d-flex navbar-nav">
+                <li class='nav-item'>
+                    <a class='nav-link active' aria-current='page' href='./index.php'> 
+                        <img src='./favicon.ico' class='avatar avatar-lg'>
+                    </a>
+                </li>
+            </div>
         </div>
     </nav>
 

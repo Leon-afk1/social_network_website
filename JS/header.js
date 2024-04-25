@@ -140,3 +140,7 @@ function updateNotificationDisplay(nbNotifications) {
       notifElement.style.display = "block"; // Afficher l'élément de notification
   }
 }
+
+function submitForm() {
+  document.getElementById("statistiquesForm").submit(); // Envoyer le formulaire
+}
