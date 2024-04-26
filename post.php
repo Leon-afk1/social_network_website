@@ -9,7 +9,7 @@ $idPost = $_GET["id"];
 
 // Récupérer les informations sur le post et sur l'utilisateur qui l'a posté
 $post = $SQLconn->profile->GetPostById($idPost);
-$Infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
+$InfosUserPost = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
 
 // Vérifier si l'utilisateur est banni
 if (isset($_COOKIE['user_id'])){
@@ -41,7 +41,7 @@ include ("BoutDePages/header.php");
                   <div class='reponses-container'  id="reponses-container">
                     <?php
                       // Afficher le post principal
-                      $SQLconn->profile->afficherPosts($post,$Infos);
+                      $SQLconn->profile->afficherPosts($post,$InfosUserPost);
 
                       // Charger les réponses du post
                       $allPosts =  $SQLconn->profile->GetNextReponse($idPost, 0, 5);

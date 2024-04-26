@@ -120,6 +120,8 @@ $SQLconn->notification->markNotificationsAsRead($user_id);
                                         echo ("Le post suivant a été jugé non sensible : <a href='./post.php?id=" . $notification["id_post_cible"] . "'>Voir le post</a>");
                                     } else if ($notification["type"] == "remettrePost") {
                                         echo ("Le post suivant a été remis en ligne : <a href='./post.php?id=" . $notification["id_post_cible"] . "'>Voir le post</a>");
+                                    }else if ($notification["type"] == "signalement") {
+                                        echo ("Le post suivant a été signalé : <a href='./post.php?id=" . $notification["id_post_cible"] . "'>Voir le post</a>");
                                     }
                                     echo "</div>";
                                     echo "<div class='col text-center'>";

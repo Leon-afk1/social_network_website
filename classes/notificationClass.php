@@ -259,13 +259,45 @@ class Notification {
         $userId = $_COOKIE['user_id'];
 
         // Requête SQL pour insérer une notification dans la base de données
-        $query = "Insert into notification (id_utilisateur, id_utilisateur_cible, type, date_notification, id_post_cible) VALUES ($userIdToAvertir, $userId, 'remettrePost', NOW(), $postId)";
+        $query = "INSERT into notification (id_utilisateur, id_utilisateur_cible, type, date_notification, id_post_cible) VALUES ($userIdToAvertir, $userId, 'remettrePost', NOW(), $postId)";
         // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
         if ($this->SQLconn->executeRequete($query)){
             return true; // Retourne true si l'insertion est réussie
         } else {
             return false; // Retourne false en cas d'échec
         }
+    }
+
+    public function signaler($id,$message,$idUser){
+        // Requête pour vérifier l'existence du post à signaler
+        $query = "SELECT * FROM `post` WHERE `id_post` = $id";
+        $result = $this->SQLconn->executeRequete($query);
+        if ($result->num_rows == 0){
+            exit();
+        }
+        $result = $result->fetch_assoc();
+        
+        //Recuperer l'id des admins
+        $query = "SELECT id_utilisateur FROM utilisateur WHERE admin = 1";
+        $result = $this->SQLconn->executeRequete($query);
+        $resultat = true;
+
+        foreach ($result as $row) {
+            $idAdmin = $row['id_utilisateur'];
+
+            // Requête pour signaler le post
+            $query = "INSERT into notification (id_post_cible, id_utilisateur, message_notification, id_utilisateur_cible, type, date_notification) VALUES ('$id', '$idAdmin', '$message', '$idUser', 'signalement', NOW())";
+            $result1 = $this->SQLconn->executeRequete($query);
+            if ($result1 && $resultat){
+                $resultat = true;
+            }else{
+                $resultat = false;
+            }
+        }
+
+        // Retourne true si le signalement est réussi, sinon false
+        return $resultat;
+            
     }
 
 }

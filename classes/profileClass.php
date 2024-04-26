@@ -433,6 +433,16 @@ class profile {
                             </ul>
                         </div>";
                     }
+                }else{
+                    echo "<div class='dropdown'>
+                            <button class='btn btn-secondary dropdown-toggle' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                                <img src='./icon/dots.png' alt='Menu' class='dropdown-image' width='20' height='20'>
+                            </button>
+                            <ul class='dropdown-menu'>
+                                <li><button class='dropdown-item' id='signaler_".$idPost."' onclick='signalerPost($idPost,".$infos["id_utilisateur"].")'>Signaler le post</button></li>
+                            </ul>
+                        </div>";
+
                 }
                 // Affiche le bouton de suppression pour l'utilisateur qui a publié le post
                 if ($infos['id_utilisateur'] == $_COOKIE['user_id']){
@@ -1160,6 +1170,8 @@ class profile {
             return false;
         }
     }
+
+    
 
 }
 

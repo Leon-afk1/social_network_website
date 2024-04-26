@@ -21,7 +21,7 @@ function sendTo(postId) {
 async function supprimerPost(postId) {
     var supp = await fetch("./AJAX/supprimerPost.php?id=" + postId); // Effectuer la requête de suppression du post
     var response = await supp.text(); // Récupérer la réponse de la requête
-
+    response = response.trim();
     if (response == "Post supprimé") {
         var post = document.getElementById("post_" + postId);
         post.style.display = "none"; // Masquer le post supprimé
@@ -83,12 +83,14 @@ function toggleLike(button, postId) {
 // Fonction pour envoyer un avertissement à l'utilisateur concerné par un post
 function sendAvertissement(postId) {
     var avertissement = prompt("Veuillez saisir un avertissement à envoyer à l'utilisateur :", "Vous avez reçu un avertissement pour comportement inapproprié");
+    var result ="";
     if (avertissement != null) {
         $.post('./AJAX/avertir.php', { postId: postId, avertissement: avertissement }, function(data) {
-            if (data  == "Avertissement envoyé") {
+            result = data.trim();
+            if (result  == "Avertissement envoyé") {
                 alert("Avertissement envoyé avec succès!");
             } else {
-                alert(data); // Afficher l'erreur retournée par la requête
+                alert(result); // Afficher l'erreur retournée par la requête
                 console.error('Erreur lors de la requête AJAX');
             }
         });
@@ -98,12 +100,14 @@ function sendAvertissement(postId) {
 // Fonction pour marquer un post comme sensible
 function marquerSensible(postId) {
     var message = prompt("Veuillez saisir un message à afficher à l'utilisateur :", "Ce contenu a été marqué comme sensible car offensant");
+    var result ="";
     if (message != null) {
         $.post('./AJAX/marquerSensible.php', { postId: postId, message: message }, function(data) {
-            if (data  == "Post marqué comme sensible") {
+            result = data.trim();
+            if (result  == "Post marqué comme sensible") {
                 alert("Post marqué comme sensible avec succès!");
             } else {
-                alert(data); // Afficher l'erreur retournée par la requête
+                alert(result); // Afficher l'erreur retournée par la requête
                 console.error('Erreur lors de la requête AJAX');
             }
         });
@@ -124,12 +128,14 @@ function toggleVisibilitePostSensible(postId) {
 // Fonction pour retirer un post
 function retirerPost(postId) {
     var message = prompt("Veuillez saisir un message à afficher à l'utilisateur :", "Ce contenu a été retiré car il ne respecte pas les règles de la communauté");
+    var result ="";
     if (message != null) {
         $.post('./AJAX/retirerPost.php', { postId: postId, message: message }, function(data) {
-            if (data  == "Post retiré") {
+            result = data.trim();
+            if (result  == "Post retiré") {
                 alert("Post retiré avec succès!");
             } else {
-                alert(data); // Afficher l'erreur retournée par la requête
+                alert(result); // Afficher l'erreur retournée par la requête
                 console.error('Erreur lors de la requête AJAX');
             }
         });
@@ -138,11 +144,13 @@ function retirerPost(postId) {
 
 // Fonction pour marquer un post comme non sensible
 function marquerNonSensible(postId) {
+    var result ="";
     $.post('./AJAX/marquerNonSensible.php', { postId: postId }, function(data) {
-        if (data  == "Post marqué comme non sensible") {
+        result = data.trim();
+        if (result  == "Post marqué comme non sensible") {
             alert("Post marqué comme non sensible avec succès!");
         } else {
-            alert(data); // Afficher l'erreur retournée par la requête
+            alert(result); // Afficher l'erreur retournée par la requête
             console.error('Erreur lors de la requête AJAX');
         }
     });
@@ -150,12 +158,32 @@ function marquerNonSensible(postId) {
 
 // Fonction pour marquer un post comme non offensant
 function marquerNonOffensant(postId) {
+    var result ="";
     $.post('./AJAX/marquerNonOffensant.php', { postId: postId }, function(data) {
-        if (data  == "Post marqué comme non offensant") {
+        result = data.trim(); 
+        if (result  == "Post marqué comme non offensant") {
             alert("Post marqué comme non offensant avec succès!");
         } else {
-            alert(data); // Afficher l'erreur retournée par la requête
+            alert(result); // Afficher l'erreur retournée par la requête
             console.error('Erreur lors de la requête AJAX');
         }
     });
 }
+
+// Fonction pour signaler un post
+function signalerPost(idPost, idUser) {
+    var message = prompt("Veuillez saisir un message à envoyer à l'administrateur :", "Ce contenu a été signalé par un utilisateur");
+    var result ="";
+    if (message != null) {
+        $.post('./AJAX/signalerPost.php', { idPost: idPost, message: message, idUser: idUser }, function(data) {
+            result = data.trim(); 
+            if (result  == "true") {
+                alert("Post signalé avec succès!");
+            } else {
+                alert(result); // Afficher l'erreur retournée par la requête
+                console.error('Erreur lors de la requête AJAX');
+            }
+        });
+    }
+}
+
