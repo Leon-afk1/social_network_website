@@ -523,16 +523,7 @@ class profile {
             }
             echo "<br>";
 
-            //partie des likes
-            $likesAmount = $this->getNumberLikes($post["id"]); //récupère le nb de likes du post
-            echo "<p class='card-text'>".$likesAmount." likes</p>";
-            echo "<br>";
-            echo "<br>";
-            $estLike = 0;
-            if (isset($_COOKIE['user_id'])){
-                $estLike = $this->isLiked($_COOKIE['user_id'], $post["id"]); //vérifie si l'utilisateur a liké le post
-            }
-            echo $estLike;
+            
 
             if (isset($_COOKIE['user_id'])){
                 $currentUser = $_COOKIE['user_id'];
@@ -547,12 +538,20 @@ class profile {
                 $nbCommentaires = $this->getNombreCommentaires($idPost);
                 echo               "<label for='commentaire'>". $nbCommentaires."</label>";
                 echo            "</div>";
-                echo            "<div class='col text-start' onclick=\"toggleLike($estLike, $currentUser, $idPost)\">";
+                //partie des likes
+                $likesAmount = $this->getNumberLikes($post["id"]); //récupère le nb de likes du post
+                $estLike = 0;
+                if (isset($_COOKIE['user_id'])){
+                    $estLike = $this->isLiked($_COOKIE['user_id'], $post["id"]); //vérifie si l'utilisateur a liké le post
+                }
+                echo            "<div class='col text-start' onclick=\"toggleLike($currentUser, $idPost)\" data-liked='$estLike' id='like-button_".$idPost."'>";
                 if ($estLike) {
                     echo "<img id='like-image_".$idPost."' src='./icon/heart_red.png' alt='Like' width='20' height='20'>";
                 } else {
                     echo "<img id='like-image_".$idPost."' src='./icon/heart_empty.png' alt='Like' width='20' height='20'>";
                 }
+                echo        "<label for='like' id='like-count_".$idPost."'>$likesAmount</label>";
+
                 echo            "</div>";
                 echo            "<div class='col text-end'>";
                 echo                "<label for='date'>". $post["date"]."</label>";

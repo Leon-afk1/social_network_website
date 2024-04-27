@@ -52,23 +52,50 @@ function toggleImageVideo(postId) {
     }
 }
 
-function toggleLike(isLiked = false, userID, postID){
-    console.log("toggleLike function called with isLiked = " + isLiked + ", userID = " + userID + ", postID = " + postID);
+function toggleLike(userID, postID){
     // Récupérer l'élément image
     var image = document.getElementById("like-image_" + postID);
-    $result = "";
+
+    var isLiked = false;
+    // Vérifier si le post est déjà liké
+    // Récupérer l'attribut data-liked de l'élément du bouton de like
+    var button = document.getElementById("like-button_" + postID);
+    var dataLiked = button.getAttribute("data-liked");
+
+    // Récupérer le nombre de likes
+    var likeCount = document.getElementById("like-count_" + postID);
+    var currentLikes = parseInt(likeCount.innerHTML);
+
+    // Si le post est déjà liké, on envoie une requête pour retirer le like
+    if(dataLiked == "1"){
+        isLiked = 1;
+    } else {
+        isLiked = 0;
+    }
+
+    console.log(isLiked);
+
+    var result = "";
     // Utiliser $.post() pour envoyer une requête AJAX POST à like.php
     $.post("./AJAX/liker.php", {isLiked : isLiked, userID : userID, postID : postID}, function(data) {
-        $result = data.trim();
+        result = data.trim();
         if(result=="Like added"){
-            alert("Like ajouté");
+            button.setAttribute("data-liked", "1");
+
+            currentLikes++;
+            likeCount.innerHTML = currentLikes;
+            
             image.src = "./icon/heart_red.png";
         } else if(result=="Like removed"){
-            alert("Like retiré");
+            button.setAttribute("data-liked", "0");
+
+            currentLikes--;
+            likeCount.innerHTML = currentLikes;
+
             image.src = "./icon/heart_empty.png";
         } else {
             alert("ca marche pas");
-            console.error('Erreur lors de la requête AJAX');
+            // console.error('Erreur lors de la requête AJAX');
         }
     });
 }
