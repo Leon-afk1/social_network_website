@@ -2,17 +2,20 @@
 
 class verifLogin{
 
+    // Propriétés de la classe
     public $loginSuccessful = false;
     public $loginAttempted = false;
     public $errorText = "";
     public $userID = 0;
     public $userName = "";
 
+    // Constructeur de la classe
     public function __construct(ConnexionBDD $SQLconn) {
         $error = NULL;
         $this->loginSuccessful = false;
         $this->userID = NULL;
 
+        // Vérification de la tentative de connexion
         if (isset($_POST['usernameLogin']) && isset($_POST['passwordLogin'])){
             $this->userName = $SQLconn->SecurizeString_ForSQL($_POST['usernameLogin']);
             $password = $_POST['passwordLogin'];
@@ -26,16 +29,22 @@ class verifLogin{
             $tryConnect = false;
         }
 
+        // Si une tentative de connexion est en cours
         if ($tryConnect) {
+            // Requête SQL pour récupérer l'utilisateur correspondant au nom d'utilisateur
             $query = "SELECT * FROM utilisateur WHERE username = '$this->userName'";
             $result = $SQLconn->executeRequete($query);
 
+            // Si un utilisateur est trouvé
             if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
                 $passwordHash = $row['mdp'];
+                // Vérification du mot de passe
                 if (password_verify($password, $passwordHash)) {
+                    // Connexion réussie
                     $this->loginSuccessful = true;
                     $this->userID = $row['id_utilisateur'];
+                    // Création d'un cookie de connexion
                     $this->CreateLoginCookie($this->userName, $password, $this->userID);
                 } else {
                     $this->errorText = "Nom d'utilisateur ou mot de passe incorrect.";
@@ -46,6 +55,7 @@ class verifLogin{
         }
     }
 
+    // Méthode pour déconnecter l'utilisateur
     public function logout($redirectURL = '') {
         $this->DeleteLoginCookie();
         if (!empty($redirectURL)) {
@@ -55,18 +65,21 @@ class verifLogin{
         }
     }
 
+    // Méthode pour créer un cookie de connexion
     public function CreateLoginCookie($username, $password, $userId) {
         setcookie('username', $username, time() + 3600 * 24 );
         setcookie('password', $password, time() + 3600 * 24 );
         setcookie('user_id', $userId, time() + 3600 * 24 );
     }
     
+    // Méthode pour supprimer le cookie de connexion
     public function DeleteLoginCookie() {
         setcookie('username', '', -1);
         setcookie('password', '', -1);
         setcookie('user_id', '', -1);
     }
 
+    // Méthode pour enregistrer un nouvel utilisateur
     public function register(ConnexionBDD $SQLconn) {
         $creationAttempted = false;
         $creationSuccessful = false;

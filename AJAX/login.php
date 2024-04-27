@@ -1,4 +1,4 @@
-<div class="row justify-content-center ">
+<div class="row justify-content-center">
     <div class="card login-card w-50 outline-secondary position-absolute top-50 start-50 translate-middle" id="loginForm" style="display: none;">
         <form action="index.php" method="post" class="mb-4">
             <div class="card-header">
@@ -11,17 +11,21 @@
                     </div>
                 <?php } ?>
                 <div class="form-group form-field">
-                    <label for="username">Nom d'utilisateur:</label>
+                    <label for="username">Nom d'utilisateur :</label>
                     <input type="text" name="usernameLogin" id="usernameLogin" class="form-control" required>
                 </div>
                 <div class="form-group form-field">
-                    <label for="password">Mot de passe:</label>
+                    <label for="password">Mot de passe :</label>
                     <input type="password" name="passwordLogin" id="passwordLogin" class="form-control" required>
                 </div>
+                <br>
                 <div class="form-group text-center">
-                    <input type="submit" value="Se connecter" class="btn btn-primary">
+                    <input type="submit" value="Se connecter" class="btn btn-outline-secondary">
                 </div>
+                <br>
+                <p class="text-center">Pas encore inscrit ? Faites-le <a href="#" onclick="toggleNewLoginForm()">ici</a>.</p>
+
             </div>
-        </form> 
+        </form>
     </div>
 </div>

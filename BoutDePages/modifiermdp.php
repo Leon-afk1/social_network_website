@@ -1,3 +1,4 @@
+<!-- Le formulaire pour modifier le mdp -->
 <div class="card outline-secondary">
     <form action="#" method="post" class="mb-4">
         <div class="text-center card-header">

@@ -1,94 +1,106 @@
 <?php
 
-include ("loc.php");
+// Inclusion du fichier contenant les paramètres de connexion à la base de données
+include("loc.php");
 
-if (isset($_COOKIE['user_id'])){
+// Vérification si l'utilisateur est banni
+if (isset($_COOKIE['user_id'])) {
     $ban = $SQLconn->profile->checkBan($_COOKIE['user_id']);
-    if ($ban){
-        echo "Vous êtes banni définitivement";
-        header("Location:profile.php?id=". $_COOKIE['user_id']);
-      }
+    if ($ban) {
+        header("Location:profile.php?id=" . $_COOKIE['user_id']);
+    }
 }
 
+// Inclusion du fichier contenant la fonction de réponse à un post
+include("BoutDePages/repondrePost.php");
 
-include ("BoutDePages/repondrePost.php");
-
-include ("BoutDePages/header.php");
-
+// Inclusion du fichier contenant l'en-tête commun à toutes les pages
+include("BoutDePages/header.php");
 
 ?>
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title>Y - Accueil</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/fastbootstrap@2.2.0/dist/css/fastbootstrap.min.css" rel="stylesheet" integrity="sha256-V6lu+OdYNKTKTsVFBuQsyIlDiRWiOmtC8VQ8Lzdm2i4=" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-  </head>
-  <body class="text-body bg-body" data-bs-theme="dark">
-  
+</head>
+
+<body class="text-body bg-body" data-bs-theme="dark">
+
     <main id="mainContent">
         <div class="px-3">
-          <div class="container">
-            <?php 
-              if ($SQLconn->loginStatus->loginSuccessful){
-                ?>
-              <div class="row align-items-start">
-                  <div class="col">
-                    <div class='card rounded-3 outline-secondary text-bg-secondary ps-10 pe-10'>
-                      <h2 class="card-title text-center">Meilleurs posts du moment :</h2>
-                      <br>
-                      <?php
-                          $allPosts = $SQLconn->profile->getBestPosts($SQLconn->loginStatus->userID);
-                          foreach ($allPosts as $post){
-                              $infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
-                              $SQLconn->profile->afficherPosts($post,$infos);
-                          }
-                      ?>
-                    </div>
-                  </div>
-                  <div class="col">
-                    <div class='card rounded-3 outline-secondary text-bg-secondary ps-10 pe-10'>
-                      <h2 class="card-title text-center">Post recent que vous suivez :</h2>
-                      <br>
-                      <?php
-                          $allPosts = $SQLconn->profile->getRecentPostsFollowed($SQLconn->loginStatus->userID);
-                          foreach ($allPosts as $post){
-                              $infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
-                              $SQLconn->profile->afficherPosts($post,$infos);
-                          }
-                          if (count($allPosts) == 0){
-                              echo "Vous ne suivez personne";
-                          }
-                       ?>
-                    </div>
-                  </div>
-              </div>
-              <?php
-              }else{
-                ?>
-                <h2 class="card-title">Meilleurs posts du moment :</h2>
-                <br>
+            <div class="container">
                 <?php
+                if ($SQLconn->loginStatus->loginSuccessful) {
+                    ?>
+                    <div class="row align-items-start">
+                        <div class="col">
+                            <div class='card rounded-3 outline-secondary text-bg-secondary ps-10 pe-10'>
+                                <h2 class="card-title text-center">Meilleurs posts du moment :</h2>
+                                <br>
+                                <?php
+                                // Récupération et affichage des meilleurs posts
+                                $allPosts = $SQLconn->profile->getBestPosts($SQLconn->loginStatus->userID);
+                                foreach ($allPosts as $post) {
+                                    $infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
+                                    $SQLconn->profile->afficherPosts($post, $infos);
+                                }
+                                ?>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class='card rounded-3 outline-secondary text-bg-secondary ps-10 pe-10'>
+                                <h2 class="card-title text-center">Post recent que vous suivez :</h2>
+                                <br>
+                                <?php
+                                // Récupération et affichage des derniers posts suivis par l'utilisateur
+                                $allPosts = $SQLconn->profile->getRecentPostsFollowed($SQLconn->loginStatus->userID);
+                                foreach ($allPosts as $post) {
+                                    $infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
+                                    $SQLconn->profile->afficherPosts($post, $infos);
+                                }
+                                if (count($allPosts) == 0) {
+                                    echo "Vous ne suivez personne";
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php
+                } else {
+                    ?>
+                    <h2 class="card-title">Meilleurs posts du moment :</h2>
+                    <br>
+                    <?php
+                    // Récupération et affichage des meilleurs posts (pour les utilisateurs non connectés)
                     $allPosts = $SQLconn->profile->getBestPosts(0);
-                    foreach ($allPosts as $post){
+                    foreach ($allPosts as $post) {
                         $infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
-                        $SQLconn->profile->afficherPosts($post,$infos);
+                        $SQLconn->profile->afficherPosts($post, $infos);
                     }
-                ?>
+                    ?>
                 <?php
-              }
-            ?>
-          </div>
+                }
+                ?>
+            </div>
         </div>
         <br>
     </main>
+
+    <!-- Inclusion du script jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Inclusion du script JS pour la gestion du profil -->
     <script src="JS/monProfile.js"></script>
+    <!-- Inclusion du script Bootstrap JS -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <!-- <?php include ("BoutDePages/footer.php"); ?> -->
-  </body>
+    <!-- Inclusion du pied de page commun à toutes les pages -->
+    <!-- <?php include("BoutDePages/footer.php"); ?> -->
+</body>
+
 </html>

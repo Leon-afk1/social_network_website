@@ -1,19 +1,24 @@
 <link rel="stylesheet" href="styles.css">
 <div class="card outline-secondary">
     <div class="text-center card-header">
-        <h1 class="card-title"><?php 
+        <!-- Affichage de l'avatar du compte externe -->
+        <h1 class="card-title">
+        <?php 
         if ($InfosCompteExterne["avatar"] != NULL){
             echo "<img src='".$InfosCompteExterne["avatar"]."' class='avatar avatar-xxl'>";
         }
-         ?>
+        ?>
         </h1>
+        <!-- Affichage du nom d'utilisateur du compte externe -->
         <?php echo $InfosCompteExterne["username"] ;
+        // Vérification si le compte externe est un admin
         if ($InfosCompteExterne['admin'] == 1){
             echo "<img src='./images/admin.jpg' class='avatar avatar-xs'>";
         }
         ?>
         <br>
         <?php 
+        // Vérification si le compte externe est banni
         $ban = $SQLconn->profile->checkBan($InfosCompteExterne["id_utilisateur"]);
         if ($ban){
             $dateBan = $SQLconn->profile->getDateBan($InfosCompteExterne["id_utilisateur"]);
@@ -28,7 +33,7 @@
             }
         }
 
-
+        // Affichage du menu admin si l'utilisateur est connecté, admin et ne regarde pas son propre compte
         if ($SQLconn->loginStatus->loginSuccessful and $SQLconn->profile->checkAdmin($_COOKIE['user_id']) and !$monCompte){
             ?>
             <p class="d-inline-flex gap-1">
@@ -110,6 +115,7 @@
             }
         }
 
+        // Affichage du bouton follow/unfollow si l'utilisateur est connecté
         if ($SQLconn->loginStatus->loginSuccessful){
             if ($SQLconn->profile->verifFollow($_COOKIE['user_id'], $InfosCompteExterne["id_utilisateur"])){
                 echo "<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#unfollowModal'>Unfollow</button>";
@@ -143,6 +149,7 @@
             }
         }
         ?>
+        <!-- Affichage du nombre total de followers et de following -->
         <div class="container text-center">
             <div class="row align-items-center">
                 <div class="col ">
@@ -153,19 +160,19 @@
                 </div>
             </div>
         </div>
-        
-
     </div>
     <div class="card-body">
 
+        <!-- Affichage du nom complet du compte externe -->
         <div class="form-group form-field">
             <label for="nom"><?php echo $InfosCompteExterne["nom"]." ".$InfosCompteExterne["prenom"] ?></label>
-            
         </div>
+        <!-- Affichage de la description du compte externe -->
         <div class="form-group form-field">
             <label for="description"><?php echo $InfosCompteExterne["description"] ?></label>
             <br>
         </div>
+        <!-- Affichage des posts du compte externe -->
         <div class="form-group form-field">
             <label for="post">Posts :</label>
             <br>
@@ -180,5 +187,5 @@
         </div>
     </div>
 </div>
+// Inclusion du script JS pour la gestion des actions sur le profil
 <script src="JS/profile.js"></script>
-
