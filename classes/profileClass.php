@@ -330,6 +330,25 @@ class profile {
         return $row['COUNT(*)'];
     }
 
+    public function addLike($postId, $userId){ //fonction pour ajouter un like à un post
+        $query = "INSERT INTO likes (id_like, id_utilisateur, id_post) VALUES (NULL, $userId, $postId)";
+        if ($this->SQLconn->executeRequete($query)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function removeLike($postId, $userId){ //fonction pour retirer un like à un post
+        $query = "DELETE FROM likes WHERE id_utilisateur = $userId AND id_post = $postId";
+        if ($this->SQLconn->executeRequete($query)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
     public function afficherPosts($post, $infos){
         $idPost = $post['id'];
         if (isset($_COOKIE['user_id'])){
@@ -437,6 +456,8 @@ class profile {
                 echo "<br>";
             }
             echo "<br>";
+
+            //partie des likes
             $likesAmount = $this->getNumberLikes($post["id"]); //récupère le nb de likes du post
             echo "<p class='card-text'>".$likesAmount." likes</p>";
             echo "<br>";
@@ -450,18 +471,22 @@ class profile {
             }else{
                 echo "post non liké";
             }
-            // Intégration du bouton "like" dynamique en JavaScript avec des images
-            if ($estLike) {
-                echo "<img id='likeButton' onclick='toggleLike(this, {$post['id']})' src='./images/like.png' alt='Liked' class='like-button'>";
-            } else {
-                echo "<img id='likeButton' onclick='toggleLike(this, {$post['id']})' src='./images/nolike.png' alt='Not Liked' class='like-button'>";
-            }
-            
+
+
             if (isset($_COOKIE['user_id'])){
+                $currentUser = $_COOKIE['user_id'];
                 echo    "</div>";
                 echo    "<div class='card-footer'>";
-        
                 echo        "<div class='row'>";
+
+                echo "<button class='like-button' onclick='toggleLike($estLike,$currentUser,$idPost)'>";
+                    if ($estLike) {
+                        echo "<img id='like-image_".$idPost."' src='./images/like.png' alt='Like'>";
+                    } else {
+                        echo "<img id='like-image_".$idPost."' src='./images/nolike.png' alt='Like'>";
+                    }
+                 echo '</button>';
+
                 echo            "<div class='col' onclick='toggleForm($idPost)'>";
                 
                 // // Bouton pour masquer/afficher le formulaire avec ID de post

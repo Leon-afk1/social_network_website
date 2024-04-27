@@ -45,32 +45,29 @@ function toggleImageVideo(postId) {
     }
 }
 
-function toggleLike(button, postId) {
-    $.post('like.php', { postId: postId }, function(data) {
-        if (data.success) {
-            // Mettre à jour l'image du bouton en fonction de l'état actuel
-            if (data.liked) {
-                button.src = 'like.png';
-                button.alt = 'Liked';
-            } else {
-                button.src = 'nolike.png';
-                button.alt = 'Not Liked';
-            }
-            
-            // Mettre à jour le nombre de likes affiché en temps réel
-            var likesCount = document.getElementById('likesCount-' + postId);
-            if (likesCount) {
-                likesCount.innerText = data.likesCount + " likes";
-            }
-            
-            // Afficher un message de confirmation
-            alert("Post liked successfully!");
+function toggleLike(isLiked, userID, postID) {
+    console.log("toggleLike function called with isLiked = " + isLiked + ", userID = " + userID + ", postID = " + postID);
+    console.log("test1");
+    alert("test2");
+    // Récupérer l'élément image
+    var image = document.getElementById("like-image_" + postID);
+    
+    // Utiliser $.post() pour envoyer une requête AJAX POST à like.php
+    $.post("./AJAX/liker.php", {isLiked : isLiked, userID : userID, postID : postID}, function(data) {
+        alert("test3");
+        if(data=="Like added"){
+            alert("Like ajouté");
+            image.src = "./images/like.png";
+        } else if(data=="Like removed"){
+            alert("Like retiré");
+            image.src = "./images/nolike.png";
         } else {
-            // Gérez les erreurs de requête ici
+            alert("ca marche pas");
             console.error('Erreur lors de la requête AJAX');
         }
     });
-}
+
+    }
 
 function sendAvertissement(postId) {
     var avertissement = prompt("Veuillez saisir un avertissement à envoyer à l'utilisateur :", "Vous avez reçu un avertissement pour comportement inapproprié");
