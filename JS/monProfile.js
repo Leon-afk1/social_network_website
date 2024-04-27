@@ -52,29 +52,26 @@ function toggleImageVideo(postId) {
     }
 }
 
-function toggleLike(isLiked, userID, postID) {
+function toggleLike(isLiked = false, userID, postID){
     console.log("toggleLike function called with isLiked = " + isLiked + ", userID = " + userID + ", postID = " + postID);
-    console.log("test1");
-    alert("test2");
     // Récupérer l'élément image
     var image = document.getElementById("like-image_" + postID);
-    
+    $result = "";
     // Utiliser $.post() pour envoyer une requête AJAX POST à like.php
     $.post("./AJAX/liker.php", {isLiked : isLiked, userID : userID, postID : postID}, function(data) {
-        alert("test3");
-        if(data=="Like added"){
+        $result = data.trim();
+        if(result=="Like added"){
             alert("Like ajouté");
-            image.src = "./images/like.png";
-        } else if(data=="Like removed"){
+            image.src = "./icon/heart_red.png";
+        } else if(result=="Like removed"){
             alert("Like retiré");
-            image.src = "./images/nolike.png";
+            image.src = "./icon/heart_empty.png";
         } else {
             alert("ca marche pas");
             console.error('Erreur lors de la requête AJAX');
         }
     });
-
-    }
+}
 
 // Fonction pour envoyer un avertissement à l'utilisateur concerné par un post
 function sendAvertissement(postId) {
@@ -183,3 +180,7 @@ function signalerPost(idPost, idUser) {
     }
 }
 
+function likeUnlike(postId, userId) {
+    alert("likeUnlike function called with postId = " + postId + ", userId = " + userId);
+
+}

@@ -358,9 +358,9 @@ class profile {
         
         // Vérification du nombre de lignes retournées
         if ($result->num_rows > 0) {
-            return true; // Le post est aimé par l'utilisateur
+            return 1; // Le post est aimé par l'utilisateur
         } else {
-            return false; // Le post n'est pas aimé par l'utilisateur
+            return 0; // Le post n'est pas aimé par l'utilisateur
         }
     }
 
@@ -377,9 +377,8 @@ class profile {
         return $row['COUNT(*)'];
     }
 
-<<<<<<< HEAD
     public function addLike($postId, $userId){ //fonction pour ajouter un like à un post
-        $query = "INSERT INTO likes (id_like, id_utilisateur, id_post) VALUES (NULL, $userId, $postId)";
+        $query = "INSERT INTO likes (id_likes, id_utilisateur, id_post) VALUES (NULL, $userId, $postId)";
         if ($this->SQLconn->executeRequete($query)) {
             return true;
         } else {
@@ -397,9 +396,6 @@ class profile {
     }
 
 
-=======
-    // Affiche un post avec ses détails, y compris les boutons d'interaction, les commentaires et les options de modération pour les administrateurs.
->>>>>>> d1d360a675c5700e99b49e331e30b96b76fd3fd3
     public function afficherPosts($post, $infos){
         $idPost = $post['id'];
         // Vérifie si l'utilisateur est connecté et récupère ses informations
@@ -526,27 +522,17 @@ class profile {
                 echo "<br>";
             }
             echo "<br>";
-<<<<<<< HEAD
 
             //partie des likes
-=======
-            // Affiche le nombre de likes du post
->>>>>>> d1d360a675c5700e99b49e331e30b96b76fd3fd3
             $likesAmount = $this->getNumberLikes($post["id"]); //récupère le nb de likes du post
             echo "<p class='card-text'>".$likesAmount." likes</p>";
             echo "<br>";
             echo "<br>";
-            $estLike = false;
+            $estLike = 0;
             if (isset($_COOKIE['user_id'])){
                 $estLike = $this->isLiked($_COOKIE['user_id'], $post["id"]); //vérifie si l'utilisateur a liké le post
             }
-            // Affiche si le post est liké ou non par l'utilisateur connecté
-            if($estLike == true){
-                echo "post liké";
-            }else{
-                echo "post non liké";
-            }
-
+            echo $estLike;
 
             if (isset($_COOKIE['user_id'])){
                 $currentUser = $_COOKIE['user_id'];
@@ -554,20 +540,19 @@ class profile {
                 echo    "<div class='card-footer'>";
                 echo        "<div class='row'>";
 
-                echo "<button class='like-button' onclick='toggleLike($estLike,$currentUser,$idPost)'>";
-                    if ($estLike) {
-                        echo "<img id='like-image_".$idPost."' src='./images/like.png' alt='Like'>";
-                    } else {
-                        echo "<img id='like-image_".$idPost."' src='./images/nolike.png' alt='Like'>";
-                    }
-                 echo '</button>';
-
                 echo            "<div class='col' onclick='toggleForm($idPost)'>";
                 
                 // Bouton pour masquer/afficher le formulaire avec ID de post
                 echo                "<img src='./images/comment.png' alt='Comment' class='like-button'  style='max-width: 1em; max-height: 6em;'>";
                 $nbCommentaires = $this->getNombreCommentaires($idPost);
                 echo               "<label for='commentaire'>". $nbCommentaires."</label>";
+                echo            "</div>";
+                echo            "<div class='col text-start' onclick=\"toggleLike($estLike, $currentUser, $idPost)\">";
+                if ($estLike) {
+                    echo "<img id='like-image_".$idPost."' src='./icon/heart_red.png' alt='Like' width='20' height='20'>";
+                } else {
+                    echo "<img id='like-image_".$idPost."' src='./icon/heart_empty.png' alt='Like' width='20' height='20'>";
+                }
                 echo            "</div>";
                 echo            "<div class='col text-end'>";
                 echo                "<label for='date'>". $post["date"]."</label>";

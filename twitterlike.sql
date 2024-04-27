@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 19 avr. 2024 à 16:30
+-- Généré le : sam. 27 avr. 2024 à 18:16
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -38,10 +38,7 @@ CREATE TABLE `follower` (
 --
 
 INSERT INTO `follower` (`id_follower`, `id_utilisateur`, `id_utilisateur_suivi`) VALUES
-(61, 30, 31),
-(60, 31, 27),
-(62, 31, 32),
-(63, 32, 27);
+(61, 30, 31);
 
 -- --------------------------------------------------------
 
@@ -54,6 +51,13 @@ CREATE TABLE `likes` (
   `id_utilisateur` bigint(11) NOT NULL,
   `id_post` bigint(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `likes`
+--
+
+INSERT INTO `likes` (`id_likes`, `id_utilisateur`, `id_post`) VALUES
+(14, 27, 152);
 
 -- --------------------------------------------------------
 
@@ -77,10 +81,19 @@ CREATE TABLE `notification` (
 --
 
 INSERT INTO `notification` (`id_notification`, `type`, `bool_lue`, `id_utilisateur`, `date_notification`, `id_post_cible`, `id_utilisateur_cible`, `message_notification`) VALUES
-(46, 'follow', 0, 32, '2024-04-17 01:18:27', NULL, 27, NULL),
+(46, 'follow', 1, 32, '2024-04-17 01:18:27', NULL, 27, NULL),
 (64, 'unban', 0, 31, '2024-04-17 21:08:39', NULL, 27, NULL),
 (65, 'ban', 0, 31, '2024-04-17 21:08:52', NULL, 27, NULL),
-(66, 'ban', 0, 31, '2024-04-18 11:58:42', NULL, 27, NULL);
+(66, 'ban', 0, 31, '2024-04-18 11:58:42', NULL, 27, NULL),
+(80, 'post', 0, 31, '2024-04-19 22:16:11', 179, 27, NULL),
+(81, 'post', 1, 32, '2024-04-19 22:16:11', 179, 27, NULL),
+(87, 'post', 0, 31, '2024-04-20 16:13:49', 180, 27, NULL),
+(88, 'post', 1, 32, '2024-04-20 16:13:49', 180, 27, NULL),
+(89, 'post', 0, 31, '2024-04-20 16:14:28', 181, 27, NULL),
+(90, 'post', 1, 32, '2024-04-20 16:14:28', 181, 27, NULL),
+(105, 'post', 0, 31, '2024-04-23 09:58:08', 199, 27, NULL),
+(106, 'post', 1, 32, '2024-04-23 09:58:08', 199, 27, NULL),
+(159, 'signalement', 0, 27, '2024-04-27 17:06:14', 199, 27, 'Ce contenu a été signalé par un utilisateur');
 
 -- --------------------------------------------------------
 
@@ -108,11 +121,31 @@ INSERT INTO `post` (`id_post`, `id_utilisateur`, `id_parent`, `contenu`, `date`,
 (48, 30, NULL, 'test', '2024-04-04 00:00:00', './images/48.jpg', NULL, 'public'),
 (52, 32, NULL, 'test', '2024-04-04 00:00:00', NULL, NULL, 'public'),
 (53, 32, NULL, 'test heure', '2024-04-05 16:14:58', NULL, NULL, 'public'),
-(54, 32, NULL, 'test min', '2024-04-05 16:25:21', NULL, NULL, 'public'),
-(115, 27, 54, 'jrgjrbht', '2024-04-11 19:35:11', './images/115.gif', NULL, 'sensible'),
-(120, 27, NULL, 'test', '2024-04-12 19:56:19', NULL, NULL, 'offensant'),
+(115, 27, 54, 'jrgjrbht', '2024-04-11 19:35:11', './images/115.gif', NULL, 'offensant'),
+(120, 27, NULL, 'test', '2024-04-12 19:56:19', NULL, NULL, 'sensible'),
 (151, 30, NULL, 'test1', '2024-04-14 18:01:16', NULL, NULL, 'public'),
-(152, 30, NULL, 'test2', '2024-04-14 18:01:22', NULL, NULL, 'offensant');
+(152, 30, NULL, 'test2', '2024-04-14 18:01:22', NULL, NULL, 'offensant'),
+(179, 27, NULL, 'video', '2024-04-19 22:16:11', NULL, 'https://www.youtube.com/watch?v=L9ZyryHc304', 'sensible'),
+(180, 27, NULL, 'test d&#039;un texte plus long\r\nkuygfuyejgcudgkjb\r\nluyqgdbozluikhpnifmueh\r\nkuuyfshdgkbzuaqkgjh&lt;lfuikje', '2024-04-20 16:13:49', NULL, NULL, 'public'),
+(181, 27, NULL, 'test avec une image', '2024-04-20 16:14:28', './images/181.jpg', NULL, 'public'),
+(182, 27, 181, 'test reaction', '2024-04-21 16:28:22', NULL, NULL, 'sensible'),
+(183, 27, 181, 'test reaction', '2024-04-21 16:28:37', NULL, NULL, 'public'),
+(184, 27, 152, 'rgrv', '2024-04-22 08:00:31', NULL, NULL, 'public'),
+(185, 27, 152, 'gressvevce', '2024-04-22 08:00:37', NULL, NULL, 'public'),
+(186, 27, 152, 'vessef', '2024-04-22 08:00:43', NULL, NULL, 'public'),
+(187, 27, 152, 'ggeveecqzc', '2024-04-22 08:00:49', NULL, NULL, 'public'),
+(188, 27, 152, 'bvwrseqdz', '2024-04-22 08:00:55', NULL, NULL, 'public'),
+(189, 27, 152, 'grZF&lt;QZD', '2024-04-22 08:01:11', NULL, NULL, 'sensible'),
+(190, 27, 187, 'kuuydfzi', '2024-04-22 14:38:17', NULL, NULL, 'public'),
+(191, 27, 152, ';jzhehfgld', '2024-04-22 18:50:30', NULL, NULL, 'public'),
+(192, 27, 152, ';jzhehfgld', '2024-04-22 18:51:01', NULL, NULL, 'public'),
+(193, 27, 152, 'test 7', '2024-04-22 18:51:22', NULL, NULL, 'public'),
+(194, 27, 152, 'test 7', '2024-04-22 18:51:51', NULL, NULL, 'public'),
+(195, 27, 152, 'test 7', '2024-04-22 18:53:51', NULL, NULL, 'public'),
+(196, 27, 152, 'test 7', '2024-04-22 18:55:16', NULL, NULL, 'public'),
+(197, 27, 152, 'test 7', '2024-04-22 18:55:59', NULL, NULL, 'public'),
+(198, 27, 152, 'test 7', '2024-04-22 18:56:51', NULL, NULL, 'public'),
+(199, 27, NULL, 'test gif', '2024-04-23 09:58:08', './images/199.gif', NULL, 'public');
 
 -- --------------------------------------------------------
 
@@ -143,7 +176,7 @@ CREATE TABLE `utilisateur` (
 
 INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `prenom`, `email`, `mdp`, `description`, `dateNaissance`, `username`, `avatar`, `adresse`, `admin`, `ban`, `date_fin_ban`, `justification_ban`) VALUES
 (27, 'morales', 'Léon', 'leon.morales@utbm.fr', '$2y$10$EGrUAgKkF7qd/xwvouCfrexqMcfSHu8J3WE1eMKliir6AJ.v.b1v2', 'Je suis Léon', '2003-08-19', 'Léon', './avatar/27.jpg', 'testt', 1, 0, NULL, NULL),
-(30, 'test', 'test', 'test@test.fr', '$2y$10$xwgwQA65kXeUlB4eya/zYOxaFch//wFwvj1OGE60WbXnrWu3e3FqW', 'pourquoi pas', '2014-03-14', 'test', './avatar/30.jpg', 'testt', 0, 0, NULL, NULL),
+(30, 'test', 'test', 'test@test.fr', '$2y$10$xwgwQA65kXeUlB4eya/zYOxaFch//wFwvj1OGE60WbXnrWu3e3FqW', 'pourquoi pas', '2014-03-14', 'test', './avatar/30.jpg', 'testt', 0, 1, NULL, 'Contenue inapproprié'),
 (31, 'test', 'test', 'test2@test.fr', '$2y$10$.dfn.bTEPbsxyq2BZP9rN.7P6lDputsy.mrHLX09rWlc04/kbMzR6', '', '2016-03-13', 'test2', './avatar/defaultAvatar.jpg', 'testt', 0, 1, NULL, 'Contenue inapproprié'),
 (32, 'test', 'test', 'test.morales@utbm.fr', '$2y$10$xAQH4UGrnPSnUJaczlBuCeUyLKDKA2QVVGmdUDnVQ7VPJbHIJSnDy', NULL, '2024-04-12', 'test3', './avatar/32.jpg', '36 rue du Neufeld', 0, 0, NULL, NULL),
 (40, 'Morales', 'Léon', 'sgefffs.morales@utbm.fr', '$2y$10$xquP3E.LqPEbKzFp6SK1POf.gTjkHcufpUMwfa/2FTIVs33quxVD2', NULL, '2024-04-19', 'wrg', './avatar/defaultAvatar.jpg', '35 rue du Neufeld', 0, 0, NULL, NULL),
@@ -204,25 +237,25 @@ ALTER TABLE `utilisateur`
 -- AUTO_INCREMENT pour la table `follower`
 --
 ALTER TABLE `follower`
-  MODIFY `id_follower` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+  MODIFY `id_follower` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT pour la table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `id_likes` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_likes` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT pour la table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id_notification` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
+  MODIFY `id_notification` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=160;
 
 --
 -- AUTO_INCREMENT pour la table `post`
 --
 ALTER TABLE `post`
-  MODIFY `id_post` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=179;
+  MODIFY `id_post` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=202;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
