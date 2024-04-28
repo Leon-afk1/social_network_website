@@ -22,7 +22,7 @@ class ConnexionBDD {
         $serveur = 'localhost';
         $utilisateur = 'root';
         $motDePasse = '';
-        $nomBaseDeDonnees = 'twitterlike';
+        $nomBaseDeDonnees = 'MoralesMorinDB';
 
         // Connexion à la base de données
         global $conn; // Utilisation de la variable $conn dans toute la classe

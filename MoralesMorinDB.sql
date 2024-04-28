@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1
--- Généré le : sam. 27 avr. 2024 à 18:16
--- Version du serveur : 10.4.32-MariaDB
--- Version de PHP : 8.2.12
+-- Hôte : localhost
+-- Généré le : dim. 28 avr. 2024 à 11:14
+-- Version du serveur : 10.4.21-MariaDB
+-- Version de PHP : 8.1.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `twitterlike`
+-- Base de données : `MoralesMorinDB`
 --
 
 -- --------------------------------------------------------
@@ -31,14 +31,15 @@ CREATE TABLE `follower` (
   `id_follower` bigint(20) NOT NULL,
   `id_utilisateur` bigint(20) NOT NULL,
   `id_utilisateur_suivi` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `follower`
 --
 
 INSERT INTO `follower` (`id_follower`, `id_utilisateur`, `id_utilisateur_suivi`) VALUES
-(61, 30, 31);
+(61, 30, 31),
+(66, 47, 27);
 
 -- --------------------------------------------------------
 
@@ -50,14 +51,18 @@ CREATE TABLE `likes` (
   `id_likes` bigint(11) NOT NULL,
   `id_utilisateur` bigint(11) NOT NULL,
   `id_post` bigint(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `likes`
 --
 
 INSERT INTO `likes` (`id_likes`, `id_utilisateur`, `id_post`) VALUES
-(14, 27, 152);
+(16, 27, 152),
+(18, 47, 199),
+(19, 27, 151),
+(20, 27, 199),
+(21, 47, 202);
 
 -- --------------------------------------------------------
 
@@ -74,7 +79,7 @@ CREATE TABLE `notification` (
   `id_post_cible` bigint(20) DEFAULT NULL,
   `id_utilisateur_cible` bigint(20) DEFAULT NULL,
   `message_notification` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `notification`
@@ -93,7 +98,8 @@ INSERT INTO `notification` (`id_notification`, `type`, `bool_lue`, `id_utilisate
 (90, 'post', 1, 32, '2024-04-20 16:14:28', 181, 27, NULL),
 (105, 'post', 0, 31, '2024-04-23 09:58:08', 199, 27, NULL),
 (106, 'post', 1, 32, '2024-04-23 09:58:08', 199, 27, NULL),
-(159, 'signalement', 0, 27, '2024-04-27 17:06:14', 199, 27, 'Ce contenu a été signalé par un utilisateur');
+(159, 'signalement', 1, 27, '2024-04-27 17:06:14', 199, 27, 'Ce contenu a été signalé par un utilisateur'),
+(160, 'follow', 1, 27, '2024-04-28 10:44:45', NULL, 47, NULL);
 
 -- --------------------------------------------------------
 
@@ -110,7 +116,7 @@ CREATE TABLE `post` (
   `image_path` varchar(255) DEFAULT NULL,
   `video_lien` varchar(200) DEFAULT NULL,
   `visibilite` varchar(255) DEFAULT 'public'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `post`
@@ -145,7 +151,12 @@ INSERT INTO `post` (`id_post`, `id_utilisateur`, `id_parent`, `contenu`, `date`,
 (196, 27, 152, 'test 7', '2024-04-22 18:55:16', NULL, NULL, 'public'),
 (197, 27, 152, 'test 7', '2024-04-22 18:55:59', NULL, NULL, 'public'),
 (198, 27, 152, 'test 7', '2024-04-22 18:56:51', NULL, NULL, 'public'),
-(199, 27, NULL, 'test gif', '2024-04-23 09:58:08', './images/199.gif', NULL, 'public');
+(199, 27, NULL, 'test gif', '2024-04-23 09:58:08', './images/199.gif', NULL, 'public'),
+(202, 47, NULL, 'Ceci est mon premier post', '2024-04-28 10:43:25', NULL, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'public'),
+(203, 47, 202, 'Ceci est mon premier commentaire', '2024-04-28 10:43:55', NULL, NULL, 'public'),
+(204, 47, 199, 'joli gif dit donc', '2024-04-28 10:47:54', NULL, NULL, 'public'),
+(205, 47, NULL, 'Ceci est un exemple pour commenter', '2024-04-28 10:50:18', NULL, NULL, 'public'),
+(206, 47, 205, 'Ceci est le commentaire', '2024-04-28 10:50:34', NULL, NULL, 'public');
 
 -- --------------------------------------------------------
 
@@ -168,7 +179,7 @@ CREATE TABLE `utilisateur` (
   `ban` tinyint(1) DEFAULT 0,
   `date_fin_ban` datetime DEFAULT NULL,
   `justification_ban` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `utilisateur`
@@ -185,7 +196,8 @@ INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `prenom`, `email`, `mdp`, `d
 (43, 'Morales', 'Léon', 'rsece.morales@utbm.fr', '$2y$10$C3PuwMAMkc3.LXbs/lv0oegWD99M.tz3NZjD2267SvW4O/Q8VG/LS', NULL, '2024-04-20', 'zevc', './avatar/defaultAvatar.jpg', '35 rue du Neufeld', 0, 0, NULL, NULL),
 (44, 'Morales', 'Léon', 'fezez.morales@utbm.fr', '$2y$10$Vbj8iXlHKzaf74dcmMzH7uzWa1o0y6J4IQIyhMBRQFP8QSNDJQweW', NULL, '2024-04-19', 'fzaeaz', './avatar/defaultAvatar.jpg', '35 rue du Neufeld', 0, 0, NULL, NULL),
 (45, 'Morales', 'Léon', 'zefezfd.morales@utbm.fr', '$2y$10$n2XAMXVHzohjxMQzt2KGfOrK6GPURpXZl.rE54ClLsNr6gCA3Fsi6', NULL, '2024-04-27', 'ezez', './avatar/defaultAvatar.jpg', '35 rue du Neufeld', 0, 0, NULL, NULL),
-(46, 'morales', 'leon', 'leon.neo.18@gmail.com', '$2y$10$atEUw0F8yOCmJ2n1O35jV.dL0GCDKrFHA8oKLpDQzkkH.j.olTP/y', NULL, '2000-02-18', 'zef', './avatar/defaultAvatar.jpg', '35 rue du Neufeld', 0, 0, NULL, NULL);
+(46, 'morales', 'leon', 'leon.neo.18@gmail.com', '$2y$10$atEUw0F8yOCmJ2n1O35jV.dL0GCDKrFHA8oKLpDQzkkH.j.olTP/y', NULL, '2000-02-18', 'zef', './avatar/defaultAvatar.jpg', '35 rue du Neufeld', 0, 0, NULL, NULL),
+(47, 'Alban', 'Morin', 'alban.morin@alban.fr', '$2y$10$qT2QZzDVL.ZyANBKNRUV3ehH19RyK4MqZ15LvI5hmmKO/PKlsbvz6', 'mon compte', '2004-01-08', 'albanAdmin', './avatar/47.jpg', 'rue des capucins Belfort', 0, 0, NULL, NULL);
 
 --
 -- Index pour les tables déchargées
@@ -237,31 +249,31 @@ ALTER TABLE `utilisateur`
 -- AUTO_INCREMENT pour la table `follower`
 --
 ALTER TABLE `follower`
-  MODIFY `id_follower` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id_follower` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT pour la table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `id_likes` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_likes` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT pour la table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id_notification` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=160;
+  MODIFY `id_notification` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
 
 --
 -- AUTO_INCREMENT pour la table `post`
 --
 ALTER TABLE `post`
-  MODIFY `id_post` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=202;
+  MODIFY `id_post` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=207;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id_utilisateur` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id_utilisateur` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- Contraintes pour les tables déchargées
