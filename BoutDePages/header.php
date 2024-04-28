@@ -94,7 +94,7 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
                             echo "<li class='nav-item'>
                                         <form class='nav-item' action='./profile.php?id=" . $_COOKIE['user_id'] . "' method='post' id='statistiquesForm'>
                                             <input type='hidden' name='statistiques' value='true'>
-                                            <a href='#' onclick='submitForm()'>
+                                            <a onclick='submitForm()'>
                                                 <img src='./icon/statistics.png' alt='Statistiques' width='30' height='30' title='Statistiques'>
                                             </a>
                                         </form>

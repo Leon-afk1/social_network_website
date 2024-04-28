@@ -407,23 +407,32 @@ class profile {
             
             echo "<div class='card outline-secondary rounded-3' id='post_".$idPost."'>";
             echo    "<div class='card-header outline-secondary'>";
-            echo        "<div class='row'>";
-            echo            "<div class='col text-start'>";
+            echo        "<div class='row align-items-center'>";
+            echo            "<div class='col-auto text-start'>";
             // Lien vers le profil de l'utilisateur qui a publié le post
             echo                "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'> 
-                                    <img src='".$infos["avatar"]."' class='avatar avatar-lg'>
-                                    <label for='nom'>". $infos["username"]."</label>";
-                                    // Affiche une icône admin si l'utilisateur est un administrateur
-                                    if ($infos['admin'] == 1){
-                                        echo "<img src='./images/admin.jpg' class='avatar avatar-xs'>";
-                                    }
-                                    // Affiche une icône de bannissement si l'utilisateur est banni
-                                    if ($infos['ban'] == 1){
-                                        echo "<img src='./images/ban.png' class='avatar avatar-xs'>";
-                                    }
-    
-            echo                  " </a>";
+                                    <img src='".$infos["avatar"]."' class='avatar avatar-lg'>";
+            echo                "</a>";
             echo            "</div>";
+            echo            "<div class='col-auto'>";
+            echo                "<a class='nav-link active' aria-current='page' href='./profile.php?id=".$infos["id_utilisateur"]."'>
+                                    <label for='nom'>". $infos["username"]."</label>";
+            echo                "</a>";
+            echo            "</div>";
+
+            // Affiche une icône admin si l'utilisateur est un administrateur
+            if ($infos['admin'] == 1){
+                echo "<div class='col-auto'>";
+                echo "<img src='./images/admin.jpg' class='avatar avatar-xs'>";
+                echo "</div>";
+            }
+            // Affiche une icône de bannissement si l'utilisateur est banni
+            if ($infos['ban'] == 1){
+                echo "<div class='col-auto'>";
+                echo "<img src='./images/ban.png' class='avatar avatar-xs'>";
+                echo "</div>";
+            }
+    
             echo            "<div class='col text-end'>";
             if (isset($_COOKIE['user_id'])){
                 $infoUser = $this->GetInfoProfile($_COOKIE['user_id']);
@@ -531,20 +540,18 @@ class profile {
                 echo    "<div class='card-footer'>";
                 echo        "<div class='row'>";
 
-                echo            "<div class='col' onclick='toggleForm($idPost)'>";
+                echo            "<div class='col-auto' onclick='toggleForm($idPost)'>";
                 
                 // Bouton pour masquer/afficher le formulaire avec ID de post
                 echo                "<img src='./images/comment.png' alt='Comment' class='like-button'  style='max-width: 1em; max-height: 6em;'>";
                 $nbCommentaires = $this->getNombreCommentaires($idPost);
                 echo               "<label for='commentaire'>". $nbCommentaires."</label>";
                 echo            "</div>";
+
                 //partie des likes
                 $likesAmount = $this->getNumberLikes($post["id"]); //récupère le nb de likes du post
-                $estLike = 0;
-                if (isset($_COOKIE['user_id'])){
-                    $estLike = $this->isLiked($_COOKIE['user_id'], $post["id"]); //vérifie si l'utilisateur a liké le post
-                }
-                echo            "<div class='col text-start' onclick=\"toggleLike($currentUser, $idPost)\" data-liked='$estLike' id='like-button_".$idPost."'>";
+                $estLike = $this->isLiked($_COOKIE['user_id'], $post["id"]); //vérifie si l'utilisateur a liké le post
+                echo            "<div class='col-auto text-start' onclick=\"toggleLike($currentUser, $idPost)\" data-liked='$estLike' id='like-button_".$idPost."'>";
                 if ($estLike) {
                     echo "<img id='like-image_".$idPost."' src='./icon/heart_red.png' alt='Like' width='20' height='20'>";
                 } else {
@@ -552,6 +559,29 @@ class profile {
                 }
                 echo        "<label for='like' id='like-count_".$idPost."'>$likesAmount</label>";
 
+                echo            "</div>";
+                echo            "<div class='col text-end'>";
+                echo                "<label for='date'>". $post["date"]."</label>";
+                echo            "</div>";
+                echo        "</div>";
+                echo        "<br>";
+                echo        "<br>";
+            }else{
+                echo    "</div>";
+                echo    "<div class='card-footer'>";
+                echo        "<div class='row'>";
+                echo            "<div class='col-auto' >";
+                // Bouton pour masquer/afficher le formulaire avec ID de post
+                echo                "<img src='./images/comment.png' alt='Comment' class='like-button'  style='max-width: 1em; max-height: 6em;'>";
+                $nbCommentaires = $this->getNombreCommentaires($idPost);
+                echo               "<label for='commentaire'>". $nbCommentaires."</label>";
+                echo            "</div>";
+
+                //partie des likes
+                $likesAmount = $this->getNumberLikes($post["id"]); //récupère le nb de likes du post
+                echo            "<div class='col-auto ' >";
+                echo                "<img id='like-image_".$idPost."' src='./icon/heart_empty.png' alt='Like' width='20' height='20'>";
+                echo                "<label for='like' id='like-count_".$idPost."'>$likesAmount</label>";
                 echo            "</div>";
                 echo            "<div class='col text-end'>";
                 echo                "<label for='date'>". $post["date"]."</label>";
@@ -739,9 +769,13 @@ class profile {
         global $conn;
     
         // Requête pour récupérer les meilleurs posts publiés par d'autres utilisateurs, triés par date décroissante
-        $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, post.visibilite, utilisateur.nom, utilisateur.prenom FROM post
-                  INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur AND post.id_utilisateur != $userId
-                  ORDER BY post.date DESC";
+        $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, post.visibilite, utilisateur.nom, utilisateur.prenom, COALESCE(likes.likes, 0) AS total_likes
+                    FROM post
+                    INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur 
+                    LEFT JOIN (SELECT id_post, COUNT(*) as likes FROM likes GROUP BY id_post) as likes ON post.id_post = likes.id_post
+                    WHERE post.id_utilisateur != $userId 
+                    ORDER BY total_likes DESC;
+        ";
         $result = $this->SQLconn->executeRequete($query);
     
         $posts = [];

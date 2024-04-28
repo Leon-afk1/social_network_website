@@ -37,52 +37,37 @@ include("BoutDePages/header.php");
                 <?php
                 if ($SQLconn->loginStatus->loginSuccessful) {
                     ?>
-                    <div class="row align-items-start">
-                        <div class="col">
-                            <div class='card rounded-3 outline-secondary text-bg-secondary ps-10 pe-10'>
-                                <h2 class="card-title text-center">Meilleurs posts du moment :</h2>
-                                <br>
-                                <?php
-                                // Récupération et affichage des meilleurs posts
-                                $allPosts = $SQLconn->profile->getBestPosts($SQLconn->loginStatus->userID);
-                                foreach ($allPosts as $post) {
-                                    $infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
-                                    $SQLconn->profile->afficherPosts($post, $infos);
-                                }
-                                ?>
-                            </div>
+                    <div class="row mb-3">
+                        <div class="col text-center">
+                            <button class="btn btn-outline-secondary" id="bestPostsButton">Meilleurs posts du moment</button>
+                            <button class="btn btn-outline-secondary active" id="recentPostsButton">Post récent que vous suivez</button>
                         </div>
-                        <div class="col">
+                    </div>
+                    <div id="postsContainer"></div>
+
+                <?php
+                } else {
+                ?>
+                    
+                    <div class="row align-items-start justify-content-center">
+                        <div class="col-8">
                             <div class='card rounded-3 outline-secondary text-bg-secondary ps-10 pe-10'>
-                                <h2 class="card-title text-center">Post recent que vous suivez :</h2>
-                                <br>
-                                <?php
-                                // Récupération et affichage des derniers posts suivis par l'utilisateur
-                                $allPosts = $SQLconn->profile->getRecentPostsFollowed($SQLconn->loginStatus->userID);
-                                foreach ($allPosts as $post) {
-                                    $infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
-                                    $SQLconn->profile->afficherPosts($post, $infos);
-                                }
-                                if (count($allPosts) == 0) {
-                                    echo "Vous ne suivez personne";
-                                }
-                                ?>
+                                <div class="text-center card-header">
+                                    <h2 class="card-title ">Meilleurs posts du moment :</h2>
+                                </div>
+                                <div class="card-body" style="height: calc(100vh - 200px); overflow-y: auto;">
+                                    <?php
+                                    // Récupération et affichage des meilleurs posts (pour les utilisateurs non connectés)
+                                    $allPosts = $SQLconn->profile->getBestPosts(0);
+                                    foreach ($allPosts as $post) {
+                                        $infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
+                                        $SQLconn->profile->afficherPosts($post, $infos);
+                                    }
+                                    ?>
+                                </div>
                             </div>
                         </div>
                     </div>
-                <?php
-                } else {
-                    ?>
-                    <h2 class="card-title">Meilleurs posts du moment :</h2>
-                    <br>
-                    <?php
-                    // Récupération et affichage des meilleurs posts (pour les utilisateurs non connectés)
-                    $allPosts = $SQLconn->profile->getBestPosts(0);
-                    foreach ($allPosts as $post) {
-                        $infos = $SQLconn->profile->GetInfoProfile($post["id_utilisateur"]);
-                        $SQLconn->profile->afficherPosts($post, $infos);
-                    }
-                    ?>
                 <?php
                 }
                 ?>
@@ -93,14 +78,15 @@ include("BoutDePages/header.php");
 
     <!-- Inclusion du script jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery.js"></script>
     <!-- Inclusion du script JS pour la gestion du profil -->
     <script src="JS/monProfile.js"></script>
+    <!-- Inclusion du script JS pour l'index  -->
+    <script src="JS/index.js"></script>
     <!-- Inclusion du script Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <!-- Inclusion du pied de page commun à toutes les pages -->
-    <!-- <?php include("BoutDePages/footer.php"); ?> -->
+
 </body>
 
 </html>
