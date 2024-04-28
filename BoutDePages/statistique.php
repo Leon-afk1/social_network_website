@@ -20,6 +20,10 @@ $nbPostParSemaine = $SQLconn->statistiques->getNbPostParSemaine($_COOKIE['user_i
 $nbPostParMois = $SQLconn->statistiques->getNbPostParMois($_COOKIE['user_id']);
 ?>
 
+<head>
+    <title>Statistiques</title>
+</head>
+
 <!-- Inclusion de la feuille de style -->
 <link rel="stylesheet" href="styles.css">
 
@@ -44,10 +48,14 @@ $nbPostParMois = $SQLconn->statistiques->getNbPostParMois($_COOKIE['user_id']);
                 <div class="row align-items-center">
                     <!-- Affichage du nombre de followers -->
                     <div class="col">
+                        <image src="./images/followers.png" alt="followers" width="50" height="50">
+                        <br>
                         <label for="followers">Followers : <?php echo $nbFollowers ?></label>
                     </div>
                     <!-- Affichage du nombre de followed -->
                     <div class="col">
+                        <image src="./images/followed.png" alt="followed" width="50" height="50">
+                        <br>
                         <label for="following">Following : <?php echo $nbFollowed ?></label>
                     </div>
                 </div>
@@ -66,28 +74,27 @@ $nbPostParMois = $SQLconn->statistiques->getNbPostParMois($_COOKIE['user_id']);
         </div>
         <br>
         <!-- Carte pour afficher les statistiques de posts -->
-        <div class="card outline-secondary rounded-3">
-            <div class="container text-center">
-                <div class="row align-items-center">
-                    <!-- Affichage du nombre total de posts -->
-                    <div class="col">
-                        <label for="nbPost">Nombre de post : <?php echo $nbPosts ?></label>
-                    </div>
-                    <!-- Affichage du nombre moyen de posts par jour -->
-                    <div class="col">
-                        <label for="nbPostParJour">Nombre de post en moyenne par jour : <?php echo $nbPostParJour ?></label>
-                    </div>
-                </div>
-                <div class="row align-items-center">
-                    <!-- Affichage du nombre moyen de posts par semaine -->
-                    <div class="col">
-                        <label for="nbPostParSemaine">Nombre de post en moyenne par semaine : <?php echo $nbPostParSemaine ?></label>
-                    </div>
-                    <!-- Affichage du nombre moyen de posts par mois -->
-                    <div class="col">
-                        <label for="nbPostParMois">Nombre de post en moyenne par mois : <?php echo $nbPostParMois ?></label>
-                    </div>
-                </div>
+        <!-- Carte pour afficher les statistiques de posts -->
+<div class="card outline-secondary rounded-3">
+    <div class="container text-center">
+        <div class="row align-items-center">
+            <!-- Affichage du nombre total de posts -->
+            <div class="col">
+                <image src="./images/post.png" alt="posts" width="50" height="50">
+                <br>
+                <label for="nbPost">Nombre de posts total : <?php echo $nbPosts ?></label>
+            </div>
+            <!-- Affichage du nombre moyen de posts par jour, semaine et mois -->
+            <div class="col">
+                <image src="./images/stats.png" alt="stats" width="50" height="50">
+                <br>
+                <label for="moyenne" style="font-size: 20px;">Moyenne de posts :</label>
+                <br>
+                <label for="nbPostParJour">Par jour : <?php echo $nbPostParJour ?></label>
+                <br>
+                <label for="nbPostParSemaine">Par semaine : <?php echo $nbPostParSemaine ?></label>
+                <br>
+                <label for="nbPostParMois">Posts par mois : <?php echo $nbPostParMois ?></label>
             </div>
         </div>
     </div>
