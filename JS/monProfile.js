@@ -137,34 +137,6 @@ function marquerSensible(postId) {
     }
 }
 
-// Fonction pour basculer la visibilité d'un post sensible
-function toggleVisibilitePostSensible(postId) {
-    var visibilite = document.getElementById("postSensible_" + postId);
-
-    if (visibilite.style.filter === "blur(0px)") {
-        visibilite.style.filter = "blur(15px)";
-    } else {
-        visibilite.style.filter = "blur(0px)";
-    }
-}
-
-// Fonction pour retirer un post
-function retirerPost(postId) {
-    var message = prompt("Veuillez saisir un message à afficher à l'utilisateur :", "Ce contenu a été retiré car il ne respecte pas les règles de la communauté");
-    var result ="";
-    if (message != null) {
-        $.post('./AJAX/retirerPost.php', { postId: postId, message: message }, function(data) {
-            result = data.trim();
-            if (result  == "Post retiré") {
-                alert("Post retiré avec succès!");
-            } else {
-                alert(result); // Afficher l'erreur retournée par la requête
-                console.error('Erreur lors de la requête AJAX');
-            }
-        });
-    }
-}
-
 // Fonction pour marquer un post comme non sensible
 function marquerNonSensible(postId) {
     var result ="";
@@ -196,18 +168,66 @@ function toggleSensible(postId){
 
 }
 
+function toggleVisibilitePostSensible(postId){
+    var post = document.getElementById("postSensible_" + postId);
+    var message = document.getElementById("postSensibleMessage_" + postId);
+    if (post.style.filter === "blur(15px)") {
+        post.style.filter = "blur(0px)";
+        message.style.display = "none";
+    } else {
+        post.style.filter = "blur(15px)";
+        message.style.display = "block";
+    }
+}
+
+// Fonction pour retirer un post
+function retirerPost(postId) {
+    var message = prompt("Veuillez saisir un message à afficher à l'utilisateur :", "Ce contenu a été retiré car il ne respecte pas les règles de la communauté");
+    var result ="";
+    if (message != null) {
+        $.post('./AJAX/retirerPost.php', { postId: postId, message: message }, function(data) {
+            result = data.trim();
+            if (result  == "Post retiré.") {
+                var post = document.getElementById("postAlert_" + postId);
+                post.style.display = "block";
+                var message = document.getElementById("postSensibleMessage_" + postId);
+                message.style.display = "none";
+                var post = document.getElementById("postSensible_" + postId);
+                post.style.filter = "blur(0px)";
+            } else {
+                alert(result); // Afficher l'erreur retournée par la requête
+                console.error('Erreur lors de la requête AJAX');
+            }
+        });
+    }
+}
+
 // Fonction pour marquer un post comme non offensant
 function marquerNonOffensant(postId) {
     var result ="";
     $.post('./AJAX/marquerNonOffensant.php', { postId: postId }, function(data) {
         result = data.trim(); 
         if (result  == "Post marqué comme non offensant") {
-            alert("Post marqué comme non offensant avec succès!");
+            var post = document.getElementById("postAlert_" + postId);
+            post.style.display = "none";
         } else {
             alert(result); // Afficher l'erreur retournée par la requête
             console.error('Erreur lors de la requête AJAX');
         }
     });
+}
+
+function toggleOffense(postId){
+    var message = document.getElementById("postAlert_" + postId);
+    var button = document.getElementById("retirerPost" + postId);
+    if (message.style.display === "none") {
+        button.innerHTML = "Marquer comme non offensant";
+        retirerPost(postId);
+    } else {
+        marquerNonOffensant(postId);
+        button.innerHTML = "Marquer comme offensant";
+    }
+
 }
 
 // Fonction pour signaler un post

@@ -446,17 +446,17 @@ class profile {
                                 <li><button class='dropdown-item' id='sendAvertissement_".$idPost."' onclick='sendAvertissement($idPost)'>Envoyer un avertissement</button></li>";
                     // Affiche les options de modération en fonction de la visibilité du post
                     if ($post['visibilite']=="public"){
-                        echo       "<li><button class='dropdown-item' id='retirerPost_".$idPost."' onclick='retirerPost($idPost)'>Retirer Post</button></li>
+                        echo       "<li><button class='dropdown-item' id='retirerPost".$idPost."' onclick='toggleOffense($idPost)'>Retirer Post</button></li>
                                     <li><button class='dropdown-item' id='marquerSensible".$idPost."' onclick='toggleSensible($idPost)'>Marquer comme sensible</button></li>
                             </ul>
                         </div>";
                     } else if ($post['visibilite']=="sensible"){
-                        echo       "<li><button class='dropdown-item' id='retirerPost_".$idPost."' onclick='retirerPost($idPost)'>Retirer Post</button></li>
+                        echo       "<li><button class='dropdown-item' id='retirerPost".$idPost."' onclick='toggleOffense($idPost)'>Retirer Post</button></li>
                                     <li><button class='dropdown-item' id='marquerSensible".$idPost."' onclick='toggleSensible($idPost)'>Marquer comme non sensible</button></li>
                             </ul>
                         </div>";
                     } else if ($post['visibilite']=="offensant"){
-                        echo       "<li><button class='dropdown-item' id='marquerNonOffensant".$idPost."' onclick='marquerNonOffensant($idPost)'>Marquer comme non offensant</button></li>
+                        echo       "<li><button class='dropdown-item' id='marquerNonOffensant".$idPost."' onclick='toggleOffense($idPost)'>Marquer comme non offensant</button></li>
                             </ul>
                         </div>";
                     }
@@ -521,10 +521,12 @@ class profile {
             }
             if ($post['visibilite']=="offensant"){
                 // Affiche un message pour un post classé comme offensant et supprimé
-                echo "<div class='alert alert-danger' role='alert'>";
-                echo "<p>Post classé comme offensant et a été supprimer</p>";
-                echo "</div>";
+                echo "<div class='alert alert-danger' role='alert' id='postAlert_".$idPost."'>";
+            }else{
+                echo "<div class='alert alert-danger' role='alert' id='postAlert_".$idPost."' style='display: none;'>";
             }
+            echo "<p>Post classé comme offensant et a été supprimer</p>";
+            echo "</div>";
     
             // Affiche l'image du post s'il en existe une
             if (!empty($post['image'])) {
