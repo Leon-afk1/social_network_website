@@ -12,7 +12,7 @@ if(isset($_POST['postId']) && isset($_POST['message'])) { // Vérifie si les ide
 
     // Vérifie si les deux opérations de marquage ont réussi
     if($result1 && $result2) {
-        echo "Post marqué sensible."; // Affiche un message de réussite si les deux opérations ont réussi
+        echo "Post marqué sensible"; // Affiche un message de réussite si les deux opérations ont réussi
     } else {
         echo "Erreur lors du marquage du post sensible."; // Affiche un message d'erreur si une ou les deux opérations ont échoué
     }

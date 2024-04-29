@@ -6,9 +6,6 @@ include("../loc.php");
 <div class="row align-items-start justify-content-center">
     <div class="col-8">
         <div class='card rounded-3 outline-secondary text-bg-secondary ps-10 pe-10'>
-            <div class="text-center card-header">
-                <h2 class="card-title ">Meilleurs posts du moment :</h2>
-            </div>
             <div class="card-body" style="height: calc(100vh - 200px); overflow-y: auto;">
                 <?php
                 // Récupération et affichage des meilleurs posts

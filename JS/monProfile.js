@@ -124,11 +124,14 @@ function marquerSensible(postId) {
     if (message != null) {
         $.post('./AJAX/marquerSensible.php', { postId: postId, message: message }, function(data) {
             result = data.trim();
-            if (result  == "Post marqué comme sensible") {
-                alert("Post marqué comme sensible avec succès!");
+            if (result  == "Post marqué sensible") {
+                var message = document.getElementById("postSensibleMessage_" + postId);
+                message.style.display = "block";
+                var post = document.getElementById("postSensible_" + postId);
+                post.style.filter = "blur(15px)";
             } else {
                 alert(result); // Afficher l'erreur retournée par la requête
-                console.error('Erreur lors de la requête AJAX');
+                console.error(result);
             }
         });
     }
@@ -168,12 +171,29 @@ function marquerNonSensible(postId) {
     $.post('./AJAX/marquerNonSensible.php', { postId: postId }, function(data) {
         result = data.trim();
         if (result  == "Post marqué comme non sensible") {
-            alert("Post marqué comme non sensible avec succès!");
+            var message = document.getElementById("postSensibleMessage_" + postId);
+            message.style.display = "none";
+            var post = document.getElementById("postSensible_" + postId);
+            post.style.filter = "blur(0px)";
         } else {
             alert(result); // Afficher l'erreur retournée par la requête
             console.error('Erreur lors de la requête AJAX');
         }
     });
+}
+
+// Fonction pour basculer l'état sensible d'un post
+function toggleSensible(postId){
+    var message = document.getElementById("postSensibleMessage_" + postId);
+    var button = document.getElementById("marquerSensible" + postId);
+    if (message.style.display === "none") {
+        button.innerHTML = "Marquer comme non sensible";
+        marquerSensible(postId);
+    } else {
+        marquerNonSensible(postId);
+        button.innerHTML = "Marquer comme sensible";
+    }
+
 }
 
 // Fonction pour marquer un post comme non offensant

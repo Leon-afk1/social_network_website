@@ -447,12 +447,12 @@ class profile {
                     // Affiche les options de modération en fonction de la visibilité du post
                     if ($post['visibilite']=="public"){
                         echo       "<li><button class='dropdown-item' id='retirerPost_".$idPost."' onclick='retirerPost($idPost)'>Retirer Post</button></li>
-                                    <li><button class='dropdown-item' id='marquerSensible".$idPost."' onclick='marquerSensible($idPost)'>Marquer comme sensible</button></li>
+                                    <li><button class='dropdown-item' id='marquerSensible".$idPost."' onclick='toggleSensible($idPost)'>Marquer comme sensible</button></li>
                             </ul>
                         </div>";
                     } else if ($post['visibilite']=="sensible"){
                         echo       "<li><button class='dropdown-item' id='retirerPost_".$idPost."' onclick='retirerPost($idPost)'>Retirer Post</button></li>
-                                    <li><button class='dropdown-item' id='marquerNonSensible".$idPost."' onclick='marquerNonSensible($idPost)'>Marquer comme non sensible</button></li>
+                                    <li><button class='dropdown-item' id='marquerSensible".$idPost."' onclick='toggleSensible($idPost)'>Marquer comme non sensible</button></li>
                             </ul>
                         </div>";
                     } else if ($post['visibilite']=="offensant"){
@@ -502,13 +502,22 @@ class profile {
             // Affichage du contenu du post
             if ($post['visibilite']=="sensible"){
                 // Affiche un bouton pour afficher un post sensible
+                echo "<div class='text-center' style='cursor: pointer;' id='postSensibleMessage_".$idPost."'>";
                 echo "<div class='text-center'>";
                 echo "<p>Ce post a été classé comme sensible, voulez vous le voir malgré tout?</p>";
                 echo "</div>";
                 echo "<button class='btn btn-outline-secondary' id='voirSensible".$idPost."' onclick='toggleVisibilitePostSensible($idPost)'>Voir</button>";
+                echo "</div>";
                 echo    "<div class='card-body text-center' onclick='sendTo($idPost)' id='postSensible_".$idPost."' style = 'filter: blur(15px);'>";
-            } else {
-                echo    "<div class='card-body text-center' onclick='sendTo($idPost)'>";
+                
+            }else{
+                echo "<div class='text-center' style='cursor: pointer; display: none;' id='postSensibleMessage_".$idPost."'>";
+                echo "<div class='text-center'>";
+                echo "<p>Ce post a été classé comme sensible, voulez vous le voir malgré tout?</p>";
+                echo "</div>";
+                echo "<button class='btn btn-outline-secondary' id='voirSensible".$idPost."' onclick='toggleVisibilitePostSensible($idPost)'>Voir</button>";
+                echo "</div>";
+                echo    "<div class='card-body text-center' onclick='sendTo($idPost)' id='postSensible_".$idPost."'>";
             }
             if ($post['visibilite']=="offensant"){
                 // Affiche un message pour un post classé comme offensant et supprimé
