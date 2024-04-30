@@ -1,4 +1,6 @@
 <?php
+$decimales_max = 1;
+
 // Récupération des followers, followed et posts de l'utilisateur
 $followers = $SQLconn->statistiques->getFollowers($_COOKIE['user_id']);
 $followed =$SQLconn->statistiques->getFollowed($_COOKIE['user_id']);
@@ -11,13 +13,23 @@ $nbPosts = count($posts);
 
 // Calcul de la moyenne d'âge des followers et des followed
 $moyenneAgeFollower = $SQLconn->statistiques->calculateAverageAge($followers);
+$moyenneAgeFollower = number_format($moyenneAgeFollower, $decimales_max);
 $moyenneAgeFollowed = $SQLconn->statistiques->calculateAverageAge($followed);
+$moyenneAgeFollowed = number_format($moyenneAgeFollowed, $decimales_max);
 
 // Récupération du nombre de posts par jour, semaine et mois de l'utilisateur
 $nbPost = $SQLconn->statistiques->getNbPost($_COOKIE['user_id']);
 $nbPostParJour = $SQLconn->statistiques->getNbPostParJour($_COOKIE['user_id']);
+$nbPostParJour = number_format($nbPostParJour, $decimales_max);
 $nbPostParSemaine = $SQLconn->statistiques->getNbPostParSemaine($_COOKIE['user_id']);
+$nbPostParSemaine = number_format($nbPostParSemaine, $decimales_max);
 $nbPostParMois = $SQLconn->statistiques->getNbPostParMois($_COOKIE['user_id']);
+$nbPostParMois = number_format($nbPostParMois, $decimales_max);
+
+// Récupération du nombre total de likes de l'utilisateur
+$nbLike = $SQLconn->statistiques->getNbLike($_COOKIE['user_id']);
+$nbLikeParPost = $nbLike/$nbPost;
+$nbLikeParPost = number_format($nbLikeParPost, $decimales_max);
 ?>
 
 <head>
@@ -48,13 +60,13 @@ $nbPostParMois = $SQLconn->statistiques->getNbPostParMois($_COOKIE['user_id']);
                 <div class="row align-items-center">
                     <!-- Affichage du nombre de followers -->
                     <div class="col">
-                        <image src="./images/followers.png" alt="followers" width="50" height="50">
+                        <image src="./icon/followers.png" alt="followers" width="50" height="50">
                         <br>
                         <label for="followers">Followers : <?php echo $nbFollowers ?></label>
                     </div>
                     <!-- Affichage du nombre de followed -->
                     <div class="col">
-                        <image src="./images/followed.png" alt="followed" width="50" height="50">
+                        <image src="./icon/followed.png" alt="followed" width="50" height="50">
                         <br>
                         <label for="following">Following : <?php echo $nbFollowed ?></label>
                     </div>
@@ -80,13 +92,13 @@ $nbPostParMois = $SQLconn->statistiques->getNbPostParMois($_COOKIE['user_id']);
         <div class="row align-items-center">
             <!-- Affichage du nombre total de posts -->
             <div class="col">
-                <image src="./images/post.png" alt="posts" width="50" height="50">
+                <image src="./icon/post.png" alt="posts" width="50" height="50">
                 <br>
                 <label for="nbPost">Nombre de posts total : <?php echo $nbPosts ?></label>
             </div>
             <!-- Affichage du nombre moyen de posts par jour, semaine et mois -->
             <div class="col">
-                <image src="./images/stats.png" alt="stats" width="50" height="50">
+                <image src="./icon/stats.png" alt="stats" width="50" height="50">
                 <br>
                 <label for="moyenne" style="font-size: 20px;">Moyenne de posts :</label>
                 <br>
@@ -98,5 +110,23 @@ $nbPostParMois = $SQLconn->statistiques->getNbPostParMois($_COOKIE['user_id']);
             </div>
         </div>
     </div>
+</div>
+<br>
+<div class="card outline-secondary rounded-3">
+    <div class="container text-center">
+        <div class="row align-items-center">
+            <!-- Affichage du nombre total de likes -->
+            <div class="col">
+                <image src="./icon/heart_red.png" alt="likes" width="50" height="50">
+                <br>
+                <label for="nbLike">Nombre total de likes : <?php echo $nbLike ?></label>
+            </div>
+            <div class="col">
+                <image src="./icon/hearts.png" alt="likes" width="50" height="50">
+                <br>
+                <label for="nbLike">Nombre moyen de likes par post : <?php echo $nbLikeParPost ?></label>
+        </div>
+    </div>
+</div>
 </div>
 

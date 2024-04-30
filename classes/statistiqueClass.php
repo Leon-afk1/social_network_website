@@ -91,6 +91,16 @@ class Statistiques {
         }
     }
 
+    //Méthode pour obtenir le nombre de like total d'un utilisateur
+    public function getNbLike($userId){
+        // Requête SQL pour obtenir le nombre de likes d'un utilisateur donné
+        $query = "SELECT COUNT(*) FROM likes WHERE id_utilisateur = $userId";
+        // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        return $row['COUNT(*)']; // Retourne le nombre de likes
+    }
+
     // Méthode pour obtenir le nombre de posts d'un utilisateur
     public function getNbPost($userId){
         // Requête SQL pour obtenir le nombre de posts d'un utilisateur donné
