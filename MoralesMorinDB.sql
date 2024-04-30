@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : dim. 28 avr. 2024 à 11:14
+-- Généré le : mar. 30 avr. 2024 à 10:07
 -- Version du serveur : 10.4.21-MariaDB
 -- Version de PHP : 8.1.2
 
@@ -50,19 +50,29 @@ INSERT INTO `follower` (`id_follower`, `id_utilisateur`, `id_utilisateur_suivi`)
 CREATE TABLE `likes` (
   `id_likes` bigint(11) NOT NULL,
   `id_utilisateur` bigint(11) NOT NULL,
-  `id_post` bigint(11) NOT NULL
+  `id_post` bigint(11) NOT NULL,
+  `date` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `likes`
 --
 
-INSERT INTO `likes` (`id_likes`, `id_utilisateur`, `id_post`) VALUES
-(16, 27, 152),
-(18, 47, 199),
-(19, 27, 151),
-(20, 27, 199),
-(21, 47, 202);
+INSERT INTO `likes` (`id_likes`, `id_utilisateur`, `id_post`, `date`) VALUES
+(16, 27, 152, '2024-04-30'),
+(18, 47, 199, '2024-04-30'),
+(19, 27, 151, '2024-04-30'),
+(20, 27, 199, '2024-04-30'),
+(21, 47, 202, '2024-04-30'),
+(22, 27, 202, '2024-04-30'),
+(23, 27, 47, '2024-04-30'),
+(24, 27, 206, '2024-04-30'),
+(25, 27, 205, '2024-04-30'),
+(26, 27, 53, '2024-04-30'),
+(27, 27, 204, '2024-04-30'),
+(28, 27, 52, '2024-04-30'),
+(29, 27, 203, '2024-04-30'),
+(30, 27, 48, '2024-04-30');
 
 -- --------------------------------------------------------
 
@@ -255,7 +265,7 @@ ALTER TABLE `follower`
 -- AUTO_INCREMENT pour la table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `id_likes` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_likes` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT pour la table `notification`
