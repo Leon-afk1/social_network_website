@@ -91,14 +91,46 @@ class Statistiques {
         }
     }
 
-    //Méthode pour obtenir le nombre de like total d'un utilisateur
-    public function getNbLike($userId){
+    // Méthode pour obtenir le nombre de likes reçus par un utilisateur
+    public function getNblikeRecu($userId){
+        // Requête SQL pour obtenir le nombre de likes reçus par un utilisateur donné
+        $query = "SELECT COUNT(*) FROM likes WHERE id_post IN (SELECT id_post FROM post WHERE id_utilisateur = $userId)";
+        // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        return $row['COUNT(*)']; // Retourne le nombre de likes reçus
+    }
+
+    //Méthode pour obtenir le nombre de like emis total d'un utilisateur
+    public function getNbLikeEmis($userId){
         // Requête SQL pour obtenir le nombre de likes d'un utilisateur donné
         $query = "SELECT COUNT(*) FROM likes WHERE id_utilisateur = $userId";
         // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
         $result = $this->SQLconn->executeRequete($query);
         $row = $result->fetch_assoc();
         return $row['COUNT(*)']; // Retourne le nombre de likes
+    }
+
+    public function getNbLikeEmisParSemaine($userId){
+        $moyenne = 0;
+        // Requête SQL pour obtenir le nombre de likes d'un utilisateur donné
+        $query = "SELECT COUNT(*) FROM likes WHERE id_utilisateur = $userId";
+        // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $nbLike = $row['COUNT(*)'];
+
+        // Requête SQL pour obtenir le nombre de jours depuis le dernier like
+        $query = "SELECT DATEDIFF(NOW(), (SELECT date FROM likes WHERE id_utilisateur = $userId ORDER BY date DESC LIMIT 1)) As nbJours";
+        // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $nbJours = $row['nbJours'];
+
+        if ($nbJours != 0){
+            $moyenne = $nbLike / ($nbJours / 7);
+        }
+        return $moyenne; // Retourne la moyenne de likes par semaine
     }
 
     // Méthode pour obtenir le nombre de posts d'un utilisateur

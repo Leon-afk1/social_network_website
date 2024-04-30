@@ -27,9 +27,20 @@ $nbPostParMois = $SQLconn->statistiques->getNbPostParMois($_COOKIE['user_id']);
 $nbPostParMois = number_format($nbPostParMois, $decimales_max);
 
 // Récupération du nombre total de likes de l'utilisateur
-$nbLike = $SQLconn->statistiques->getNbLike($_COOKIE['user_id']);
-$nbLikeParPost = $nbLike/$nbPost;
-$nbLikeParPost = number_format($nbLikeParPost, $decimales_max);
+$nbLikeEmis = $SQLconn->statistiques->getNbLikeEmis($_COOKIE['user_id']);
+//$nbLikeEmisParSemaine = $SQLconn->statistiques->getNbLikeEmisParSemaine($_COOKIE['user_id']);
+//$nbLikeEmisParSemaine = number_format($nbLikeEmisParSemaine, $decimales_max);
+//$nbLikeEmisParMois = $SQLconn->statistiques->getNbLikeEmisParMois($_COOKIE['user_id']);
+//$nbLikeEmisParMois = number_format($nbLikeEmisParMois, $decimales_max);
+
+$nbLikeRecu = $SQLconn->statistiques->getNblikeRecu($_COOKIE['user_id']);
+//$nbLikeRecuParSemaine = $SQLconn->statistiques->getNbLikeRecuParSemaine($_COOKIE['user_id']);
+//$nbLikeRecuParSemaine = number_format($nbLikeRecuParSemaine, $decimales_max);
+//$nbLikeRecuParMois = $SQLconn->statistiques->getNbLikeRecuParMois($_COOKIE['user_id']);
+//$nbLikeRecuParMois = number_format($nbLikeRecuParMois, $decimales_max);
+
+$nbLikeRecuParPost = $nbLikeRecu / $nbPosts;
+$nbLikeRecuParPost = number_format($nbLikeRecuParPost, $decimales_max);
 ?>
 
 <head>
@@ -119,12 +130,26 @@ $nbLikeParPost = number_format($nbLikeParPost, $decimales_max);
             <div class="col">
                 <image src="./icon/heart_red.png" alt="likes" width="50" height="50">
                 <br>
-                <label for="nbLike">Nombre total de likes : <?php echo $nbLike ?></label>
+                <label for="intitulé" style="font-size: 20px;">Likes émis</label>
+                <br>
+                <label for="nbLike">Total : <?php echo $nbLikeEmis ?></label>
+                <br>
+                <label for="nbLikeParSemaine">Par semaine : <?php echo $nbLikeEmisParSemaine ?></label>
+                <br>
+                <label for="nbLikeParMois">Par mois : <?php echo $nbLikeEmisParMois ?></label>
             </div>
             <div class="col">
                 <image src="./icon/hearts.png" alt="likes" width="50" height="50">
                 <br>
-                <label for="nbLike">Nombre moyen de likes par post : <?php echo $nbLikeParPost ?></label>
+                <label for="intitulé" style="font-size: 20px;">Likes reçus</label>
+                <br>
+                <label for="nbLikeRecuTotal">Total : <?php echo $nbLikeRecu ?></label>
+                <br>
+                <label for="nbLikeRecuParSemaine">Par semaine : <?php echo $nbLikeRecuParSemaine ?></label>
+                <br>
+                <label for="nbLikeRecuParMois">Par mois : <?php echo $nbLikeRecuParMois ?></label>
+                <br>
+                <label for="nbLikeParPost">Par post : <?php echo $nbLikeRecuParPost ?></label>
         </div>
     </div>
 </div>
