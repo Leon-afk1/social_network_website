@@ -187,5 +187,5 @@
         </div>
     </div>
 </div>
-// Inclusion du script JS pour la gestion des actions sur le profil
+<!--  Inclusion du script JS pour la gestion des actions sur le profil -->
 <script src="JS/profile.js"></script>

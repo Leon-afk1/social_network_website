@@ -144,66 +144,66 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
                     }
                     ?>
                 </ul>
-            </div>
-            <?php
-
-            // Si l'utilisateur est connecté ou non banni, afficher la barre de recherche
-            if ((isset($_COOKIE['user_id']) && !$ban) || !isset($_COOKIE['user_id'])) { ?>
-
-                <div class="d-flex navbar-nav">
-                    <?php if (isset($_COOKIE['user_id'])) { ?>
-                        <div id="logOut" class="nav-item">
-                            <li class='nav-item'>
-                                <a href='./logout.php?redirect=<?php echo $currentURL; ?>' class='nav-link'>
-                                    <img src='./icon/logout.png' alt='Déconnexion' width='auto' height='30' class='me-2'>
-                                </a>
-                            </li>
-                        </div>
-                    <?php } ?>
-                    <!-- Formulaire de recherche -->
-                    <form class="d-flex nav-item position-relative" role="search">
-                        <input id="suggestField2" class="form-control me-2 shadow" type="search" placeholder="Search" onkeyup="suggestFromInput_fetch(this.value)">
-                        <!-- Zone pour afficher les suggestions de recherche -->
-                        <div class="position-absolute top-100 start-50 translate-middle-x overflow-auto" style="max-height: 200px; background-color: black; left: 50%; transform: translateX(-50%); top: calc(100%); width: 100%;" id="suggestions2"></div>
-                    </form>
-                </div>
-                <!-- Options de recherche -->
-                <div class="nav-item ">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="recherche" id="rechercheUser" checked>
-                        <label class="form-check-label" for="rechercheUser">
-                            Utilisateur
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="recherche" id="recherchePost">
-                        <label class="form-check-label" for="recherchePost">
-                            Post
-                        </label>
-                    </div>
-                </div>
-
-            <?php }else{
-                ?>
-                    <div class="d-flex navbar-nav">
-                    <?php if (isset($_COOKIE['user_id'])) { ?>
-                        <div id="logOut" class="nav-item">
-                            <li class='nav-item'>
-                                <a href='./logout.php?redirect=<?php echo $currentURL; ?>' class='nav-link'>
-                                    <img src='./icon/logout.png' alt='Déconnexion' width='auto' height='30' class='me-2'>
-                                </a>
-                            </li>
-                        </div>
-                    <?php } ?>
-                    </div>
+            
                 <?php
-            } ?>
-            <div class="d-flex navbar-nav">
-                <li class='nav-item'>
-                    <a class='nav-link active' aria-current='page' href='./index.php'> 
-                        <img src='./favicon.ico' class='avatar avatar-lg'>
-                    </a>
-                </li>
+
+                // Si l'utilisateur est connecté ou non banni, afficher la barre de recherche
+                if ((isset($_COOKIE['user_id']) && !$ban) || !isset($_COOKIE['user_id'])) { ?>
+                    <div class="d-flex navbar-nav">
+                        <?php if (isset($_COOKIE['user_id'])) { ?>
+                            <div id="logOut" class="nav-item">
+                                <li class='nav-item'>
+                                    <a href='./logout.php?redirect=<?php echo $currentURL; ?>' class='nav-link'>
+                                        <img src='./icon/logout.png' alt='Déconnexion' width='auto' height='30' class='me-2'>
+                                    </a>
+                                </li>
+                            </div>
+                        <?php } ?>
+                        <!-- Formulaire de recherche -->
+                        <form class="d-flex nav-item position-relative" role="search">
+                            <input id="suggestField2" class="form-control me-2 shadow" type="search" placeholder="Search" onkeyup="suggestFromInput_fetch(this.value)">
+                            <!-- Zone pour afficher les suggestions de recherche -->
+                            <div class="position-absolute top-100 start-50 translate-middle-x overflow-auto" style="max-height: 200px; background-color: black; left: 50%; transform: translateX(-50%); top: calc(100%); width: 100%;" id="suggestions2"></div>
+                        </form>
+                    </div>
+                    <!-- Options de recherche -->
+                    <div class="nav-item ">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="recherche" id="rechercheUser" checked>
+                            <label class="form-check-label" for="rechercheUser">
+                                Utilisateur
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="recherche" id="recherchePost">
+                            <label class="form-check-label" for="recherchePost">
+                                Post
+                            </label>
+                        </div>
+                    </div>
+
+                <?php }else{
+                    ?>
+                        <div class="d-flex navbar-nav">
+                        <?php if (isset($_COOKIE['user_id'])) { ?>
+                            <div id="logOut" class="nav-item">
+                                <li class='nav-item'>
+                                    <a href='./logout.php?redirect=<?php echo $currentURL; ?>' class='nav-link'>
+                                        <img src='./icon/logout.png' alt='Déconnexion' width='auto' height='30' class='me-2'>
+                                    </a>
+                                </li>
+                            </div>
+                        <?php } ?>
+                        </div>
+                    <?php
+                } ?>
+                <div class="d-flex navbar-nav">
+                    <li class='nav-item'>
+                        <a class='nav-link active' aria-current='page' href='./index.php'> 
+                            <img src='./images/Y_logo2.png' class='avatar avatar-lg'>
+                        </a>
+                    </li>
+                </div>
             </div>
         </div>
     </nav>
