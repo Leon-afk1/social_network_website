@@ -92,13 +92,62 @@ class Statistiques {
     }
 
     // Méthode pour obtenir le nombre de likes reçus par un utilisateur
-    public function getNblikeRecu($userId){
+    public function getNbLikeRecu($userId){
         // Requête SQL pour obtenir le nombre de likes reçus par un utilisateur donné
         $query = "SELECT COUNT(*) FROM likes WHERE id_post IN (SELECT id_post FROM post WHERE id_utilisateur = $userId)";
         // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
         $result = $this->SQLconn->executeRequete($query);
         $row = $result->fetch_assoc();
         return $row['COUNT(*)']; // Retourne le nombre de likes reçus
+    }
+
+    // Méthode pour obtenir le nombre moyen de likes reçus par semaine d'un utilisateur
+    public function getNbLikeRecuParSemaine($userId){
+        $moyenne = 0;
+        // Requête SQL pour obtenir le nombre de likes reçus par un utilisateur donné
+        $query = "SELECT COUNT(*) FROM likes WHERE id_post IN (SELECT id_post FROM post WHERE id_utilisateur = $userId)";
+        // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $nbLike = $row['COUNT(*)'];
+        $moyenne = $nbLike;
+
+        // Requête SQL pour obtenir le nombre de jours depuis le dernier like
+        $query = "SELECT DATEDIFF(NOW(), (SELECT date FROM likes WHERE id_post IN (SELECT id_post FROM post WHERE id_utilisateur = $userId) ORDER BY date DESC LIMIT 1)) As nbJours";
+        // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $nbJours = $row['nbJours'];
+
+        if ($nbJours != 0){
+            $moyenne = $nbLike / ($nbJours / 7);
+        }
+        return $moyenne; // Retourne la moyenne de likes reçus par semaine
+
+    }
+
+    // Méthode pour obtenir le nombre moyen de likes reçus par mois d'un utilisateur
+    public function getNbLikeRecuParMois($userId){
+        $moyenne = 0;
+        // Requête SQL pour obtenir le nombre de likes reçus par un utilisateur donné
+        $query = "SELECT COUNT(*) FROM likes WHERE id_post IN (SELECT id_post FROM post WHERE id_utilisateur = $userId)";
+        // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $nbLike = $row['COUNT(*)'];
+        $moyenne = $nbLike;
+
+        // Requête SQL pour obtenir le nombre de jours depuis le dernier like
+        $query = "SELECT DATEDIFF(NOW(), (SELECT date FROM likes WHERE id_post IN (SELECT id_post FROM post WHERE id_utilisateur = $userId) ORDER BY date DESC LIMIT 1)) As nbJours";
+        // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $nbJours = $row['nbJours'];
+
+        if ($nbJours != 0){
+            $moyenne = $nbLike / ($nbJours / 30);
+        }
+        return $moyenne; // Retourne la moyenne de likes reçus par mois
     }
 
     //Méthode pour obtenir le nombre de like emis total d'un utilisateur
@@ -111,6 +160,7 @@ class Statistiques {
         return $row['COUNT(*)']; // Retourne le nombre de likes
     }
 
+    // Méthode pour obtenir le nombre moyen de likes émis par semaine d'un utilisateur
     public function getNbLikeEmisParSemaine($userId){
         $moyenne = 0;
         // Requête SQL pour obtenir le nombre de likes d'un utilisateur donné
@@ -119,6 +169,7 @@ class Statistiques {
         $result = $this->SQLconn->executeRequete($query);
         $row = $result->fetch_assoc();
         $nbLike = $row['COUNT(*)'];
+        $moyenne=$nbLike;
 
         // Requête SQL pour obtenir le nombre de jours depuis le dernier like
         $query = "SELECT DATEDIFF(NOW(), (SELECT date FROM likes WHERE id_utilisateur = $userId ORDER BY date DESC LIMIT 1)) As nbJours";
@@ -130,7 +181,31 @@ class Statistiques {
         if ($nbJours != 0){
             $moyenne = $nbLike / ($nbJours / 7);
         }
-        return $moyenne; // Retourne la moyenne de likes par semaine
+        return $moyenne; // Retourne la moyenne de likes emis par semaine
+    }
+
+    // Méthode pour obtenir le nombre moyen de likes émis par mois d'un utilisateur
+    public function getNbLikeEmisParMois($userId){
+        $moyenne = 0;
+        // Requête SQL pour obtenir le nombre de likes d'un utilisateur donné
+        $query = "SELECT COUNT(*) FROM likes WHERE id_utilisateur = $userId";
+        // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $nbLike = $row['COUNT(*)'];
+        $moyenne=$nbLike;
+
+        // Requête SQL pour obtenir le nombre de jours depuis le dernier like
+        $query = "SELECT DATEDIFF(NOW(), (SELECT date FROM likes WHERE id_utilisateur = $userId ORDER BY date DESC LIMIT 1)) As nbJours";
+        // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $nbJours = $row['nbJours'];
+
+        if ($nbJours != 0){
+            $moyenne = $nbLike / ($nbJours / 30);
+        }
+        return $moyenne; // Retourne la moyenne de likes emis par mois
     }
 
     // Méthode pour obtenir le nombre de posts d'un utilisateur
@@ -175,6 +250,7 @@ class Statistiques {
         $result = $this->SQLconn->executeRequete($query);
         $row = $result->fetch_assoc();
         $nbPost = $row['COUNT(*)'];
+        $moyenne = $nbPost;
 
         // Requête SQL pour obtenir le nombre de jours depuis le dernier post
         $query = "SELECT DATEDIFF(NOW(), (SELECT date FROM post WHERE id_utilisateur = $userId ORDER BY date DESC LIMIT 1)) As nbJours";
@@ -198,6 +274,7 @@ class Statistiques {
         $result = $this->SQLconn->executeRequete($query);
         $row = $result->fetch_assoc();
         $nbPost = $row['COUNT(*)'];
+        $moyenne = $nbPost;
 
         // Requête SQL pour obtenir le nombre de jours depuis le dernier post
         $query = "SELECT DATEDIFF(NOW(), (SELECT date FROM post WHERE id_utilisateur = $userId ORDER BY date DESC LIMIT 1)) As nbJours";

@@ -28,16 +28,16 @@ $nbPostParMois = number_format($nbPostParMois, $decimales_max);
 
 // Récupération du nombre total de likes de l'utilisateur
 $nbLikeEmis = $SQLconn->statistiques->getNbLikeEmis($_COOKIE['user_id']);
-//$nbLikeEmisParSemaine = $SQLconn->statistiques->getNbLikeEmisParSemaine($_COOKIE['user_id']);
-//$nbLikeEmisParSemaine = number_format($nbLikeEmisParSemaine, $decimales_max);
-//$nbLikeEmisParMois = $SQLconn->statistiques->getNbLikeEmisParMois($_COOKIE['user_id']);
-//$nbLikeEmisParMois = number_format($nbLikeEmisParMois, $decimales_max);
+$nbLikeEmisParSemaine = $SQLconn->statistiques->getNbLikeEmisParSemaine($_COOKIE['user_id']);
+$nbLikeEmisParSemaine = number_format($nbLikeEmisParSemaine, $decimales_max);
+$nbLikeEmisParMois = $SQLconn->statistiques->getNbLikeEmisParMois($_COOKIE['user_id']);
+$nbLikeEmisParMois = number_format($nbLikeEmisParMois, $decimales_max);
 
-$nbLikeRecu = $SQLconn->statistiques->getNblikeRecu($_COOKIE['user_id']);
-//$nbLikeRecuParSemaine = $SQLconn->statistiques->getNbLikeRecuParSemaine($_COOKIE['user_id']);
-//$nbLikeRecuParSemaine = number_format($nbLikeRecuParSemaine, $decimales_max);
-//$nbLikeRecuParMois = $SQLconn->statistiques->getNbLikeRecuParMois($_COOKIE['user_id']);
-//$nbLikeRecuParMois = number_format($nbLikeRecuParMois, $decimales_max);
+$nbLikeRecu = $SQLconn->statistiques->getNbLikeRecu($_COOKIE['user_id']);
+$nbLikeRecuParSemaine = $SQLconn->statistiques->getNbLikeRecuParSemaine($_COOKIE['user_id']);
+$nbLikeRecuParSemaine = number_format($nbLikeRecuParSemaine, $decimales_max);
+$nbLikeRecuParMois = $SQLconn->statistiques->getNbLikeRecuParMois($_COOKIE['user_id']);
+$nbLikeRecuParMois = number_format($nbLikeRecuParMois, $decimales_max);
 
 $nbLikeRecuParPost = $nbLikeRecu / $nbPosts;
 $nbLikeRecuParPost = number_format($nbLikeRecuParPost, $decimales_max);
@@ -82,6 +82,7 @@ $nbLikeRecuParPost = number_format($nbLikeRecuParPost, $decimales_max);
                         <label for="following">Following : <?php echo $nbFollowed ?></label>
                     </div>
                 </div>
+                
 
                 <div class="row align-items-center">
                     <!-- Affichage de la moyenne d'âge des followers -->
@@ -93,6 +94,7 @@ $nbLikeRecuParPost = number_format($nbLikeRecuParPost, $decimales_max);
                         <label for="moyenneAgeFollowed">Moyenne d'âge des followed : <?php echo $moyenneAgeFollowed ?></label>
                     </div>
                 </div>
+                <br>
             </div>
         </div>
         <br>
@@ -120,6 +122,7 @@ $nbLikeRecuParPost = number_format($nbLikeRecuParPost, $decimales_max);
                 <label for="nbPostParMois">Posts par mois : <?php echo $nbPostParMois ?></label>
             </div>
         </div>
+        <br>
     </div>
 </div>
 <br>
@@ -152,6 +155,7 @@ $nbLikeRecuParPost = number_format($nbLikeRecuParPost, $decimales_max);
                 <label for="nbLikeParPost">Par post : <?php echo $nbLikeRecuParPost ?></label>
         </div>
     </div>
+    <br>
 </div>
 </div>
 
