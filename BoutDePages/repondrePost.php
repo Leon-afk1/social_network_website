@@ -1,8 +1,9 @@
 <?php
-
+// Si il y a une requete post
 if (isset($_POST["submitReponse"])) {
     $ajouterPost = true;
-    $result=ajouterNewPost($_COOKIE['user_id'], $_POST["idPost"]);
+    //Appelle de la fonction qui va rajouter le formulaire de post
+    $result=$SQLconn->profile->ajouterNewPost($_COOKIE['user_id'], $_POST["idPost"]);
     if ($result["Successful"]){
         $ajouterPost = false;
     }else{
