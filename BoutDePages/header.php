@@ -206,9 +206,6 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
                 </div>
             </div>
         </div>
-    </nav>
-
-    <main class="p-3 d-flex col-md-8 col-lg-8 mx-auto flex-column ">
         <!-- Overlay pour le formulaire de connexion -->
         <div class="overlay" id="overlay" onclick="hideLoginForm(event)">
             <?php include("./AJAX/login.php"); ?>
@@ -217,7 +214,9 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
         <div class="overlay" id="overlay1" onclick="hideNewLoginForm(event)">
             <?php include("./AJAX/newlogin.php"); ?>
         </div>
-    </main>
+    </nav>
+
+
 
     <!-- Inclusion du script JavaScript -->
     <script src="./JS/header.js"></script>
