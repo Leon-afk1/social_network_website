@@ -1,5 +1,10 @@
 <?php
 // Marquer les notifications comme lues
+if (isset($_SESSION["id_utilisateur"])) {
+    $user_id = $_SESSION["id_utilisateur"];
+} else {
+    $user_id = 0;
+}
 $SQLconn->notification->markNotificationsAsRead($user_id);
 ?>
 <div class="row justify-content-center">

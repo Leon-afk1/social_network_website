@@ -785,6 +785,7 @@ class profile {
                     INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur 
                     LEFT JOIN (SELECT id_post, COUNT(*) as likes FROM likes GROUP BY id_post) as likes ON post.id_post = likes.id_post
                     WHERE post.id_utilisateur != $userId 
+                    AND post.id_parent IS NULL
                     ORDER BY total_likes DESC;
         ";
         $result = $this->SQLconn->executeRequete($query);
@@ -817,6 +818,7 @@ class profile {
         $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path, post.date, post.visibilite, utilisateur.nom, utilisateur.prenom FROM post
                   INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur
                   WHERE post.id_utilisateur IN (SELECT id_utilisateur_suivi FROM follower WHERE id_utilisateur = $userId)
+                  AND post.id_parent IS NULL
                   ORDER BY post.date DESC";
         $result = $this->SQLconn->executeRequete($query);
     
