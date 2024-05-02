@@ -25,3 +25,6 @@ async function deleteAllNotifications(id) {
       alert(response); // Afficher une alerte en cas d'erreur
   }
 }
+
+
+

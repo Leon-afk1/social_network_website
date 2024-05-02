@@ -39,16 +39,36 @@ if (!$SQLconn->loginStatus->loginSuccessful) {
 // Récupération du nombre de notifications si l'utilisateur est connecté
 $nbNotifications = 0;
 if (isset($_COOKIE['user_id'])) {
+    $user_id = $_COOKIE['user_id'];
     // Récupération des informations de profil de l'utilisateur
     $Infos = $SQLconn->profile->GetInfoProfile($_COOKIE['user_id']);
     // Récupération du nombre de notifications de l'utilisateur
     $nbNotifications = $SQLconn->notification->getNbNotifications($_COOKIE['user_id']);
+
+    // Supprimer une notification si l'ID est passé en paramètre
+    if (isset($_GET['delete_notification'])) {
+        $notificationId = $_GET['delete_notification'];
+        $SQLconn->notification->supprimerNotification($notificationId);
+    }
+
+    // Supprimer toutes les notifications
+    if (isset($_GET['delete_all_notifications'])) {
+        $notificationHandler->supprimerAllNotifications($user_id);
+    }
+
+    // Récupérer les notifications pour l'utilisateur actuel
+    $notifications = $SQLconn->notification->getNotifications($user_id);
+
+    
 }
 
 // Déclenchement du formulaire de connexion en cas d'erreur
 $executeToggleLoginFormIfNeeded = $erreur !== "";
 // Déclenchement du formulaire de création de compte en cas de tentative infructueuse
 $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAccountStatus["Successful"];
+
+
+
 ?>
 
 
@@ -99,14 +119,20 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
                                             </a>
                                         </form>
                                     </li>";
-                            echo "<li class='nav-item position-relative'><a class='nav-link' href='./notification.php?id=" . $_COOKIE['user_id'] . "' aria-current='page'>
-                                    <img src='./icon/bell.png' alt='Notification' width='auto' height='30' class='ms-2'> 
-                                    <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger' id='notif'>
-                                        $nbNotifications
-                                        <span class='visually-hidden'>unread messages</span>
-                                    </span>
-                                </a>
-                            </li>";
+                            // echo "<li class='nav-item position-relative'><a class='nav-link' href='./notification.php?id=" . $_COOKIE['user_id'] . "' aria-current='page'>
+                            //         <img src='./icon/bell.png' alt='Notification' width='auto' height='30' class='ms-2'> 
+                            //         <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger' id='notif'>
+                            //             $nbNotifications
+                            //             <span class='visually-hidden'>unread messages</span>
+                            //         </span>
+                            //     </li>";
+                            echo "<li class='nav-item position-relative'><a class='nav-link'  aria-current='page'>
+                                        <img src='./icon/bell.png' alt='Notification' width='auto' height='30' class='ms-2' onclick='toggleNotif()'> 
+                                        <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger' id='notif'>
+                                            $nbNotifications
+                                            <span class='visually-hidden'>unread messages</span>
+                                        </span>
+                                    </li>";
                         } else {
                             // Si l'utilisateur n'est pas banni, afficher les liens de navigation normaux
                             echo "<li class='nav-item'><a class='nav-link' href='./index.php' aria-current='page'><img src='./icon/home.png' alt='Home' width='30' height='30'></a></li>";
@@ -119,14 +145,20 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
                                             </a>
                                         </form>
                                     </li>";
-                            echo "<li class='nav-item position-relative'><a class='nav-link' href='./notification.php?id=" . $_COOKIE['user_id'] . "' aria-current='page'>
-                                    <img src='./icon/bell.png' alt='Notification' width='auto' height='30' class='ms-2'> 
-                                    <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger' id='notif'>
-                                        $nbNotifications
-                                        <span class='visually-hidden'>unread messages</span>
-                                    </span>
-                                </a>
-                            </li>";
+                            // echo "<li class='nav-item position-relative'><a class='nav-link' href='./notification.php?id=" . $_COOKIE['user_id'] . "' aria-current='page'>
+                            //         <img src='./icon/bell.png' alt='Notification' width='auto' height='30' class='ms-2'> 
+                            //         <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger' id='notif'>
+                            //             $nbNotifications
+                            //             <span class='visually-hidden'>unread messages</span>
+                            //         </span>
+                            //     </li>";
+                            echo "<li class='nav-item position-relative'><a class='nav-link'  aria-current='page'>
+                                        <img src='./icon/bell.png' alt='Notification' width='auto' height='30' class='ms-2' onclick='toggleNotif()'> 
+                                        <span class='custom-badge position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger' id='notif'>
+                                            $nbNotifications
+                                            <span class='visually-hidden'>unread messages</span>
+                                        </span>
+                                    </li>";
                             
                         }
                     } else {
@@ -214,12 +246,18 @@ $executeToggleNewLoginFormIfNeeded = $newAccountStatus["Attempted"] && !$newAcco
         <div class="overlay" id="overlay1" onclick="hideNewLoginForm(event)">
             <?php include("./AJAX/newlogin.php"); ?>
         </div>
+        <!-- Overlay pour les notifications -->
+        <div class="overlay" id="overlay2" onclick="hideNotification(event)">
+            <?php include("./AJAX/notifications.php"); ?>
+        </div>
+
     </nav>
 
 
 
     <!-- Inclusion du script JavaScript -->
     <script src="./JS/header.js"></script>
+    <script src="./JS/notificationHandler.js"></script>
     <script>
         // Détection de l'état du formulaire de connexion et de création de compte
         var executeToggleLoginFormIfNeeded = <?php echo $executeToggleLoginFormIfNeeded ? 'true' : 'false'; ?>;

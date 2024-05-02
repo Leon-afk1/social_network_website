@@ -144,3 +144,30 @@ function updateNotificationDisplay(nbNotifications) {
 function submitForm() {
   document.getElementById("statistiquesForm").submit(); // Envoyer le formulaire
 }
+
+function toggleNotif() {
+  var overlay = document.getElementById("overlay2");
+  var mainContent = document.getElementById("mainContent");
+  var notif = document.getElementById("notification");
+  if (notif.style.display === "none") {
+      overlay.style.display = "block";
+      mainContent.classList.add("blur");
+      notif.style.display = "block";
+      updateNotificationDisplay(0);
+  } else {
+      overlay.style.display = "none";
+      mainContent.classList.remove("blur");
+      notif.style.display = "none";
+  }
+}
+
+function hideNotification(event) {
+  var modal = document.getElementById("overlay2");
+  var mainContent = document.getElementById("mainContent"); 
+  var notif = document.getElementById("notification");
+  if (!notif.contains(event.target)) {
+    modal.style.display = "none";
+    notif.style.display = "none";
+    mainContent.classList.remove("blur"); 
+  }
+}
