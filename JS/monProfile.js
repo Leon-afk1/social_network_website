@@ -107,11 +107,11 @@ function sendAvertissement(postId) {
     if (avertissement != null) {
         $.post('./AJAX/avertir.php', { postId: postId, avertissement: avertissement }, function(data) {
             result = data.trim();
-            if (result  == "Avertissement envoyé") {
+            if (result  == "Avertissement envoyé.") {
                 alert("Avertissement envoyé avec succès!");
             } else {
                 alert(result); // Afficher l'erreur retournée par la requête
-                console.error('Erreur lors de la requête AJAX');
+                console.error(result);
             }
         });
     }
