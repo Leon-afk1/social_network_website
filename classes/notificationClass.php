@@ -300,6 +300,35 @@ class Notification {
             
     }
 
+    public function notifyLike($userId, $postId){
+        // Requête SQL pour sélectionner les id_utilisateur des followers de l'utilisateur
+        $query = "SELECT id_utilisateur FROM post WHERE id_post = $postId";
+        $result = $this->SQLconn->executeRequete($query);
+        $row = $result->fetch_assoc();
+        $userIdToAvertir = $row['id_utilisateur'];
+
+        // Requête SQL pour insérer une notification dans la base de données
+        $query = "INSERT into notification (id_utilisateur, id_utilisateur_cible, id_post_cible, type, date_notification) VALUES ($userIdToAvertir, $userId, $postId, 'like', NOW())";
+        // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
+        if ($this->SQLconn->executeRequete($query)){
+            return true; // Retourne true si l'insertion est réussie
+        } else {
+            return false; // Retourne false en cas d'échec
+        }
+    }
+    
+
+    public function enleverNotifLike($postId,$userId){
+        // Requête SQL pour supprimer la notification de like
+        $query = "DELETE FROM notification WHERE id_utilisateur_cible = $userId AND id_post_cible = $postId AND type = 'like'";
+        // Exécution de la requête SQL à l'aide de la méthode executeRequete de l'objet de connexion
+        if ($this->SQLconn->executeRequete($query)){
+            return true; // Retourne true si la suppression est réussie
+        } else {
+            return false; // Retourne false en cas d'échec
+        }
+    }
+
 }
 
 ?>

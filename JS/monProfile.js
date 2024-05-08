@@ -94,7 +94,7 @@ function toggleLike(userID, postID){
 
             image.src = "./icon/heart_empty.png";
         } else {
-            alert("ca marche pas");
+            alert(result); // Afficher l'erreur retournée par la requête
             // console.error('Erreur lors de la requête AJAX');
         }
     });

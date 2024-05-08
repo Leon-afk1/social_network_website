@@ -9,7 +9,7 @@ $SQLconn->notification->markNotificationsAsRead($user_id);
 ?>
 <div class="row justify-content-center">
     <div class="card notif-card w-50 outline-secondary position-absolute top-50 start-50 translate-middle" id="notification" style="display: none; max-height: 75vh;min-height: 25vh;">
-        <div class="text-center card-header" style="position: sticky; top: 0; z-index: 1000; height: 25vh;">
+        <div class="text-center card-header" style="position: sticky; top: 0; z-index: 1000; height: 35vh;">
             <h1 class="card-title">
                 <?php
                 // Afficher l'avatar de l'utilisateur s'il existe
@@ -82,6 +82,8 @@ $SQLconn->notification->markNotificationsAsRead($user_id);
                             echo ("Le post suivant a été remis en ligne : <a href='./post.php?id=" . $notification["id_post_cible"] . "'>Voir le post</a>");
                         }else if ($notification["type"] == "signalement") {
                             echo ("Le post suivant a été signalé : <a href='./post.php?id=" . $notification["id_post_cible"] . "'>Voir le post</a>");
+                        }else if ($notification["type"] == "like") {
+                            echo ("A liké votre post : <a href='./post.php?id=" . $notification["id_post_cible"] . "'>Voir le post</a>");
                         }
                         echo "</div>";
                         echo "<div class='col text-center'>";
