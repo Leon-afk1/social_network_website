@@ -170,13 +170,13 @@ function toggleSensible(postId){
 
 function toggleVisibilitePostSensible(postId){
     var post = document.getElementById("postSensible_" + postId);
-    var message = document.getElementById("postSensibleMessage_" + postId);
+    var button = document.getElementById("voirSensible" + postId);
     if (post.style.filter === "blur(15px)") {
         post.style.filter = "blur(0px)";
-        message.style.display = "none";
+        button.innerHTML = "Masquer le contenu sensible";
     } else {
         post.style.filter = "blur(15px)";
-        message.style.display = "block";
+        button.innerHTML = "Voir";
     }
 }
 
