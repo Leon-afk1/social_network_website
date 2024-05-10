@@ -271,7 +271,7 @@ class profile {
     public function GetNextPosts($userId, $start, $combien){
 
         $query = "SELECT post.id_post, post.id_utilisateur, post.contenu, post.image_path,post.video_lien, post.date, post.visibilite, utilisateur.nom, utilisateur.prenom FROM post
-                  INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur AND post.id_utilisateur = $userId
+                  INNER JOIN utilisateur ON post.id_utilisateur = utilisateur.id_utilisateur AND post.id_utilisateur = $userId AND post.id_parent IS NULL
                   ORDER BY post.date DESC
                   LIMIT  $combien OFFSET $start";
     
